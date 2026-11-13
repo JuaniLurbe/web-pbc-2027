@@ -75,35 +75,50 @@ export const LogisticaTicket: React.FC = () => {
   const hotelCarouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch('https://ipapi.co/json/')
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 4000);
+
+    fetch('https://ipapi.co/json/', { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error('Network error');
         return res.json();
       })
       .then((data) => {
-        if (data && (data.city || data.region)) {
-          const rawCity = (data.city || data.region)
+        const candidate = typeof data?.city === 'string' ? data.city : typeof data?.region === 'string' ? data.region : '';
+        if (candidate) {
+          const rawCity = candidate
             .toUpperCase()
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^A-Z\s]/g, "")
+            .trim();
 
           if (LOCALIDADES_INFO[rawCity]) {
             setOriginInfo(LOCALIDADES_INFO[rawCity]);
           } else {
-            // Si es otra ciudad, generamos código limpio de 3 letras
-            const cleanName = (data.city || data.region).toUpperCase();
-            const code = cleanName.replace(/[^A-Z]/g, '').slice(0, 3) || 'ARG';
-            setOriginInfo({
-              codigo: code,
-              nombre: cleanName.length > 16 ? cleanName.slice(0, 15) + '.' : cleanName,
-              precio: "$600.000"
-            });
+            const cleanName = candidate.toUpperCase().replace(/[^A-ZÁÉÍÓÚÑ\s.-]/g, '').trim();
+            const code = rawCity.replace(/[^A-Z]/g, '').slice(0, 3) || 'ARG';
+            if (cleanName) {
+              setOriginInfo({
+                codigo: code,
+                nombre: cleanName.length > 16 ? cleanName.slice(0, 15) + '.' : cleanName,
+                precio: "$600.000"
+              });
+            }
           }
         }
       })
       .catch(() => {
         setOriginInfo(LOCALIDADES_INFO["MAR DEL PLATA"]);
+      })
+      .finally(() => {
+        window.clearTimeout(timeoutId);
       });
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeoutId);
+    };
   }, []);
 
   const scrollToHotelSlide = (index: number) => {

@@ -13,12 +13,17 @@ dist/
 /Testimonios/
 /Video Inicial/
 
+# Internal AI agent configs & design notes (kept locally, not published)
+/.agents/
+/skill_de_dise_o_y_marca_protagonistas_del_bien_com_n_2027.md
+
 # Environment and secrets
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*
 
 # Logs
 npm-debug.log*
@@ -45,5 +50,4 @@ Thumbs.db
 scene_cuts.txt
 *.tmp.*
 *.tmp
-
 .vercel

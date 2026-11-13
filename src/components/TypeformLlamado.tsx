@@ -4,6 +4,15 @@ import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 import { TYPEFORM_QUESTIONS, CAMPAMENTO_CONFIG } from '../data/campamentoData';
 
+// Previene Spreadsheet Formula Injection (CWE-1236) y limita longitud máxima
+const sanitizeForSheet = (raw: string | undefined, maxLen = 150): string => {
+  const clean = (raw || '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim().slice(0, maxLen);
+  if (/^[=+\-@\t\r]/.test(clean)) {
+    return `'${clean}`;
+  }
+  return clean;
+};
+
 export const TypeformLlamado: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, string>>({
@@ -13,6 +22,7 @@ export const TypeformLlamado: React.FC = () => {
     carrera: '',
     motivacion: '',
   });
+  const [honeypot, setHoneypot] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -22,9 +32,10 @@ export const TypeformLlamado: React.FC = () => {
 
   const handleInputChange = (val: string) => {
     setErrorMsg('');
+    const maxLen = currentQ.tipo === 'textarea' ? 600 : 120;
     setFormData((prev) => ({
       ...prev,
-      [currentQ.id]: val,
+      [currentQ.id]: val.slice(0, maxLen),
     }));
   };
 
@@ -36,15 +47,29 @@ export const TypeformLlamado: React.FC = () => {
       return;
     }
 
+    if (currentQ.id === 'whatsapp') {
+      const digits = (value || '').replace(/\D/g, '');
+      if (digits.length < 6 || digits.length > 16) {
+        setErrorMsg('Por favor ingresa un número de WhatsApp válido');
+        return;
+      }
+    }
+
     if (currentStep < TYPEFORM_QUESTIONS.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
+      // Protección anti-flood por sesión (30s cooldown)
+      const lastSubmit = Number(sessionStorage.getItem('pbc_last_submit_ts') || '0');
+      const now = Date.now();
+      const isCoolingDown = now - lastSubmit < 30000;
+
       setIsSubmitting(true);
       const webhookUrl =
         (import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL as string | undefined)?.trim() ||
         CAMPAMENTO_CONFIG.googleSheetsWebhookUrl?.trim();
 
-      if (webhookUrl) {
+      // Solo enviamos si el honeypot anti-bots está vacío y no está en cooldown
+      if (webhookUrl && !honeypot && !isCoolingDown) {
         try {
           await fetch(webhookUrl, {
             method: 'POST',
@@ -54,13 +79,14 @@ export const TypeformLlamado: React.FC = () => {
             },
             body: JSON.stringify({
               fecha: new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
-              nombre: formData.nombre,
-              whatsapp: formData.whatsapp,
-              ciudad: formData.ciudad,
-              carrera: formData.carrera,
-              motivacion: formData.motivacion || '',
+              nombre: sanitizeForSheet(formData.nombre, 100),
+              whatsapp: sanitizeForSheet(formData.whatsapp, 40),
+              ciudad: sanitizeForSheet(formData.ciudad, 100),
+              carrera: sanitizeForSheet(formData.carrera, 120),
+              motivacion: sanitizeForSheet(formData.motivacion, 600),
             }),
           });
+          sessionStorage.setItem('pbc_last_submit_ts', String(now));
         } catch {
           // Si falla la red, permitimos igual continuar con la confirmación por WhatsApp
         }
@@ -186,11 +212,22 @@ ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
                   {currentQ.subtitulo}
                 </p>
 
-                {/* Input Dinámico */}
+                {/* Input Dinámico + Honeypot Anti-Bots */}
                 <div className="pt-2">
+                  <input
+                    type="text"
+                    name="website_url_hp"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    className="hidden"
+                  />
                   {currentQ.tipo === 'textarea' ? (
                     <textarea 
                       rows={3}
+                      maxLength={600}
                       value={formData[currentQ.id] || ''}
                       onChange={(e) => handleInputChange(e.target.value)}
                       placeholder={currentQ.placeholder}
@@ -199,6 +236,7 @@ ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
                   ) : (
                     <input 
                       type={currentQ.tipo}
+                      maxLength={120}
                       value={formData[currentQ.id] || ''}
                       onChange={(e) => handleInputChange(e.target.value)}
                       onKeyDown={handleKeyDown}
