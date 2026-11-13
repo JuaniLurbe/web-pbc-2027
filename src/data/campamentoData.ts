@@ -27,8 +27,8 @@ export const CAMPAMENTO_CONFIG: CampamentoConfig = {
   contactoWhatsApp: "+54 9 223 552-4205",
   contactoEmail: "milicianos@movimiento.fasta.org.ar",
   cupoAproximado: "+250 Jóvenes Universitarios",
-  // Pegar acá la URL de la Web App de Google Apps Script (o usar VITE_GOOGLE_SHEETS_WEBHOOK_URL en Vercel)
-  googleSheetsWebhookUrl: "",
+  // URL de la Web App de Google Apps Script (o usar VITE_GOOGLE_SHEETS_WEBHOOK_URL en Vercel)
+  googleSheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbxNDKLGsZ5LVVqyzqKSLG_Cr5aw8RqNKiKXYiq4hIrKIPiW5KdmG7Xz2RlIw7_UEEQA/exec",
 };
 
 export const METRICAS_HERO = [
