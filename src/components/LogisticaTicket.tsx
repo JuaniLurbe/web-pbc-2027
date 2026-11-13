@@ -134,31 +134,34 @@ export const LogisticaTicket: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-[#F4F9F7] text-[#0A0E0D] relative overflow-hidden" id="logistica-faq">
-      <div className="relative z-10 max-w-md mx-auto px-4">
+    <section className="py-16 md:py-20 bg-[#F4F9F7] text-[#0A0E0D] relative overflow-hidden" id="logistica-faq">
+      <div className="relative z-10 max-w-md md:max-w-4xl lg:max-w-6xl mx-auto px-4 md:px-8">
         
         {/* Encabezado jerarquizado */}
-        <div className="mb-7 text-center flex flex-col items-center">
-          <div className="inline-flex items-center gap-1.5 font-mono text-[10.5px] tracking-[0.2em] uppercase text-[#007156] font-extrabold mb-3 bg-[#E6F8F1] px-3.5 py-1 rounded-full border border-[#64D5AB]/30 shadow-sm">
+        <div className="mb-7 md:mb-12 text-center flex flex-col items-center">
+          <div className="inline-flex items-center gap-1.5 font-mono text-[10.5px] md:text-xs tracking-[0.2em] uppercase text-[#007156] font-extrabold mb-3 bg-[#E6F8F1] px-3.5 py-1 rounded-full border border-[#64D5AB]/30 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-[#64D5AB] animate-pulse"></span>
             <span>BLOQUE 4 · INFORMACIÓN PRÁCTICA</span>
           </div>
           
-          <h2 className="font-coolvetica text-[38px] min-[360px]:text-[44px] sm:text-[50px] uppercase tracking-tight text-[#0A0E0D] leading-[0.98] mb-3 font-bold">
+          <h2 className="font-coolvetica text-[38px] min-[360px]:text-[44px] sm:text-[50px] md:text-[56px] uppercase tracking-tight text-[#0A0E0D] leading-[0.98] mb-3 font-bold">
             <span className="block">TU EMBARQUE A</span>
             <span className="block text-[#007156]">MENDOZA 2027</span>
           </h2>
           
-          <p className="font-sans text-[#1b2522]/85 text-xs sm:text-sm leading-snug font-medium">
+          <p className="font-sans text-[#1b2522]/85 text-xs sm:text-sm md:text-base leading-snug font-medium">
             <span className="block">Todo sobre traslados federales, fechas,</span>
             <span className="block font-semibold text-[#0A0E0D]">alojamiento y arancel unificado.</span>
           </p>
         </div>
 
+        {/* Layout 2 Columnas en PC: Boarding Pass (Izq) + FAQs & CTA (Der) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+
         {/* ======================================================== */}
         {/* TARJETA BOARDING PASS COMPACTA Y CON GLOW                */}
         {/* ======================================================== */}
-        <div className="ticket-flip-container w-full mb-8 relative">
+        <div className="ticket-flip-container w-full max-w-md mx-auto lg:mx-0 lg:col-span-5 mb-2 lg:mb-0 relative">
           <div className={`ticket-flipper ${isFlipped ? 'is-flipped' : ''}`}>
             
             {/* ---------------- LADO FRONTAL: BOARDING PASS ---------------- */}
@@ -464,50 +467,53 @@ export const LogisticaTicket: React.FC = () => {
         {/* ======================================================== */}
         {/* PREGUNTAS FRECUENTES (FAQ ACORDEÓN)                      */}
         {/* ======================================================== */}
-        <div className="mb-3 pb-2 border-b-2 border-[#0A0E0D]">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#007156] font-extrabold">
-            PREGUNTAS FRECUENTES
-          </span>
+        <div className="lg:col-span-7">
+          <div className="mb-3 pb-2 border-b-2 border-[#0A0E0D]">
+            <span className="font-mono text-[11px] md:text-xs uppercase tracking-[0.2em] text-[#007156] font-extrabold">
+              PREGUNTAS FRECUENTES
+            </span>
+          </div>
+
+          <div className="space-y-0 divide-y divide-[#0A0E0D]/20 font-sans">
+            {FAQS.map((faq) => {
+              const isOpen = openFaq === faq.id;
+
+              return (
+                <div key={faq.id} className="py-3 md:py-3.5 select-none">
+                  <button 
+                    type="button"
+                    onClick={() => toggleFaq(faq.id)}
+                    aria-expanded={isOpen}
+                    className="w-full min-h-[44px] flex items-center justify-between font-bold text-xs sm:text-sm md:text-base text-[#0A0E0D] text-left cursor-pointer group"
+                  >
+                    <span className="pr-4 group-hover:text-[#007156] transition-colors">{faq.pregunta}</span>
+                    <span className={`text-[#007156] font-mono text-lg transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-45' : ''}`}>
+                      +
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <p className="mt-2 text-xs md:text-sm text-gray-700 leading-relaxed pr-2 text-pretty animate-fadeIn">
+                      {faq.respuesta}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Botón CTA Intermedio */}
+          <div className="mt-8 text-center">
+            <a 
+              href="#llamado-final" 
+              className="w-full min-h-[52px] py-3.5 rounded-xl bg-[#0A0E0D] text-[#64D5AB] font-sans font-extrabold text-xs md:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all hover:bg-[#17211E] border border-[#64D5AB]/30"
+            >
+              <span>asegurar mi plaza en el embarque</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
         </div>
 
-        <div className="space-y-0 divide-y divide-[#0A0E0D]/20 font-sans">
-          {FAQS.map((faq) => {
-            const isOpen = openFaq === faq.id;
-
-            return (
-              <div key={faq.id} className="py-3 select-none">
-                <button 
-                  type="button"
-                  onClick={() => toggleFaq(faq.id)}
-                  aria-expanded={isOpen}
-                  className="w-full min-h-[44px] flex items-center justify-between font-bold text-xs sm:text-sm text-[#0A0E0D] text-left cursor-pointer group"
-                >
-                  <span className="pr-4 group-hover:text-[#007156] transition-colors">{faq.pregunta}</span>
-                  <span className={`text-[#007156] font-mono text-lg transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-45' : ''}`}>
-                    +
-                  </span>
-                </button>
-                {isOpen && (
-                  <p className="mt-2 text-xs text-gray-700 leading-relaxed pr-2 text-pretty animate-fadeIn">
-                    {faq.respuesta}
-                  </p>
-                )}
-              </div>
-            );
-          })}
         </div>
-
-        {/* Botón CTA Intermedio */}
-        <div className="mt-8 text-center">
-          <a 
-            href="#inscripcion-typeform" 
-            className="w-full min-h-[52px] py-3.5 rounded-xl bg-[#0A0E0D] text-[#64D5AB] font-sans font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all hover:bg-[#17211E] border border-[#64D5AB]/30"
-          >
-            <span>asegurar mi plaza en el embarque</span>
-            <ArrowRight className="w-4 h-4" />
-          </a>
-        </div>
-
       </div>
     </section>
   );

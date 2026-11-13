@@ -90,7 +90,7 @@ ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
   };
 
   return (
-    <section className="py-16 bg-pbc-deep bg-grain text-white relative overflow-hidden border-t-2 border-pbc/20" id="llamado-final">
+    <section className="py-16 md:py-24 bg-pbc-deep bg-grain text-white relative overflow-hidden border-t-2 border-pbc/20" id="llamado-final">
       {/* Watermarks de Fondo */}
       <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-full max-w-7xl flex justify-between pointer-events-none select-none opacity-10 animate-badge-float">
         <span className="font-coolvetica text-[120px] md:text-[200px] text-pbc tracking-tighter motion-watermark">
@@ -101,23 +101,23 @@ ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
         </span>
       </div>
 
-      <div className="relative z-10 max-w-md mx-auto px-4 text-center">
+      <div className="relative z-10 max-w-md md:max-w-2xl lg:max-w-3xl mx-auto px-4 md:px-8 text-center">
         {/* Cabecera del Bloque */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pbc-card border border-pbc/30 text-pbc font-mono text-[10px] uppercase tracking-[0.18em] font-bold mb-2.5 shadow-sm">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pbc-card border border-pbc/30 text-pbc font-mono text-[10px] md:text-xs uppercase tracking-[0.18em] font-bold mb-2.5 md:mb-3 shadow-sm">
           <span className="w-1.5 h-1.5 rounded-full bg-pbc animate-pulse"></span>
           <span>BLOQUE 5: EL LLAMADO FINAL</span>
         </div>
 
-        <h2 className="font-coolvetica text-[24px] sm:text-3xl tracking-tight text-white uppercase leading-[1.12] mb-2 drop-shadow-2xl text-balance">
+        <h2 className="font-coolvetica text-[24px] sm:text-3xl md:text-4xl lg:text-[42px] tracking-tight text-white uppercase leading-[1.12] mb-2 md:mb-3 drop-shadow-2xl text-balance">
           ¿QUÉ PARTE DE LA MURALLA TE TOCA RECONSTRUIR A VOS?
         </h2>
 
-        <p className="font-sans text-gray-300 text-xs sm:text-sm max-w-sm mx-auto leading-relaxed mb-6 text-pretty">
+        <p className="font-sans text-gray-300 text-xs sm:text-sm md:text-base max-w-sm md:max-w-lg mx-auto leading-relaxed mb-6 md:mb-10 text-pretty">
           La historia no la cambian los espectadores resignados. Da un paso al frente y postulá tu lugar en Mendoza 2027.
         </p>
 
-        {/* CONTENEDOR TIPO TYPEFORM NATIVO MOBILE-FIRST */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-pbc-card border-2 border-pbc/30 shadow-glow-pbc text-left relative overflow-hidden">
+        {/* CONTENEDOR TIPO TYPEFORM NATIVO */}
+        <div className="p-5 sm:p-6 md:p-8 lg:p-10 rounded-2xl bg-pbc-card border-2 border-pbc/30 shadow-glow-pbc text-left relative overflow-hidden">
           
           {!isCompleted ? (
             <div>
@@ -148,11 +148,11 @@ ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
                   </span>
                 </div>
 
-                <h3 className="font-coolvetica text-xl sm:text-2xl uppercase text-white leading-tight text-balance">
+                <h3 className="font-coolvetica text-xl sm:text-2xl md:text-3xl uppercase text-white leading-tight text-balance">
                   {currentQ.pregunta}
                 </h3>
 
-                <p className="font-sans text-xs text-gray-400 text-pretty">
+                <p className="font-sans text-xs md:text-sm text-gray-400 text-pretty">
                   {currentQ.subtitulo}
                 </p>
 
@@ -164,7 +164,7 @@ ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
                       value={formData[currentQ.id] || ''}
                       onChange={(e) => handleInputChange(e.target.value)}
                       placeholder={currentQ.placeholder}
-                      className="input-micro-focus w-full px-3.5 py-2.5 rounded-xl bg-pbc-carbon border border-pbc/30 text-white font-sans text-xs placeholder:text-gray-500 focus:outline-none transition-all duration-200 resize-none"
+                      className="input-micro-focus w-full px-3.5 md:px-4 py-2.5 md:py-3 rounded-xl bg-pbc-carbon border border-pbc/30 text-white font-sans text-xs md:text-base placeholder:text-gray-500 focus:outline-none transition-all duration-200 resize-none"
                     />
                   ) : (
                     <input 
@@ -173,7 +173,7 @@ ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
                       onChange={(e) => handleInputChange(e.target.value)}
                       onKeyDown={handleKeyDown}
                       placeholder={currentQ.placeholder}
-                      className="input-micro-focus w-full min-h-[46px] px-3.5 py-2.5 rounded-xl bg-pbc-carbon border border-pbc/30 text-white font-sans text-xs sm:text-sm placeholder:text-gray-500 focus:outline-none transition-all duration-200"
+                      className="input-micro-focus w-full min-h-[46px] md:min-h-[54px] px-3.5 md:px-4 py-2.5 md:py-3 rounded-xl bg-pbc-carbon border border-pbc/30 text-white font-sans text-xs sm:text-sm md:text-base placeholder:text-gray-500 focus:outline-none transition-all duration-200"
                     />
                   )}
 

@@ -90,7 +90,7 @@ export const ExperienciaMendoza: React.FC = () => {
   }, [lightboxGallery]);
 
   return (
-    <section className="pt-10 pb-12 bg-[#0d1211] text-white relative overflow-hidden border-t-2 border-b-2 border-pbc-deep/80" id="experiencia-mendoza">
+    <section className="pt-10 pb-12 md:py-16 bg-[#0d1211] text-white relative overflow-hidden border-t-2 border-b-2 border-pbc-deep/80" id="experiencia-mendoza">
       {/* Imagen de fondo en alta resolución de los Andes con mezcla atmosférica */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <img 
@@ -112,29 +112,29 @@ export const ExperienciaMendoza: React.FC = () => {
         </span>
       </div>
 
-      <div className="relative z-10 max-w-md mx-auto px-4">
+      <div className="relative z-10 max-w-md md:max-w-4xl lg:max-w-6xl mx-auto px-4 md:px-8">
         {/* Cabecera del Bloque en 2 líneas exactas título + 2 líneas exactas subtítulo */}
-        <div className="text-center mb-6 flex flex-col items-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1b2522]/90 backdrop-blur-md border border-[#e0a96d]/40 text-[#f5caa0] font-mono text-[9px] uppercase tracking-[0.16em] font-bold mb-2 shadow-[0_0_15px_rgba(224,169,109,0.2)]">
+        <div className="text-center mb-6 md:mb-10 flex flex-col items-center">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1b2522]/90 backdrop-blur-md border border-[#e0a96d]/40 text-[#f5caa0] font-mono text-[9px] md:text-xs uppercase tracking-[0.16em] font-bold mb-2 md:mb-3 shadow-[0_0_15px_rgba(224,169,109,0.2)]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#f39c12] animate-pulse"></span>
             <span>BLOQUE 3: EXPERIENCIA MENDOZA</span>
           </div>
           
           <div className="inline-flex flex-col items-center max-w-full">
-            <h2 className="font-coolvetica text-[23px] min-[360px]:text-[25px] sm:text-[30px] tracking-tight uppercase leading-[1.04] mb-2 drop-shadow-lg">
+            <h2 className="font-coolvetica text-[23px] min-[360px]:text-[25px] sm:text-[30px] md:text-[38px] lg:text-[44px] tracking-tight uppercase leading-[1.04] mb-2 md:mb-3 drop-shadow-lg">
               <span className="block text-white whitespace-nowrap">PARA CONSTRUIR LA PATRIA</span>
               <span className="block text-pbc whitespace-nowrap mt-0.5">LO HACEMOS EN COMUNIDAD</span>
             </h2>
             
-            <p className="w-full font-sans text-[11px] min-[360px]:text-xs sm:text-sm leading-snug text-gray-300">
+            <p className="w-full font-sans text-[11px] min-[360px]:text-xs sm:text-sm md:text-base leading-snug text-gray-300">
               <span className="block whitespace-nowrap">El campamento trasciende lo formativo:</span>
               <span className="block text-gray-200 font-medium whitespace-nowrap">cordillera, amistad y misión en las calles.</span>
             </p>
           </div>
         </div>
 
-        {/* Galería de Experiencias */}
-        <div className="flex flex-col gap-5">
+        {/* Galería de Experiencias: 1 col mobile, 3 col PC */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6 items-stretch">
           {EXPERIENCIAS_MENDOZA.map((item) => {
             const isFogon = item.id === 'fogon';
             const isRafting = item.id === 'rafting';
@@ -413,31 +413,35 @@ export const ExperienciaMendoza: React.FC = () => {
                 )}
 
                 {/* Contenido descriptivo */}
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2 mb-1.5">
-                    <h3 className="font-coolvetica text-xl uppercase text-white text-balance">
-                      {item.titulo}
-                    </h3>
-                    {isRafting && (
-                      <span className="px-2 py-0.5 rounded bg-pbc/15 border border-pbc/35 text-pbc font-mono text-[9px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5">
-                        PARADOR BETANCOURT
-                      </span>
-                    )}
-                    {isFogon && (
-                      <span className="px-2 py-0.5 rounded bg-[#e0a96d]/15 border border-[#e0a96d]/30 text-[#f5caa0] font-mono text-[9px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5">
-                        12 FOTOS REALES
-                      </span>
-                    )}
-                    {isMision && (
-                      <span className="px-2 py-0.5 rounded bg-pbc/15 border border-pbc/35 text-pbc font-mono text-[9px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5">
-                        10 FOTOS REALES
-                      </span>
-                    )}
+                <div className="p-4 md:p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-start justify-between gap-2 mb-1.5">
+                      <h3 className="font-coolvetica text-xl uppercase text-white text-balance">
+                        {item.titulo}
+                      </h3>
+                      {isRafting && (
+                        <span className="px-2 py-0.5 rounded bg-pbc/15 border border-pbc/35 text-pbc font-mono text-[9px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5">
+                          PARADOR BETANCOURT
+                        </span>
+                      )}
+                      {isFogon && (
+                        <span className="px-2 py-0.5 rounded bg-[#e0a96d]/15 border border-[#e0a96d]/30 text-[#f5caa0] font-mono text-[9px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5">
+                          12 FOTOS REALES
+                        </span>
+                      )}
+                      {isMision && (
+                        <span className="px-2 py-0.5 rounded bg-pbc/15 border border-pbc/35 text-pbc font-mono text-[9px] font-bold uppercase tracking-wider flex-shrink-0 mt-0.5">
+                          10 FOTOS REALES
+                        </span>
+                      )}
+                    </div>
+                    
+                    <p className="font-sans text-xs md:text-[13px] text-gray-300 leading-relaxed text-pretty">
+                      {item.descripcion}
+                    </p>
                   </div>
-                  
-                  <p className="font-sans text-xs text-gray-300 leading-relaxed text-pretty">
-                    {item.descripcion}
-                  </p>
+
+                  <div>
 
                   {/* Botones de Acción para Rafting: Google Maps + Instagram */}
                   {isRafting && (
@@ -520,6 +524,7 @@ export const ExperienciaMendoza: React.FC = () => {
                       <span>{item.subtexto}</span>
                     </span>
                     <ArrowRight className={`w-3.5 h-3.5 ${isFogon ? 'text-[#f5caa0]' : 'text-pbc'} transition-transform duration-200 group-hover:translate-x-1`} />
+                  </div>
                   </div>
                 </div>
               </div>

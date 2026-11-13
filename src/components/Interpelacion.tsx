@@ -45,42 +45,42 @@ export const Interpelacion: React.FC = () => {
 
   return (
     <section 
-      className="pt-9 pb-12 bg-pbc-deep bg-grain text-white relative overflow-hidden border-b border-pbc/15" 
+      className="pt-9 pb-12 md:py-16 bg-pbc-deep bg-grain text-white relative overflow-hidden border-b border-pbc/15" 
       id="interpelacion"
     >
       {/* Motion Watermarks */}
       <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-full max-w-7xl flex justify-between pointer-events-none select-none opacity-10">
-        <span className="font-coolvetica text-[90px] md:text-[140px] text-pbc tracking-tighter motion-watermark">
+        <span className="font-coolvetica text-[90px] md:text-[140px] lg:text-[180px] text-pbc tracking-tighter motion-watermark">
           {CAMPAMENTO_CONFIG.fechasRango}
         </span>
-        <span className="font-coolvetica text-[90px] md:text-[140px] text-pbc tracking-tighter motion-watermark">
+        <span className="font-coolvetica text-[90px] md:text-[140px] lg:text-[180px] text-pbc tracking-tighter motion-watermark">
           {CAMPAMENTO_CONFIG.provincia.toUpperCase()}
         </span>
       </div>
 
-      <div className="relative z-10 max-w-md mx-auto px-4">
+      <div className="relative z-10 max-w-md md:max-w-4xl lg:max-w-5xl mx-auto px-4 md:px-8">
         {/* Encabezado alineado en 2 líneas exactas título + 2 líneas subtítulo */}
-        <div className="text-center mb-6 flex flex-col items-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pbc-card border border-pbc/30 text-pbc font-mono text-[10px] uppercase tracking-widest font-bold mb-2 shadow-sm">
+        <div className="text-center mb-6 md:mb-10 flex flex-col items-center">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pbc-card border border-pbc/30 text-pbc font-mono text-[10px] md:text-xs uppercase tracking-widest font-bold mb-2 md:mb-3 shadow-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-pbc animate-pulse"></span>
             <span>BLOQUE 1: LA INTERPELACIÓN</span>
           </div>
           
           <div className="inline-flex flex-col items-center max-w-full">
-            <h2 className="font-coolvetica text-[22px] min-[360px]:text-[25px] sm:text-[29px] tracking-tight text-white uppercase leading-[1.04] mb-2">
+            <h2 className="font-coolvetica text-[22px] min-[360px]:text-[25px] sm:text-[29px] md:text-[38px] lg:text-[44px] tracking-tight text-white uppercase leading-[1.04] mb-2 md:mb-3">
               <span className="block whitespace-nowrap">¿QUÉ PASA EN NUESTRA PATRIA</span>
               <span className="block text-pbc whitespace-nowrap mt-0.5">Y EN NUESTRA GENERACIÓN?</span>
             </h2>
             
-            <p className="w-full font-sans text-gray-300 text-[11px] min-[360px]:text-xs sm:text-sm leading-snug">
+            <p className="w-full font-sans text-gray-300 text-[11px] min-[360px]:text-xs sm:text-sm md:text-base leading-snug">
               <span className="block whitespace-nowrap">Un llamado urgente a discernir el tiempo histórico</span>
               <span className="block whitespace-nowrap">uniendo rigor profesional, vida en comunidad y fe.</span>
             </p>
           </div>
         </div>
 
-        {/* Las 2 Tarjetas Oficiales con Animación de Descenso al Bajar y Guardado al Subir */}
-        <div ref={cardsContainerRef} className="flex flex-col gap-5">
+        {/* Las 2 Tarjetas Oficiales: apiladas en mobile, lado a lado en PC */}
+        <div ref={cardsContainerRef} className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-7 items-stretch">
           
           {/* Tarjeta 1: La trampa de Babel (Desciende primero) */}
           <div 

@@ -45,3 +45,5 @@ Thumbs.db
 scene_cuts.txt
 *.tmp.*
 *.tmp
+
+.vercel

@@ -246,108 +246,188 @@ export const Testimonios: React.FC<TestimoniosProps> = ({ audioSrc = "/assets/au
         <div className="absolute inset-0 bg-gradient-to-b from-[#e5ede9]/40 via-transparent to-[#e5ede9]/60"></div>
       </div>
 
-      <div className="relative z-10 max-w-md mx-auto px-4">
+      <div className="relative z-10 max-w-md md:max-w-4xl lg:max-w-6xl mx-auto px-4 md:px-8">
         {/* Encabezado */}
-        <div className="text-center mb-7">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121917] text-pbc font-mono text-[10px] uppercase tracking-[0.18em] font-extrabold mb-2.5 shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">
+        <div className="text-center mb-7 md:mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121917] text-pbc font-mono text-[10px] md:text-xs uppercase tracking-[0.18em] font-extrabold mb-2.5 shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">
             <span className="w-1.5 h-1.5 rounded-full bg-pbc animate-pulse"></span>
             <span>POSTALES REALES DEL CAMPAMENTO</span>
           </div>
 
-          <h2 className="font-coolvetica text-[26px] sm:text-3xl tracking-tight text-[#0a100d] uppercase leading-[1.1] mb-2 text-balance">
+          <h2 className="font-coolvetica text-[26px] sm:text-3xl md:text-[42px] tracking-tight text-[#0a100d] uppercase leading-[1.1] mb-2 text-balance">
             El eco vivo de la muralla
           </h2>
           
           <div className="w-20 h-1.5 mx-auto rounded-full bg-gradient-to-r from-[#007156] via-pbc to-[#007156] mb-2.5"></div>
           
-          <p className="font-sans text-[#22312b] text-xs sm:text-sm leading-relaxed font-medium text-pretty">
+          <p className="font-sans text-[#22312b] text-xs sm:text-sm md:text-base max-w-xl mx-auto leading-relaxed font-medium text-pretty">
             Postales auténticas de la vida compartida en el campamento: deporte, música, mates y fraternidad.
           </p>
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 md:gap-10">
           
-          {/* ======================================================== */}
-          {/* 1. CARRUSEL DE FOTOS POLAROID (SIN CITAS NI NOMBRES)    */}
-          {/* ======================================================== */}
-          <div className="relative">
-            {/* Tarjeta Polaroid Clásica */}
-            <div 
-              key={currentP.id}
-              className={`relative bg-[#fafaf7] p-3.5 pt-3.5 pb-6 sm:pb-7 rounded-sm border border-[#1b2522]/20 shadow-[0_12px_28px_rgba(0,0,0,0.22)] transition-all duration-300 ${currentP.rotacion} cursor-pointer group select-none touch-pan-y`}
-              onClick={() => setPolaroidLightboxOpen(true)}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            >
-              {/* Marco Fotográfico Interno */}
-              <div className="aspect-[16/11] w-full rounded-[2px] bg-black/10 overflow-hidden relative shadow-inner border border-black/5">
-                <img 
-                  src={currentP.foto} 
-                  alt={currentP.alt} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none"></div>
+          {/* FILA SUPERIOR PC: Polaroids (Izq) + Lema y Fogón (Der) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
+            {/* ======================================================== */}
+            {/* 1. CARRUSEL DE FOTOS POLAROID (SIN CITAS NI NOMBRES)    */}
+            {/* ======================================================== */}
+            <div className="relative lg:col-span-6">
+              {/* Tarjeta Polaroid Clásica */}
+              <div 
+                key={currentP.id}
+                className={`relative bg-[#fafaf7] p-3.5 pt-3.5 pb-6 sm:pb-7 rounded-sm border border-[#1b2522]/20 shadow-[0_12px_28px_rgba(0,0,0,0.22)] transition-all duration-300 ${currentP.rotacion} cursor-pointer group select-none touch-pan-y`}
+                onClick={() => setPolaroidLightboxOpen(true)}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                {/* Marco Fotográfico Interno */}
+                <div className="aspect-[16/11] w-full rounded-[2px] bg-black/10 overflow-hidden relative shadow-inner border border-black/5">
+                  <img 
+                    src={currentP.foto} 
+                    alt={currentP.alt} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none"></div>
 
-                {/* Badge flotante en la foto */}
-                <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white font-mono text-[9px] font-bold">
-                    <Camera className="w-3 h-3 text-pbc" />
-                    <span>{currentPolaroidIdx + 1} / {polaroidPhotos.length}</span>
-                  </span>
+                  {/* Badge flotante en la foto */}
+                  <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white font-mono text-[9px] font-bold">
+                      <Camera className="w-3 h-3 text-pbc" />
+                      <span>{currentPolaroidIdx + 1} / {polaroidPhotos.length}</span>
+                    </span>
+                  </div>
+
+                  <div className="absolute bottom-2 right-2.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                    <span className="w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center shadow">
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
                 </div>
 
-                <div className="absolute bottom-2 right-2.5 opacity-80 group-hover:opacity-100 transition-opacity">
-                  <span className="w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm text-white flex items-center justify-center shadow">
-                    <Maximize2 className="w-3.5 h-3.5" />
+                {/* Borde inferior clásico de Polaroid (Sin nombres ni testimonios) */}
+                <div className="pt-3 px-1 flex items-center justify-between">
+                  <span className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#121917]/70 font-bold">
+                    MENDOZA 2027 · POLAROID
+                  </span>
+                  <span className="font-mono text-[9px] text-[#007156] font-semibold">
+                    Tocá para ampliar
                   </span>
                 </div>
               </div>
 
-              {/* Borde inferior clásico de Polaroid (Sin nombres ni testimonios) */}
-              <div className="pt-3 px-1 flex items-center justify-between">
-                <span className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#121917]/70 font-bold">
-                  MENDOZA 2027 · POLAROID
-                </span>
-                <span className="font-mono text-[9px] text-[#007156] font-semibold">
-                  Tocá para ampliar
-                </span>
+              {/* Controles del Carrusel de Polaroids */}
+              <div className="flex items-center justify-between mt-3 px-1">
+                <button 
+                  type="button"
+                  onClick={prevPolaroid}
+                  aria-label="Polaroid anterior"
+                  className="w-10 h-10 rounded-xl bg-[#121917] text-white flex items-center justify-center active:scale-90 hover:bg-[#64D5AB] hover:text-[#0A0E0D] transition-all cursor-pointer shadow-md"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                <div className="flex items-center gap-1.5 overflow-x-auto max-w-[200px] sm:max-w-xs no-scrollbar py-1">
+                  {polaroidPhotos.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setCurrentPolaroidIdx(idx)}
+                      aria-label={`Ir a polaroid ${idx + 1}`}
+                      className={`h-2 rounded-full transition-all cursor-pointer ${
+                        idx === currentPolaroidIdx ? 'w-5 bg-[#007156]' : 'w-2 bg-[#121917]/30 hover:bg-[#121917]/50'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <button 
+                  type="button"
+                  onClick={nextPolaroid}
+                  aria-label="Polaroid siguiente"
+                  className="w-10 h-10 rounded-xl bg-[#121917] text-white flex items-center justify-center active:scale-90 hover:bg-[#64D5AB] hover:text-[#0A0E0D] transition-all cursor-pointer shadow-md"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
             </div>
 
-            {/* Controles del Carrusel de Polaroids */}
-            <div className="flex items-center justify-between mt-3 px-1">
-              <button 
-                type="button"
-                onClick={prevPolaroid}
-                aria-label="Polaroid anterior"
-                className="w-10 h-10 rounded-xl bg-[#121917] text-white flex items-center justify-center active:scale-90 hover:bg-[#64D5AB] hover:text-[#0A0E0D] transition-all cursor-pointer shadow-md"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              <div className="flex items-center gap-1.5 overflow-x-auto max-w-[200px] no-scrollbar py-1">
-                {polaroidPhotos.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setCurrentPolaroidIdx(idx)}
-                    aria-label={`Ir a polaroid ${idx + 1}`}
-                    className={`h-2 rounded-full transition-all cursor-pointer ${
-                      idx === currentPolaroidIdx ? 'w-5 bg-[#007156]' : 'w-2 bg-[#121917]/30 hover:bg-[#121917]/50'
-                    }`}
-                  />
-                ))}
+            {/* Columna Derecha PC: Lema + Reproductor Fogón */}
+            <div className="lg:col-span-6 flex flex-col gap-5">
+              {/* Placa Lema Institucional */}
+              <div className="px-4 py-3 md:px-6 md:py-4 rounded-lg bg-[#64D5AB] text-[#0A0E0D] font-coolvetica text-sm sm:text-base md:text-xl tracking-wider uppercase font-extrabold shadow-[3px_4px_0px_#101413] border-2 border-[#101413] flex items-center justify-between transition-transform duration-150 active:scale-95">
+                <span>«NO ES REPETIR, ES REINVENTAR»</span>
+                <Zap className="w-5 h-5 md:w-6 md:h-6 fill-current" />
               </div>
 
-              <button 
-                type="button"
-                onClick={nextPolaroid}
-                aria-label="Polaroid siguiente"
-                className="w-10 h-10 rounded-xl bg-[#121917] text-white flex items-center justify-center active:scale-90 hover:bg-[#64D5AB] hover:text-[#0A0E0D] transition-all cursor-pointer shadow-md"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+              {/* Reproductor Interactivo Sonido Real Fogón */}
+              <div className="relative overflow-hidden bg-[#141d1a] p-4 md:p-6 rounded-xl border-2 border-[#64D5AB]/60 shadow-[6px_12px_28px_rgba(0,0,0,0.25)] text-white">
+                <div className="absolute inset-0 pointer-events-none opacity-25 mix-blend-luminosity">
+                  <img src="/assets/pena/pena-5.jpg" alt="" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#141d1a] via-[#141d1a]/80 to-transparent"></div>
+                </div>
+                
+                <div className="relative z-10 flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#f39c12] animate-ping"></span>
+                    <span className="font-mono text-[9px] md:text-[10px] uppercase tracking-wider text-pbc font-extrabold">
+                      SONIDO REAL · FOGÓN Y BRASAS
+                    </span>
+                  </div>
+                  <span className="font-mono text-[10px] md:text-xs text-gray-300">
+                    {formatTimer(currentTime)} / {formatTimer(duration)}
+                  </span>
+                </div>
+
+                <h4 className="font-coolvetica text-base sm:text-lg md:text-2xl text-white uppercase mb-1 text-balance relative z-10">
+                  «Andá haciéndote una idea del fogón»
+                </h4>
+                <p className="font-sans text-[11px] md:text-xs text-gray-300 mb-3 font-medium leading-snug relative z-10">
+                  El crujido de las brasas, las canciones y la noche compartida bajo el cielo de Mendoza.
+                </p>
+
+                <div className="relative z-10 flex items-center gap-3 bg-[#0b0f0e] p-2.5 md:p-3 rounded-xl border border-pbc/30 transition-all duration-300 hover:border-pbc">
+                  <button 
+                    type="button"
+                    onClick={toggleAudio}
+                    aria-label={isPlaying ? "Pausar audio de fogón" : "Reproducir audio de fogón"}
+                    className="w-10 h-10 md:w-12 md:h-12 min-h-[40px] rounded-full bg-pbc text-pbc-deep flex items-center justify-center flex-shrink-0 active:scale-90 hover:scale-105 transition-all shadow-[0_0_15px_rgba(100,213,171,0.5)] cursor-pointer"
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-4 h-4 md:w-5 md:h-5 fill-current" />
+                    ) : (
+                      <Play className="w-4 h-4 md:w-5 md:h-5 fill-current ml-0.5" />
+                    )}
+                  </button>
+
+                  <div className="flex items-center gap-1 md:gap-1.5 flex-1 h-6 px-1">
+                    {[10, 20, 14, 24, 16, 8, 20, 12, 18, 14, 22, 16].map((height, i) => (
+                      <span 
+                        key={i}
+                        style={{ height: `${height}px` }}
+                        className={`audio-bar w-1 md:w-1.5 bg-pbc rounded-full origin-bottom transition-all ${isPlaying ? 'playing' : 'opacity-40'}`}
+                      ></span>
+                    ))}
+                  </div>
+
+                  <Volume2 className={`w-4 h-4 md:w-5 md:h-5 ${isPlaying ? 'text-pbc animate-pulse' : 'text-zinc-500'}`} />
+                </div>
+
+                {audioSrc && (
+                  <audio 
+                    ref={audioRef} 
+                    src={audioSrc} 
+                    preload="metadata" 
+                    onTimeUpdate={handleTimeUpdate}
+                    onLoadedMetadata={handleLoadedMetadata}
+                    onEnded={() => {
+                      setIsPlaying(false);
+                      setCurrentTime(0);
+                    }} 
+                  />
+                )}
+              </div>
             </div>
           </div>
 
@@ -355,25 +435,25 @@ export const Testimonios: React.FC<TestimoniosProps> = ({ audioSrc = "/assets/au
           {/* 2. BLOQUE DE VIDEOS EN VERTICAL (REELS 9:16)             */}
           {/* ======================================================== */}
           <div className="pt-2">
-            <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center justify-between mb-3 md:mb-4 px-1">
               <div className="flex items-center gap-1.5">
-                <Video className="w-4 h-4 text-[#007156]" />
-                <span className="font-mono text-[10px] uppercase tracking-wider text-[#0A0E0D] font-extrabold">
+                <Video className="w-4 h-4 md:w-5 md:h-5 text-[#007156]" />
+                <span className="font-mono text-[10px] md:text-xs uppercase tracking-wider text-[#0A0E0D] font-extrabold">
                   TESTIMONIOS EN VIDEO (REELS)
                 </span>
               </div>
-              <span className="font-mono text-[9px] text-[#007156] font-bold">
+              <span className="font-mono text-[9px] md:text-[11px] text-[#007156] font-bold">
                 Tocá para ver en pantalla completa
               </span>
             </div>
 
-            {/* Fila Horizontal Scrollable con Snap de los 3 Videos Verticales */}
-            <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory no-scrollbar">
+            {/* Fila Horizontal en Mobile / Grid 4 Columnas en PC */}
+            <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory no-scrollbar md:grid md:grid-cols-4 md:gap-5 md:overflow-visible md:pb-0">
               {verticalVideos.map((video) => (
                 <div
                   key={video.id}
                   onClick={() => setActiveVideo(video)}
-                  className="snap-center flex-shrink-0 w-[140px] sm:w-[150px] aspect-[9/15] rounded-2xl overflow-hidden bg-pbc-deep border-2 border-pbc/40 shadow-glow-pbc relative cursor-pointer group transition-all duration-200 active:scale-95 hover:border-pbc"
+                  className="snap-center flex-shrink-0 w-[140px] sm:w-[150px] md:w-full aspect-[9/15] rounded-2xl overflow-hidden bg-pbc-deep border-2 border-pbc/40 shadow-glow-pbc relative cursor-pointer group transition-all duration-200 active:scale-95 hover:border-pbc hover:-translate-y-1"
                 >
                   {/* Foto de portada vertical */}
                   <img 
@@ -385,28 +465,28 @@ export const Testimonios: React.FC<TestimoniosProps> = ({ audioSrc = "/assets/au
 
                   {/* Header de la tarjeta vertical */}
                   <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
-                    <span className="px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-md text-pbc font-mono text-[8px] font-bold uppercase border border-pbc/30">
+                    <span className="px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-md text-pbc font-mono text-[8px] md:text-[10px] font-bold uppercase border border-pbc/30">
                       {video.duracion}
                     </span>
-                    <Maximize2 className="w-3.5 h-3.5 text-white/70 group-hover:text-pbc transition-colors" />
+                    <Maximize2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-white/70 group-hover:text-pbc transition-colors" />
                   </div>
 
                   {/* Botón central Play */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-pbc/90 text-pbc-deep flex items-center justify-center shadow-[0_0_20px_rgba(100,213,171,0.8)] transition-transform duration-200 group-hover:scale-110">
-                      <Play className="w-4 h-4 ml-0.5 fill-current" />
+                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-pbc/90 text-pbc-deep flex items-center justify-center shadow-[0_0_20px_rgba(100,213,171,0.8)] transition-transform duration-200 group-hover:scale-110">
+                      <Play className="w-4 h-4 md:w-6 md:h-6 ml-0.5 fill-current" />
                     </div>
                   </div>
 
                   {/* Info inferior */}
-                  <div className="absolute bottom-2.5 left-2.5 right-2.5 text-left">
-                    <h4 className="font-coolvetica text-sm text-white uppercase leading-tight truncate">
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5 md:bottom-4 md:left-4 md:right-4 text-left">
+                    <h4 className="font-coolvetica text-sm md:text-lg text-white uppercase leading-tight truncate">
                       {video.nombre}
                     </h4>
-                    <span className="font-mono text-[8.5px] text-pbc block truncate">
+                    <span className="font-mono text-[8.5px] md:text-[10px] text-pbc block truncate">
                       {video.carrera}
                     </span>
-                    <span className="font-mono text-[7.5px] text-gray-300 block truncate opacity-80">
+                    <span className="font-mono text-[7.5px] md:text-[9px] text-gray-300 block truncate opacity-80">
                       {video.ciudad}
                     </span>
                   </div>
@@ -415,79 +495,6 @@ export const Testimonios: React.FC<TestimoniosProps> = ({ audioSrc = "/assets/au
             </div>
           </div>
 
-          {/* Placa Lema Institucional */}
-          <div className="px-4 py-2.5 rounded-lg bg-[#64D5AB] text-[#0A0E0D] font-coolvetica text-sm sm:text-base tracking-wider uppercase font-extrabold shadow-[3px_4px_0px_#101413] border-2 border-[#101413] flex items-center justify-between transition-transform duration-150 active:scale-95">
-            <span>«NO ES REPETIR, ES REINVENTAR»</span>
-            <Zap className="w-5 h-5 fill-current" />
-          </div>
-
-          {/* Reproductor Interactivo Sonido Real Fogón */}
-          <div className="relative overflow-hidden bg-[#141d1a] p-4 rounded-xl border-2 border-[#64D5AB]/60 shadow-[6px_12px_28px_rgba(0,0,0,0.25)] text-white">
-            <div className="absolute inset-0 pointer-events-none opacity-25 mix-blend-luminosity">
-              <img src="/assets/pena/pena-5.jpg" alt="" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#141d1a] via-[#141d1a]/80 to-transparent"></div>
-            </div>
-            
-            <div className="relative z-10 flex items-center justify-between mb-2">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#f39c12] animate-ping"></span>
-                <span className="font-mono text-[9px] uppercase tracking-wider text-pbc font-extrabold">
-                  SONIDO REAL · FOGÓN Y BRASAS
-                </span>
-              </div>
-              <span className="font-mono text-[10px] text-gray-300">
-                {formatTimer(currentTime)} / {formatTimer(duration)}
-              </span>
-            </div>
-
-            <h4 className="font-coolvetica text-base sm:text-lg text-white uppercase mb-1 text-balance">
-              «Andá haciéndote una idea del fogón»
-            </h4>
-            <p className="font-sans text-[11px] text-gray-300 mb-2.5 font-medium leading-snug">
-              El crujido de las brasas, las canciones y la noche compartida bajo el cielo de Mendoza.
-            </p>
-
-            <div className="relative z-10 flex items-center gap-3 bg-[#0b0f0e] p-2.5 rounded-xl border border-pbc/30 transition-all duration-300 hover:border-pbc">
-              <button 
-                type="button"
-                onClick={toggleAudio}
-                aria-label={isPlaying ? "Pausar audio de fogón" : "Reproducir audio de fogón"}
-                className="w-10 h-10 min-h-[40px] rounded-full bg-pbc text-pbc-deep flex items-center justify-center flex-shrink-0 active:scale-90 hover:scale-105 transition-all shadow-[0_0_15px_rgba(100,213,171,0.5)] cursor-pointer"
-              >
-                {isPlaying ? (
-                  <Pause className="w-4 h-4 fill-current" />
-                ) : (
-                  <Play className="w-4 h-4 fill-current ml-0.5" />
-                )}
-              </button>
-
-              <div className="flex items-center gap-1 flex-1 h-6 px-1">
-                {[10, 20, 14, 24, 16, 8, 20, 12, 18, 14, 22, 16].map((height, i) => (
-                  <span 
-                    key={i}
-                    style={{ height: `${height}px` }}
-                    className={`audio-bar w-1 bg-pbc rounded-full origin-bottom transition-all ${isPlaying ? 'playing' : 'opacity-40'}`}
-                  ></span>
-                ))}
-              </div>
-
-              <Volume2 className={`w-4 h-4 ${isPlaying ? 'text-pbc animate-pulse' : 'text-zinc-500'}`} />
-            </div>
-
-            {audioSrc && (
-              <audio 
-                ref={audioRef} 
-                src={audioSrc} 
-                preload="metadata" 
-                onTimeUpdate={handleTimeUpdate}
-                onLoadedMetadata={handleLoadedMetadata}
-                onEnded={() => {
-                  setIsPlaying(false);
-                  setCurrentTime(0);
-                }} 
-              />
-            )}
-          </div>
         </div>
 
         {/* ======================================================== */}

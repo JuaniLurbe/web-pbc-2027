@@ -4,40 +4,40 @@ import { EJES_FORMACION } from '../data/campamentoData';
 
 export const QueVasAVivir: React.FC = () => {
   return (
-    <section className="pt-10 pb-12 bg-pbc text-pbc-deep relative overflow-hidden border-y-2 border-pbc-deep" id="que-vas-a-vivir">
+    <section className="pt-10 pb-12 md:py-16 bg-pbc text-pbc-deep relative overflow-hidden border-y-2 border-pbc-deep" id="que-vas-a-vivir">
       {/* Motion Watermark Editorial */}
       <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-full max-w-7xl flex justify-between pointer-events-none select-none opacity-15">
-        <span className="font-coolvetica text-[90px] md:text-[140px] text-pbc-deep tracking-tighter motion-watermark-editorial">
+        <span className="font-coolvetica text-[90px] md:text-[140px] lg:text-[180px] text-pbc-deep tracking-tighter motion-watermark-editorial">
           FORMACIÓN
         </span>
-        <span className="font-coolvetica text-[90px] md:text-[140px] text-pbc-deep tracking-tighter motion-watermark-editorial">
+        <span className="font-coolvetica text-[90px] md:text-[140px] lg:text-[180px] text-pbc-deep tracking-tighter motion-watermark-editorial">
           2027
         </span>
       </div>
 
-      <div className="relative z-10 max-w-md mx-auto px-4">
+      <div className="relative z-10 max-w-md md:max-w-4xl lg:max-w-6xl mx-auto px-4 md:px-8">
         {/* Cabecera del Bloque alineada en 2 líneas título + 2 líneas subtítulo */}
-        <div className="text-center mb-6 flex flex-col items-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pbc-deep text-pbc font-mono text-[10px] uppercase tracking-[0.18em] font-bold mb-2 shadow-[2px_2px_0px_#0A0E0D]">
+        <div className="text-center mb-6 md:mb-10 flex flex-col items-center">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pbc-deep text-pbc font-mono text-[10px] md:text-xs uppercase tracking-[0.18em] font-bold mb-2 md:mb-3 shadow-[2px_2px_0px_#0A0E0D]">
             <span className="w-1.5 h-1.5 rounded-full bg-pbc animate-pulse"></span>
             <span>BLOQUE 2: QUÉ VAS A VIVIR</span>
           </div>
           
           <div className="inline-flex flex-col items-center max-w-full">
-            <h2 className="font-coolvetica text-[23px] min-[360px]:text-[25px] sm:text-[30px] tracking-tight text-pbc-deep uppercase leading-[1.02] mb-2 drop-shadow-sm">
+            <h2 className="font-coolvetica text-[23px] min-[360px]:text-[25px] sm:text-[30px] md:text-[38px] lg:text-[44px] tracking-tight text-pbc-deep uppercase leading-[1.02] mb-2 md:mb-3 drop-shadow-sm">
               <span className="block whitespace-nowrap">UNA EXPERIENCIA INTEGRAL</span>
               <span className="block whitespace-nowrap mt-0.5">DE FORMACIÓN Y ACCIÓN</span>
             </h2>
             
-            <p className="w-full font-sans text-pbc-deep/90 text-[11px] min-[360px]:text-xs sm:text-sm leading-snug font-semibold">
+            <p className="w-full font-sans text-pbc-deep/90 text-[11px] min-[360px]:text-xs sm:text-sm md:text-base leading-snug font-semibold">
               <span className="block whitespace-nowrap">Tres pilares sincronizados para transformar</span>
               <span className="block whitespace-nowrap">tu vocación universitaria en respuesta real.</span>
             </p>
           </div>
         </div>
 
-        {/* 3 Tarjetas en Formato Editorial Dossier */}
-        <div className="flex flex-col gap-4">
+        {/* 3 Tarjetas en Formato Editorial Dossier: 1 col mobile, 3 col PC */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-stretch">
           {EJES_FORMACION.map((eje) => {
             const IconComponent = eje.numero === "1" ? Bot : eje.numero === "2" ? Scale : BookOpen;
 
