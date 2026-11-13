@@ -14,6 +14,7 @@ export const TypeformLlamado: React.FC = () => {
     motivacion: '',
   });
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const currentQ = TYPEFORM_QUESTIONS[currentStep];
@@ -27,7 +28,8 @@ export const TypeformLlamado: React.FC = () => {
     }));
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    if (isSubmitting) return;
     const value = formData[currentQ.id]?.trim();
     if (currentQ.requerido && (!value || value.length < 2)) {
       setErrorMsg('Por favor completa este campo para continuar');
@@ -37,6 +39,34 @@ export const TypeformLlamado: React.FC = () => {
     if (currentStep < TYPEFORM_QUESTIONS.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
+      setIsSubmitting(true);
+      const webhookUrl =
+        (import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL as string | undefined)?.trim() ||
+        CAMPAMENTO_CONFIG.googleSheetsWebhookUrl?.trim();
+
+      if (webhookUrl) {
+        try {
+          await fetch(webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8',
+            },
+            body: JSON.stringify({
+              fecha: new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
+              nombre: formData.nombre,
+              whatsapp: formData.whatsapp,
+              ciudad: formData.ciudad,
+              carrera: formData.carrera,
+              motivacion: formData.motivacion || '',
+            }),
+          });
+        } catch {
+          // Si falla la red, permitimos igual continuar con la confirmación por WhatsApp
+        }
+      }
+
+      setIsSubmitting(false);
       // Formulario Completado
       setIsCompleted(true);
       confetti({
@@ -74,7 +104,7 @@ export const TypeformLlamado: React.FC = () => {
 *WhatsApp:* ${formData.whatsapp}
 ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
     
-    return `https://wa.me/5492614892027?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/5492235524205?text=${encodeURIComponent(msg)}`;
   };
 
   const resetForm = () => {
@@ -202,9 +232,16 @@ ${formData.motivacion ? `*Motivación:* ${formData.motivacion}` : ''}`;
                 <button 
                   type="button"
                   onClick={handleNext}
-                  className="flex-1 min-h-[48px] py-3 px-4 rounded-xl bg-pbc hover:bg-pbc-light text-pbc-deep font-sans font-extrabold text-xs uppercase tracking-wider animate-cta-pulse active:scale-95 flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer shadow-md"
+                  disabled={isSubmitting}
+                  className="flex-1 min-h-[48px] py-3 px-4 rounded-xl bg-pbc hover:bg-pbc-light text-pbc-deep font-sans font-extrabold text-xs uppercase tracking-wider animate-cta-pulse active:scale-95 flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer shadow-md disabled:opacity-60 disabled:cursor-wait"
                 >
-                  <span>{currentStep === TYPEFORM_QUESTIONS.length - 1 ? 'FINALIZAR' : 'SIGUIENTE'}</span>
+                  <span>
+                    {isSubmitting
+                      ? 'ENVIANDO...'
+                      : currentStep === TYPEFORM_QUESTIONS.length - 1
+                        ? 'FINALIZAR'
+                        : 'SIGUIENTE'}
+                  </span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

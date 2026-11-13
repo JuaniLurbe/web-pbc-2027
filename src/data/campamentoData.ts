@@ -11,6 +11,7 @@ export interface CampamentoConfig {
   contactoWhatsApp: string;
   contactoEmail: string;
   cupoAproximado: string;
+  googleSheetsWebhookUrl: string;
 }
 
 export const CAMPAMENTO_CONFIG: CampamentoConfig = {
@@ -23,9 +24,11 @@ export const CAMPAMENTO_CONFIG: CampamentoConfig = {
   hotelSede: "Hotel Savoia Mendoza",
   arancelFederal: "$600.000",
   arancelDetalle: "Cuotas fijas federales · Prorrateado por distancia · Pensión completa + traslados + rafting",
-  contactoWhatsApp: "+54 9 261 489-2027",
+  contactoWhatsApp: "+54 9 223 552-4205",
   contactoEmail: "milicianos@movimiento.fasta.org.ar",
   cupoAproximado: "+250 Jóvenes Universitarios",
+  // Pegar acá la URL de la Web App de Google Apps Script (o usar VITE_GOOGLE_SHEETS_WEBHOOK_URL en Vercel)
+  googleSheetsWebhookUrl: "",
 };
 
 export const METRICAS_HERO = [
