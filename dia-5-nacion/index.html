@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F4F8F6" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0A0E0D" />
+  <link rel="icon" type="image/png" href="./assets/logo-oficial.png" />
   <title>Día 5 · Nación · Tablero de Empresarios Cristianos | PBC 2027</title>
 
   <!-- Tipografías Oficiales PBC 2027: Coolvetica + Raleway + JetBrains Mono -->
@@ -55,17 +58,41 @@
       box-sizing: border-box;
     }
 
+    html {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior: none;
+    }
+
     body {
       font-family: 'Raleway', sans-serif;
       color: #0A0E0D;
-      min-height: 100vh;
+      min-height: 100dvh;
       margin: 0;
       /* Backdrop luminoso estilo Offerpost adaptado a Verde Agua PBC 2027 */
       background:
         radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 42%),
         radial-gradient(circle at 88% 85%, rgba(58, 163, 124, 0.45) 0%, transparent 45%),
         linear-gradient(135deg, #42B88E 0%, #64D5AB 48%, #9DEBD0 100%);
-      background-attachment: fixed;
+    }
+    @media (min-width: 768px) {
+      body { background-attachment: fixed; }
+    }
+    @media (pointer: coarse) {
+      input, textarea, select { font-size: 16px !important; }
+    }
+    button, a, [role="button"], .tab-btn, .mobile-tab-btn {
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    button:active, a:active {
+      transform: scale(0.98);
+    }
+    .modal-sheet-body {
+      overscroll-behavior: contain;
+      padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
     }
 
     .font-brand {
@@ -102,12 +129,22 @@
       background: #FFFFFF;
       border: 1px solid rgba(10, 14, 13, 0.07);
       box-shadow: 0 2px 8px -2px rgba(10, 14, 13, 0.05), 0 1px 2px rgba(10, 14, 13, 0.03);
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+      transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+      touch-action: manipulation;
     }
-    .offer-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(58, 163, 124, 0.45);
-      box-shadow: 0 12px 24px -10px rgba(10, 32, 24, 0.14), 0 2px 6px rgba(10, 14, 13, 0.04);
+    .offer-card:active {
+      transform: scale(0.99);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .offer-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(58, 163, 124, 0.45);
+        box-shadow: 0 12px 24px -10px rgba(10, 32, 24, 0.14), 0 2px 6px rgba(10, 14, 13, 0.04);
+      }
+      .hero-mint-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 38px -12px rgba(45, 150, 112, 0.62);
+      }
     }
     .offer-card.is-dragging {
       opacity: 0.92;
@@ -121,10 +158,6 @@
       background: linear-gradient(145deg, #2D9670 0%, #48BA91 55%, #64D5AB 100%);
       box-shadow: 0 16px 32px -12px rgba(45, 150, 112, 0.52);
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
-    }
-    .hero-mint-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 20px 38px -12px rgba(45, 150, 112, 0.62);
     }
 
     /* Toast flotante oscuro estilo Offerpost */
@@ -145,96 +178,116 @@
     }
   </style>
 </head>
-<body class="p-3 sm:p-6 md:p-8 lg:p-10 flex flex-col items-center justify-start">
+<body class="p-2 sm:p-6 md:p-8 lg:p-10 flex flex-col items-center justify-start" style="padding-top: max(0.5rem, env(safe-area-inset-top, 0px));">
 
   <!-- VENTANA FLOTANTE PRINCIPAL (ESTILO OFFERPOST × PBC 2027) -->
-  <div class="app-shell w-full max-w-[1360px] rounded-[26px] sm:rounded-[30px] overflow-hidden relative">
+  <div class="app-shell w-full max-w-[1360px] rounded-[24px] sm:rounded-[30px] overflow-hidden relative">
 
-    <!-- 1. TOP BAR EN UNA SOLA LÍNEA -->
-    <header class="px-4 sm:px-7 py-3.5 border-b border-black/[0.06] bg-white/75 backdrop-blur-md flex flex-wrap lg:flex-nowrap items-center justify-between gap-3">
-      <!-- Marca + Logo Oficial -->
-      <div class="flex items-center gap-2.5 shrink-0">
-        <img src="./assets/logo-oficial.png" alt="Logo Oficial Protagonistas del Bien Común" class="h-10 w-auto object-contain shrink-0 drop-shadow-[0_1px_1px_rgba(10,14,13,0.16)]" />
-        <div class="leading-none hidden sm:block">
-          <div class="font-brand text-sm text-pbc-deep tracking-tight">Nación · Red ACDE</div>
-          <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-pbc-muted mt-0.5">
-            Día 5 · 2027
+    <!-- 1. TOP BAR -->
+    <header class="px-3 sm:px-7 py-2.5 sm:py-3.5 border-b border-black/[0.06] bg-white/85 backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-3">
+      <div class="flex items-center justify-between gap-2 w-full md:w-auto">
+        <!-- Marca + Logo Oficial -->
+        <div class="flex items-center gap-2 shrink-0">
+          <img src="./assets/logo-oficial.png" alt="Logo Oficial Protagonistas del Bien Común" class="h-9 sm:h-10 w-auto object-contain shrink-0 drop-shadow-[0_1px_1px_rgba(10,14,13,0.16)]" />
+          <div class="leading-none hidden sm:block">
+            <div class="font-brand text-sm text-pbc-deep tracking-tight">Nación · Red ACDE</div>
+            <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-pbc-muted mt-0.5">
+              Día 5 · 2027
+            </div>
           </div>
+        </div>
+
+        <!-- Segmented Navigation Tabs (Desktop; en móvil viven en #mobileBottomNav) -->
+        <nav aria-label="Vistas del tablero" class="hidden md:flex items-center gap-1 bg-black/[0.04] p-1 rounded-full shrink-0">
+          <button type="button" data-tab="board" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap bg-pbc-deep text-white shadow-sm">
+            Tablero
+          </button>
+          <button type="button" data-tab="directory" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+            Directorio
+          </button>
+          <button type="button" data-tab="areas" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+            Áreas <span id="tabAreasCount" class="font-mono opacity-80">4/11</span>
+          </button>
+          <button type="button" data-tab="acde" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+            Foco ACDE
+          </button>
+          <button type="button" data-tab="levels" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+            3 Niveles
+          </button>
+          <button type="button" data-tab="plan" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+            Plan de Formación
+          </button>
+        </nav>
+
+        <!-- Acciones rápidas móvil -->
+        <div class="flex md:hidden items-center gap-1.5 shrink-0">
+          <button id="btnExportCsvMobile" type="button" title="Exportar directorio CSV"
+            class="w-8 h-8 rounded-full bg-white border border-black/10 text-pbc-deep flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          </button>
+          <a data-nav-comandos href="../planificacion-comandos/index.html"
+            class="px-2.5 h-8 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark text-xs font-extrabold inline-flex items-center whitespace-nowrap">
+            Comandos 3×8 ↗
+          </a>
         </div>
       </div>
 
-      <!-- Segmented Navigation Tabs -->
-      <nav aria-label="Vistas del tablero" class="flex items-center gap-1 bg-black/[0.04] p-1 rounded-full overflow-x-auto max-w-full">
-        <button type="button" data-tab="board" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap bg-pbc-deep text-white shadow-sm">
-          Tablero
-        </button>
-        <button type="button" data-tab="directory" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
-          Directorio
-        </button>
-        <button type="button" data-tab="areas" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
-          Áreas <span id="tabAreasCount" class="font-mono opacity-80">4/11</span>
-        </button>
-        <button type="button" data-tab="acde" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
-          Foco ACDE
-        </button>
-        <button type="button" data-tab="levels" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
-          3 Niveles
-        </button>
-        <button type="button" data-tab="plan" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
-          Plan de Formación
-        </button>
-      </nav>
-
-      <!-- Buscador ⌘K + Acciones -->
-      <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
-        <div class="relative flex-1 sm:w-44 md:w-48">
-          <svg class="w-3.5 h-3.5 text-pbc-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <!-- Buscador ⌘K + Acciones Desktop -->
+      <div class="flex items-center gap-2 shrink-0 w-full md:w-auto justify-end">
+        <div class="relative flex-1 md:w-44 lg:w-48">
+          <svg class="w-4 h-4 md:w-3.5 md:h-3.5 text-pbc-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
           </svg>
-          <input id="searchInput" type="text" placeholder="Buscar referente..."
-            class="w-full pl-8 pr-12 py-1.5 rounded-full bg-white border border-black/10 text-xs font-medium text-pbc-deep placeholder-pbc-muted focus:outline-none focus:border-pbc-dark focus:ring-2 focus:ring-pbc/30 transition-all" />
-          <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md bg-black/[0.05] text-[10px] font-mono text-pbc-muted absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">⌘K</kbd>
+          <input id="searchInput" type="search" enterkeyhint="search" placeholder="Buscar referente..."
+            class="w-full pl-9 md:pl-8 pr-3 md:pr-12 py-2 md:py-1.5 rounded-full bg-white border border-black/10 text-base md:text-xs font-medium text-pbc-deep placeholder-pbc-muted focus:outline-none focus:border-pbc-dark focus:ring-2 focus:ring-pbc/30 transition-all" />
+          <kbd class="hidden md:inline-flex items-center px-1.5 py-0.5 rounded-md bg-black/[0.05] text-[10px] font-mono text-pbc-muted absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">⌘K</kbd>
         </div>
 
         <button id="btnExportCsv" type="button" title="Exportar directorio CSV"
-          class="w-8 h-8 rounded-full bg-white border border-black/10 text-pbc-deep hover:border-pbc-dark flex items-center justify-center transition-all shrink-0">
+          class="hidden md:flex w-8 h-8 rounded-full bg-white border border-black/10 text-pbc-deep hover:border-pbc-dark items-center justify-center transition-all shrink-0">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
         </button>
 
         <button id="btnExportJson" type="button" title="Exportar JSON"
-          class="hidden sm:inline-flex px-2.5 h-8 rounded-full bg-white border border-black/10 text-[11px] font-mono font-bold text-pbc-deep hover:border-pbc-dark items-center justify-center transition-all shrink-0">
+          class="hidden md:inline-flex px-2.5 h-8 rounded-full bg-white border border-black/10 text-[11px] font-mono font-bold text-pbc-deep hover:border-pbc-dark items-center justify-center transition-all shrink-0">
           JSON
         </button>
 
-        <a id="navComandosLink" href="../planificacion-comandos/index.html" title="Ir a Conducción del Campamento (Comandos 3×8)"
-          class="px-3 h-8 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark text-xs font-extrabold hover:bg-pbc hover:text-pbc-deep inline-flex items-center whitespace-nowrap transition-colors shrink-0">
+        <a id="navComandosLink" data-nav-comandos href="../planificacion-comandos/index.html" title="Ir a Conducción del Campamento (Comandos 3×8)"
+          class="hidden md:inline-flex px-3 h-8 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark text-xs font-extrabold hover:bg-pbc hover:text-pbc-deep items-center whitespace-nowrap transition-colors shrink-0">
           Comandos 3×8 ↗
         </a>
       </div>
     </header>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="p-4 sm:p-7 space-y-5">
+    <main class="p-3 sm:p-7 space-y-4 sm:space-y-5 pb-24 md:pb-7">
 
       <!-- =======================================================
            VISTA 1: TABLERO KANBAN (ESTILO OFFERPOST)
       ======================================================== -->
-      <section id="view-board" class="space-y-5">
+      <section id="view-board" class="space-y-4 sm:space-y-5">
 
         <!-- Hero Header + Filtros en píldoras + CTA -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1 class="font-brand text-3xl sm:text-4xl md:text-[42px] text-pbc-deep tracking-tight">
-              Tu red del Día 5, en un tablero
-            </h1>
-            <p id="narrativeSubtitle" class="text-xs sm:text-sm text-pbc-muted font-medium mt-1">
-              6 contactos compilados · 5 vinculados a ACDE listos para articular.
-            </p>
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h1 class="font-brand text-2xl sm:text-4xl md:text-[42px] text-pbc-deep tracking-tight">
+                Tu red del Día 5, en un tablero
+              </h1>
+              <p id="narrativeSubtitle" class="text-xs sm:text-sm text-pbc-muted font-medium mt-0.5">
+                6 contactos compilados · 5 vinculados a ACDE listos para articular.
+              </p>
+            </div>
+            <button id="btnToggleMobileFiltersD5" type="button" aria-expanded="false"
+              class="md:hidden inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-black/10 text-xs font-bold text-pbc-deep shrink-0">
+              ⚙ Filtros
+            </button>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2">
+          <div id="filtersCollapseWrapD5" class="hidden md:flex flex-wrap items-center gap-2">
             <!-- Filtros rápidos en píldoras -->
-            <div id="quickAreaFilters" class="inline-flex flex-wrap items-center gap-1 bg-white/90 border border-black/[0.07] p-1 rounded-full shadow-sm">
+            <div id="quickAreaFilters" class="inline-flex flex-wrap items-center gap-1 bg-white/90 border border-black/[0.07] p-1 rounded-2xl sm:rounded-full shadow-sm">
               <!-- Generado dinámicamente -->
             </div>
 
@@ -476,7 +529,7 @@
     </main>
 
     <!-- TOAST FLOTANTE OSCURO (ESTILO OFFERPOST) -->
-    <div id="floatingToast" class="floating-toast fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-3 pl-3 pr-2 py-2 rounded-full text-white text-xs max-w-[92vw]">
+    <div id="floatingToast" class="floating-toast fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-3 pl-3 pr-2 py-2 rounded-full text-white text-xs max-w-[92vw]">
       <span class="w-6 h-6 rounded-full bg-pbc text-pbc-deep flex items-center justify-center font-bold shrink-0">✓</span>
       <span id="toastText" class="font-medium truncate">Actualizado</span>
       <button id="toastActionBtn" type="button" class="hidden px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold text-[11px] shrink-0">
@@ -485,14 +538,53 @@
     </div>
   </div>
 
+  <!-- BARRA INFERIOR FIJA ESTILO APP NATIVA (SOLO MÓVIL) -->
+  <nav id="mobileBottomNavD5" aria-label="Navegación móvil Día 5"
+    class="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur-lg border-t border-black/10 px-1 pt-1.5 shadow-[0_-8px_24px_rgba(10,14,13,0.08)]"
+    style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));">
+    <div class="grid grid-cols-6 gap-0.5 max-w-lg mx-auto">
+      <button type="button" data-mobile-tab="board" class="mobile-tab-btn-d5 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl text-[10px] font-extrabold text-pbc-deep bg-pbc-soft">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v11h-4z"/></svg>
+        <span>Tablero</span>
+      </button>
+      <button type="button" data-mobile-tab="directory" class="mobile-tab-btn-d5 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl text-[10px] font-bold text-pbc-muted">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        <span>Lista</span>
+      </button>
+      <button type="button" data-mobile-tab="areas" class="mobile-tab-btn-d5 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl text-[10px] font-bold text-pbc-muted">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span>Áreas</span>
+      </button>
+      <button type="button" data-mobile-tab="acde" class="mobile-tab-btn-d5 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl text-[10px] font-bold text-pbc-muted">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        <span>ACDE</span>
+      </button>
+      <button type="button" data-mobile-tab="levels" class="mobile-tab-btn-d5 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl text-[10px] font-bold text-pbc-muted">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path d="M12 3l8 4.5-8 4.5-8-4.5L12 3zM4 12l8 4.5 8-4.5M4 16.5l8 4.5 8-4.5"/></svg>
+        <span>Niveles</span>
+      </button>
+      <button type="button" data-mobile-tab="plan" class="mobile-tab-btn-d5 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl text-[10px] font-bold text-pbc-muted">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        <span>Plan</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- BOTÓN FLOTANTE SUMAR CONTACTO (SOLO MÓVIL) -->
+  <button type="button" data-open-add aria-label="Sumar contacto"
+    class="fixed right-4 z-40 inline-flex md:hidden items-center gap-1.5 px-4 py-3 rounded-full bg-pbc-deep text-white text-xs font-extrabold shadow-xl border border-white/15"
+    style="bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));">
+    <span>+ Contacto</span>
+  </button>
+
   <!-- PIE DISCRETO -->
-  <footer class="mt-4 text-center text-[11px] font-mono text-pbc-deep/75 font-semibold">
+  <footer class="mt-4 pb-20 md:pb-2 text-center text-[11px] font-mono text-pbc-deep/75 font-semibold">
     PROTAGONISTAS DEL BIEN COMÚN 2027 · FASTA MENDOZA · DÍA 5 (NACIÓN)
   </footer>
 
   <!-- MODAL FICHA COMPLETA -->
-  <div id="detailModal" role="dialog" aria-modal="true" aria-label="Ficha de contacto" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pbc-deep/55 backdrop-blur-sm">
-    <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white border border-black/10 shadow-2xl p-6 sm:p-8 text-pbc-deep">
+  <div id="detailModal" role="dialog" aria-modal="true" aria-label="Ficha de contacto" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-pbc-deep/55 backdrop-blur-sm">
+    <div class="modal-sheet-body relative w-full max-w-2xl max-h-[90dvh] overflow-y-auto rounded-t-[28px] sm:rounded-3xl bg-white border border-black/10 shadow-2xl p-5 sm:p-8 text-pbc-deep">
       <button id="closeDetailModal" type="button" aria-label="Cerrar ficha"
         class="sticky float-right top-0 z-20 w-9 h-9 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep hover:bg-pbc hover:border-pbc-dark flex items-center justify-center font-bold cursor-pointer transition-colors">
         ✕
@@ -502,8 +594,8 @@
   </div>
 
   <!-- MODAL SUMAR CONTACTO -->
-  <div id="addModal" role="dialog" aria-modal="true" aria-label="Sumar nuevo contacto" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pbc-deep/55 backdrop-blur-sm">
-    <div class="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white border border-black/10 shadow-2xl p-6 sm:p-7 text-pbc-deep">
+  <div id="addModal" role="dialog" aria-modal="true" aria-label="Sumar nuevo contacto" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-pbc-deep/55 backdrop-blur-sm">
+    <div class="modal-sheet-body relative w-full max-w-xl max-h-[90dvh] overflow-y-auto rounded-t-[28px] sm:rounded-3xl bg-white border border-black/10 shadow-2xl p-5 sm:p-7 text-pbc-deep">
       <button id="closeAddModal" type="button" aria-label="Cerrar formulario"
         class="sticky float-right top-0 z-20 w-9 h-9 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep hover:bg-pbc flex items-center justify-center font-bold cursor-pointer">
         ✕
@@ -779,6 +871,12 @@
           btn.className = active
             ? 'tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap bg-pbc-deep text-white shadow-sm'
             : 'tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep';
+        });
+        document.querySelectorAll('.mobile-tab-btn-d5').forEach(btn => {
+          const active = btn.getAttribute('data-mobile-tab') === tab;
+          btn.className = active
+            ? 'mobile-tab-btn-d5 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl text-[10px] font-extrabold text-pbc-deep bg-pbc-soft'
+            : 'mobile-tab-btn-d5 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-2xl text-[10px] font-bold text-pbc-muted';
         });
       }
 
@@ -1881,7 +1979,7 @@
         showFloatingToast('Base exportada en JSON');
       };
 
-      document.getElementById('btnExportCsv').onclick = () => {
+      function exportCsv() {
         const headers = ['Nombre', 'Categoria', 'Rol Actual', 'Organizacion', 'Vinculo ACDE', 'Estado', 'Areas Dia 5', 'LinkedIn / Busqueda', 'Resena'];
         const rows = state.contactos.map(c => [
           c.nombre, c.tipo, c.rolActual, c.organizacion,
@@ -1890,7 +1988,26 @@
         ].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(','));
         downloadFile('contactos-dia5-nacion.csv', '\uFEFF' + [headers.join(','), ...rows].join('\n'), 'text/csv;charset=utf-8;');
         showFloatingToast('Directorio exportado en CSV');
-      };
+      }
+
+      document.getElementById('btnExportCsv').onclick = exportCsv;
+      const btnCsvMob = document.getElementById('btnExportCsvMobile');
+      if (btnCsvMob) btnCsvMob.onclick = exportCsv;
+
+      document.querySelectorAll('[data-mobile-tab]').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-mobile-tab')));
+      });
+
+      const btnToggleMobD5 = document.getElementById('btnToggleMobileFiltersD5');
+      if (btnToggleMobD5) {
+        btnToggleMobD5.addEventListener('click', () => {
+          const wrap = document.getElementById('filtersCollapseWrapD5');
+          const isHidden = wrap.classList.contains('hidden');
+          wrap.classList.toggle('hidden', !isHidden);
+          wrap.classList.toggle('flex', isHidden);
+          btnToggleMobD5.setAttribute('aria-expanded', String(isHidden));
+        });
+      }
 
       document.getElementById('btnResetLocal').onclick = () => {
         localStorage.removeItem(STORAGE_KEY);
@@ -1900,10 +2017,10 @@
         showFloatingToast('Tablero restaurado a la base original');
       };
 
-      const navCmd = document.getElementById('navComandosLink');
-      if (navCmd && window.location.port === '4173' && !window.location.pathname.includes('/dia-5-nacion')) {
-        navCmd.href = 'http://localhost:4174/';
-      }
+      const cmdHref = (window.location.port === '4173' && !window.location.pathname.includes('/dia-5-nacion'))
+        ? 'http://localhost:4174/'
+        : '../planificacion-comandos/index.html';
+      document.querySelectorAll('[data-nav-comandos]').forEach(a => { a.href = cmdHref; });
 
       populateAddAreas();
       renderAll();
