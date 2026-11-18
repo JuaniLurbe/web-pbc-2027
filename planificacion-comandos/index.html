@@ -1376,44 +1376,64 @@
       function renderNehemiasView() {
         const container = document.getElementById('view-nehemias');
         container.innerHTML = `
-          <div class="hero-mint-card rounded-3xl p-6 sm:p-8 text-white flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-            <div class="space-y-2 max-w-2xl">
-              <span class="px-3 py-1 rounded-full bg-white/20 font-mono text-[10px] font-bold uppercase tracking-wider">Comando de Liturgia · Arco Espiritual</span>
-              <h2 class="font-brand text-3xl sm:text-4xl">La Muralla de Nehemías, Día por Día</h2>
+          <div class="hero-mint-card rounded-3xl p-5 sm:p-8 text-white flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-5">
+            <div class="space-y-2 max-w-2xl min-w-0">
+              <span class="inline-block px-3 py-1 rounded-full bg-white/20 font-mono text-[10px] font-bold uppercase tracking-wider">
+                Comando de Liturgia · Arco Espiritual
+              </span>
+              <h2 class="font-brand text-2xl sm:text-4xl leading-tight">La Muralla de Nehemías, Día por Día</h2>
               <p class="text-xs sm:text-sm text-white/90 leading-relaxed">
                 Cada día del campamento traduce la imagen bíblica de Nehemías y <em>Magnifica Humanitas</em> en un símbolo visible, una cita orante y experiencias espirituales concretas.
               </p>
             </div>
-            <button type="button" id="btnAddLiturgyTask" class="px-4 py-2.5 rounded-full bg-pbc-deep text-white text-xs font-bold shrink-0 self-start lg:self-center">
+            <button type="button" id="btnAddLiturgyTask" class="w-full sm:w-auto px-4 py-2.5 rounded-full bg-pbc-deep text-white text-xs font-bold shrink-0 self-start lg:self-center">
               + Sumar experiencia espiritual
             </button>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
             ${state.days.map(d => {
               const litTasks = state.tasks.filter(t => t.day_id === d.id && t.comando === 'liturgia');
               return `
-                <article class="bg-white rounded-2xl border border-black/[0.07] p-5 shadow-sm space-y-3">
-                  <div class="flex items-center justify-between gap-2">
-                    <span class="px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-mono text-[10px] font-extrabold uppercase">
+                <article class="bg-white rounded-2xl border border-black/[0.07] p-4 sm:p-5 shadow-sm space-y-3 min-w-0">
+                  <div class="flex flex-wrap items-center justify-between gap-1.5">
+                    <span class="px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-mono text-[10px] font-extrabold uppercase whitespace-nowrap">
                       Día ${d.day_number} · ${escapeHtml(d.date_label)}
                     </span>
-                    <span class="text-xs font-bold text-pbc-dark">🧱 ${escapeHtml(d.nehemias_symbol)}</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-pbc-soft/80 border border-pbc-dark/20 text-[11px] font-bold text-pbc-dark leading-snug">
+                      🧱 ${escapeHtml(d.nehemias_symbol)}
+                    </span>
                   </div>
-                  <h3 class="font-brand text-2xl text-pbc-deep">${escapeHtml(d.liturgy_axis)}</h3>
-                  <p class="text-xs italic text-pbc-muted bg-pbc-canvas rounded-xl p-3 border border-black/[0.05]">
+
+                  <div class="space-y-1">
+                    <h3 class="font-brand text-xl sm:text-2xl text-pbc-deep leading-tight">${escapeHtml(d.title)}</h3>
+                    <p class="text-xs sm:text-sm text-pbc-deep/85 font-medium leading-relaxed">${escapeHtml(d.liturgy_axis)}</p>
+                  </div>
+
+                  <p class="text-xs italic text-pbc-muted bg-pbc-canvas rounded-xl p-3 border border-black/[0.05] leading-relaxed">
                     ${escapeHtml(d.nehemias_verse)}
                   </p>
-                  <div class="space-y-1.5 pt-1">
-                    ${litTasks.map(t => `
-                      <div data-lit-edit="${escapeHtml(t.id)}" class="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-pbc-canvas hover:bg-pbc-soft/60 cursor-pointer transition-colors text-xs">
-                        <span class="font-bold text-pbc-deep truncate">${escapeHtml(t.title)}</span>
-                        <div class="flex items-center gap-2 shrink-0">
-                          ${renderDocButton(t.doc_url, 'px-2.5 py-0.5 text-[10px]')}
-                          <span class="font-mono text-[10px] text-pbc-muted">${escapeHtml(t.assignee_name || 'Sin asignar')}</span>
-                        </div>
+
+                  <div class="space-y-2 pt-1">
+                    ${litTasks.length === 0 ? `
+                      <div class="rounded-xl border border-dashed border-black/10 py-2.5 px-3 text-center text-[11px] text-pbc-muted">
+                        Sin experiencias cargadas
                       </div>
-                    `).join('')}
+                    ` : litTasks.map(t => {
+                      const st = STATUS_META[t.status] || STATUS_META.pendiente;
+                      return `
+                        <div data-lit-edit="${escapeHtml(t.id)}" class="offer-card rounded-xl p-3 cursor-pointer space-y-1.5">
+                          <div class="flex items-start justify-between gap-2">
+                            <span class="text-xs font-extrabold text-pbc-deep leading-snug">${escapeHtml(t.title)}</span>
+                            <span class="w-2 h-2 rounded-full ${st.dot} shrink-0 mt-1" title="${escapeHtml(st.label)}"></span>
+                          </div>
+                          <div class="flex flex-wrap items-center justify-between gap-2 text-[10px] text-pbc-muted">
+                            <span class="font-mono font-semibold">${escapeHtml(t.assignee_name || 'Sin asignar')}${t.start_time ? ` · ${escapeHtml(t.start_time)}` : ''}</span>
+                            ${renderDocButton(t.doc_url, 'px-2.5 py-0.5 text-[10px]')}
+                          </div>
+                        </div>
+                      `;
+                    }).join('')}
                   </div>
                 </article>
               `;
