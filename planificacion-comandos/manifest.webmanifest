@@ -1,0 +1,25 @@
+{
+  "name": "Comandos PBC 2027 · Conducción del Campamento",
+  "short_name": "Comandos PBC",
+  "description": "Planificación colaborativa día por día de los 3 Comandos (Formación, Disciplinas y Liturgia) · Campamento PBC 2027.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0A0E0D",
+  "theme_color": "#64D5AB",
+  "icons": [
+    {
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

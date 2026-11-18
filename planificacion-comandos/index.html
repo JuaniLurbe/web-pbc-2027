@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planificación General · 3 Comandos · PBC 2027</title>
+
+  <!-- PWA / Iconos Oficiales PBC 2027 para celular -->
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <meta name="theme-color" content="#64D5AB" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Comandos PBC" />
+  <link rel="icon" type="image/png" href="./assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icon-180.png" />
+
+  <!-- Tipografías Oficiales PBC 2027 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/coolvetica" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pbc: {
+              DEFAULT: '#64D5AB',
+              light: '#89E2C1',
+              soft: '#E6F8F1',
+              dark: '#3AA37C',
+              deep: '#0A0E0D',
+              carbon: '#121917',
+              paper: '#F2F7F5',
+              canvas: '#F4F8F6',
+              muted: '#64746E'
+            }
+          },
+          fontFamily: {
+            brand: ['Coolvetica', 'Impact', 'Arial Black', 'sans-serif'],
+            sans: ['Raleway', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Raleway', sans-serif;
+      color: #0A0E0D;
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 42%),
+        radial-gradient(circle at 88% 85%, rgba(58, 163, 124, 0.45) 0%, transparent 45%),
+        linear-gradient(135deg, #42B88E 0%, #64D5AB 48%, #9DEBD0 100%);
+      background-attachment: fixed;
+    }
+
+    .font-brand {
+      font-family: 'Coolvetica', 'Impact', 'Arial Black', sans-serif;
+      letter-spacing: 0.01em;
+      line-height: 0.98;
+    }
+
+    .app-shell {
+      background: rgba(244, 248, 246, 0.94);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      box-shadow:
+        0 30px 80px -18px rgba(10, 32, 24, 0.34),
+        0 4px 20px -4px rgba(10, 32, 24, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .kanban-lane {
+      background: rgba(232, 240, 236, 0.72);
+      border: 1px solid rgba(10, 14, 13, 0.05);
+    }
+    .kanban-lane.drag-over {
+      background: rgba(100, 213, 171, 0.22);
+      border-color: rgba(58, 163, 124, 0.55);
+      box-shadow: inset 0 0 0 1.5px rgba(58, 163, 124, 0.35);
+    }
+
+    .offer-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(10, 14, 13, 0.07);
+      box-shadow: 0 2px 8px -2px rgba(10, 14, 13, 0.05), 0 1px 2px rgba(10, 14, 13, 0.03);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .offer-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(58, 163, 124, 0.45);
+      box-shadow: 0 12px 24px -10px rgba(10, 32, 24, 0.14);
+    }
+    .offer-card.is-dragging {
+      opacity: 0.92;
+      transform: rotate(2deg) scale(1.02);
+      box-shadow: 0 22px 40px -12px rgba(10, 32, 24, 0.28);
+      cursor: grabbing;
+    }
+
+    .hero-mint-card {
+      background: linear-gradient(145deg, #2D9670 0%, #48BA91 55%, #64D5AB 100%);
+      box-shadow: 0 16px 32px -12px rgba(45, 150, 112, 0.5);
+    }
+
+    .floating-toast {
+      background: rgba(15, 22, 20, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.45);
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(10, 14, 13, 0.18); border-radius: 9999px; }
+  </style>
+</head>
+<body class="p-3 sm:p-6 md:p-8 flex flex-col items-center justify-start">
+
+  <!-- =========================================================
+       PANTALLA DE ACCESO (SUPABASE AUTH · OPCIÓN B)
+  ========================================================== -->
+  <div id="authGate" class="w-full max-w-md my-auto py-8">
+    <div class="app-shell rounded-[28px] p-6 sm:p-8 space-y-6">
+      <div class="flex items-center justify-between gap-3">
+        <img src="./assets/logo-oficial.png" alt="Logo Oficial Protagonistas del Bien Común" class="h-14 w-auto object-contain shrink-0 drop-shadow-[0_1px_1px_rgba(10,14,13,0.16)]" />
+        <div class="text-right">
+          <span class="px-2.5 py-0.5 rounded-full bg-pbc-soft text-pbc-dark font-mono text-[10px] font-bold uppercase tracking-wider">PBC 2027 · Mendoza</span>
+          <h1 class="font-brand text-2xl sm:text-3xl text-pbc-deep mt-1">Comandos de Conducción</h1>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-pbc-muted leading-relaxed">
+        Espacio colaborativo en tiempo real para <strong>Formación</strong>, <strong>Disciplinas</strong> y <strong>Liturgia</strong> (15 al 22 de enero de 2027).
+      </p>
+
+      <!-- Tabs Login / Registro -->
+      <div class="grid grid-cols-2 gap-1 p-1 rounded-full bg-black/[0.05]">
+        <button id="authTabLogin" type="button" class="py-2 rounded-full text-xs font-bold bg-pbc-deep text-white transition-all">
+          Iniciar sesión
+        </button>
+        <button id="authTabSignup" type="button" class="py-2 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep transition-all">
+          Crear cuenta
+        </button>
+      </div>
+
+      <!-- Form Login -->
+      <form id="loginForm" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Correo electrónico</label>
+          <input name="email" type="email" required placeholder="tu.correo@ejemplo.com"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Contraseña</label>
+          <input name="password" type="password" required minlength="6" placeholder="••••••••"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-full bg-pbc-deep text-white text-xs font-extrabold uppercase tracking-wider hover:bg-pbc-carbon transition-colors">
+          Entrar al tablero en vivo
+        </button>
+      </form>
+
+      <!-- Form Signup -->
+      <form id="signupForm" class="hidden space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Nombre y apellido</label>
+          <input name="fullName" required placeholder="Ej: Mil. Tomás Perelló"
+            class="w-full px-3.5 py-2 rounded-xl bg-white border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Comando al que pertenecés</label>
+          <select name="comando" class="w-full px-3.5 py-2 rounded-xl bg-white border border-black/10 text-sm font-semibold focus:outline-none focus:border-pbc-dark">
+            <option value="formacion">Comando de Formación</option>
+            <option value="disciplinas">Comando de Disciplinas</option>
+            <option value="liturgia">Comando de Liturgia</option>
+            <option value="coordinacion">Coordinación General</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Correo electrónico</label>
+          <input name="email" type="email" required placeholder="tu.correo@ejemplo.com"
+            class="w-full px-3.5 py-2 rounded-xl bg-white border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Contraseña (mín. 6 caracteres)</label>
+          <input name="password" type="password" required minlength="6" placeholder="••••••••"
+            class="w-full px-3.5 py-2 rounded-xl bg-white border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-full bg-pbc text-pbc-deep text-xs font-extrabold uppercase tracking-wider hover:bg-pbc-light transition-colors">
+          Registrarme en mi Comando
+        </button>
+      </form>
+
+      <div id="authFeedback" class="hidden rounded-2xl p-3 text-xs font-semibold"></div>
+
+      <div class="pt-1 border-t border-black/[0.06] text-center">
+        <a data-nav-dia5 href="../dia-5-nacion/index.html"
+          class="inline-flex items-center gap-1 text-xs font-extrabold text-pbc-dark hover:underline">
+          Ir al tablero del Día 5 (Red ACDE &amp; Plan de Formación) ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       DASHBOARD PRINCIPAL AUTENTICADO
+  ========================================================== -->
+  <div id="appContainer" class="hidden app-shell w-full max-w-[1400px] rounded-[26px] sm:rounded-[30px] overflow-hidden relative">
+
+    <!-- TOP BAR -->
+    <header class="px-4 sm:px-6 py-3 border-b border-black/[0.06] bg-white/80 backdrop-blur-md flex flex-wrap xl:flex-nowrap items-center justify-between gap-2.5">
+      <!-- Marca -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <img src="./assets/logo-oficial.png" alt="Logo Oficial Protagonistas del Bien Común" class="h-10 w-auto object-contain shrink-0 drop-shadow-[0_1px_1px_rgba(10,14,13,0.16)]" />
+        <div class="leading-none hidden 2xl:block">
+          <div class="font-brand text-sm text-pbc-deep tracking-tight">Comandos 2027</div>
+          <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-pbc-muted mt-0.5">
+            15–22 Ene · Mendoza
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <nav aria-label="Vistas de planificación" class="flex items-center gap-1 bg-black/[0.04] p-1 rounded-full overflow-x-auto max-w-full shrink-0">
+        <button type="button" data-tab="matrix" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold bg-pbc-deep text-white shadow-sm whitespace-nowrap">
+          Matriz 3×8
+        </button>
+        <button type="button" data-tab="kanban" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep whitespace-nowrap">
+          Kanban
+        </button>
+        <button type="button" data-tab="schedule" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep whitespace-nowrap">
+          Cronograma
+        </button>
+        <button type="button" data-tab="nehemias" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep whitespace-nowrap">
+          Nehemías & Liturgia
+        </button>
+        <button type="button" data-tab="team" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep whitespace-nowrap">
+          Equipo <span id="teamCountBadge" class="font-mono opacity-80">21</span>
+        </button>
+      </nav>
+
+      <!-- Controles derecha -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto justify-end">
+        <span id="realtimeBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark font-mono text-[10px] font-bold whitespace-nowrap">
+          <span class="w-1.5 h-1.5 rounded-full bg-pbc-dark animate-pulse"></span>
+          En vivo
+        </span>
+
+        <div class="relative flex-1 sm:w-28 xl:w-32">
+          <svg class="w-3.5 h-3.5 text-pbc-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input id="searchInput" type="text" placeholder="Buscar..."
+            class="w-full pl-8 pr-8 py-1.5 rounded-full bg-white border border-black/10 text-xs font-medium text-pbc-deep placeholder-pbc-muted focus:outline-none focus:border-pbc-dark" />
+          <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md bg-black/[0.05] text-[10px] font-mono text-pbc-muted absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">⌘K</kbd>
+        </div>
+
+        <button id="btnAlertsTop" type="button" title="Recordatorios cada 24 hs por rol"
+          class="relative inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-white border border-black/10 text-xs font-bold text-pbc-deep hover:border-pbc-dark whitespace-nowrap transition-colors">
+          <span>🔔</span>
+          <span id="alertCountBadge" class="font-mono text-[11px] font-extrabold text-pbc-dark">0</span>
+          <span id="alertPingDot" class="hidden w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+        </button>
+
+        <button id="btnInstallTop" type="button" title="Instalar app en el celular o descargar acceso directo HTML"
+          class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-white border border-black/10 text-xs font-bold text-pbc-deep hover:border-pbc-dark whitespace-nowrap transition-colors">
+          <span>📲</span>
+          <span class="hidden sm:inline">Instalar</span>
+        </button>
+
+        <a data-nav-dia5 href="../dia-5-nacion/index.html" title="Abrir tablero del Día 5 (Red ACDE y Plan de Formación)"
+          class="px-3 py-1.5 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark text-xs font-extrabold hover:bg-pbc hover:text-pbc-deep whitespace-nowrap transition-colors">
+          Día 5 ↗
+        </a>
+
+        <button id="btnNewTaskTop" type="button"
+          class="px-3.5 py-1.5 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon whitespace-nowrap">
+          + Nueva tarea
+        </button>
+
+        <button id="btnLogout" type="button" title="Cerrar sesión"
+          class="px-3 py-1.5 rounded-full bg-white border border-black/10 text-[11px] font-bold text-pbc-muted hover:text-pbc-deep whitespace-nowrap">
+          Salir
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="p-4 sm:p-7 space-y-5">
+
+      <!-- BANNER RECORDATORIO DIARIO 24H -->
+      <div id="dailyAlertBanner" class="hidden rounded-2xl bg-pbc-soft/90 border border-pbc-dark/25 p-4 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-3">
+          <div class="space-y-1.5 flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-0.5 rounded-full bg-pbc text-pbc-deep font-mono text-[10px] font-extrabold uppercase">🔔 Recordatorio cada 24 hs</span>
+              <span id="dailyAlertRoleTag" class="font-mono text-[11px] font-bold text-pbc-dark"></span>
+            </div>
+            <h2 id="dailyAlertTitle" class="font-brand text-xl sm:text-2xl text-pbc-deep"></h2>
+            <ul id="dailyAlertList" class="space-y-1 text-xs text-pbc-deep"></ul>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button id="btnBannerEnablePush" type="button" class="hidden px-3 py-1.5 rounded-full bg-pbc text-pbc-deep text-xs font-extrabold hover:bg-pbc-light">
+              Activar aviso en PC / cel
+            </button>
+            <button id="btnBannerOpenAlerts" type="button" class="px-3 py-1.5 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon">
+              Ver detalle y roles
+            </button>
+            <button id="btnBannerSnooze24h" type="button" class="px-3 py-1.5 rounded-full bg-white border border-black/10 text-xs font-bold text-pbc-muted hover:text-pbc-deep">
+              Entendido (24 hs)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BARRA DE FILTROS + EMBUDO GLOBAL (Compartida en Matriz y Kanban) -->
+      <div id="globalControlsWrap" class="space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <h1 id="mainHeadline" class="font-brand text-3xl sm:text-4xl text-pbc-deep tracking-tight">
+              Conducción del Campamento, día por día
+            </h1>
+            <p id="mainSubtitle" class="text-xs sm:text-sm text-pbc-muted font-medium mt-0.5">
+              Cargando planificación desde Supabase...
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Filtro Comando -->
+            <div id="comandoFilterPills" class="inline-flex flex-wrap items-center gap-1 bg-white border border-black/[0.07] p-1 rounded-full shadow-sm">
+              <button type="button" data-cmd="ALL" class="px-3 py-1.5 rounded-full text-xs font-bold bg-pbc-deep text-white">Todos</button>
+              <button type="button" data-cmd="formacion" class="px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep">Formación</button>
+              <button type="button" data-cmd="disciplinas" class="px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep">Disciplinas</button>
+              <button type="button" data-cmd="liturgia" class="px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep">Liturgia</button>
+            </div>
+
+            <select id="filterDaySelect" aria-label="Filtrar por día"
+              class="px-3 py-2 rounded-full bg-white border border-black/10 text-xs font-bold text-pbc-deep focus:outline-none focus:border-pbc-dark">
+              <option value="ALL">Todos los días (1–8)</option>
+            </select>
+
+            <select id="filterAssigneeSelect" aria-label="Filtrar por responsable"
+              class="px-3 py-2 rounded-full bg-white border border-black/10 text-xs font-bold text-pbc-deep focus:outline-none focus:border-pbc-dark">
+              <option value="ALL">Todos los responsables</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Barra de progreso segmentada -->
+        <div class="bg-white rounded-2xl border border-black/[0.06] px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 shadow-sm">
+          <span class="text-xs font-semibold text-pbc-muted whitespace-nowrap">Avance operativo de los 3 Comandos</span>
+          <div id="progressTrack" class="flex-1 h-2 rounded-full bg-black/[0.05] overflow-hidden flex gap-0.5 p-0.5"></div>
+          <div id="progressSummary" class="text-xs font-mono font-bold text-pbc-deep whitespace-nowrap">0 / 0 tareas listas</div>
+        </div>
+      </div>
+
+      <!-- VISTA 1: MATRIZ 3 × 8 -->
+      <section id="view-matrix" class="space-y-4"></section>
+
+      <!-- VISTA 2: TABLERO KANBAN -->
+      <section id="view-kanban" class="hidden">
+        <div id="kanbanGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-start"></div>
+      </section>
+
+      <!-- VISTA 3: CRONOGRAMA DEL DÍA -->
+      <section id="view-schedule" class="hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="font-brand text-3xl text-pbc-deep">Cronograma Operativo por Franja</h2>
+            <p class="text-xs sm:text-sm text-pbc-muted">Vista por día con horarios, sede, materiales y dependencias entre Comandos.</p>
+          </div>
+          <div id="scheduleDayPills" class="flex flex-wrap gap-1.5 bg-white border border-black/[0.06] p-1 rounded-full"></div>
+        </div>
+        <div id="scheduleStage" class="space-y-4"></div>
+      </section>
+
+      <!-- VISTA 4: NEHEMÍAS & LITURGIA -->
+      <section id="view-nehemias" class="hidden space-y-5"></section>
+
+      <!-- VISTA 5: EQUIPO & EXPORTACIÓN -->
+      <section id="view-team" class="hidden space-y-5"></section>
+
+    </main>
+
+    <!-- TOAST FLOTANTE -->
+    <div id="floatingToast" class="floating-toast fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-3 pl-3 pr-4 py-2 rounded-full text-white text-xs max-w-[92vw]">
+      <span class="w-6 h-6 rounded-full bg-pbc text-pbc-deep flex items-center justify-center font-bold shrink-0">✓</span>
+      <span id="toastText" class="font-medium truncate">Guardado</span>
+    </div>
+  </div>
+
+  <!-- MODAL CREAR / EDITAR TAREA -->
+  <div id="taskModal" role="dialog" aria-modal="true" aria-label="Detalle de actividad" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pbc-deep/55 backdrop-blur-sm">
+    <div class="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white border border-black/10 shadow-2xl p-6 sm:p-7 text-pbc-deep">
+      <button id="closeTaskModal" type="button" aria-label="Cerrar"
+        class="sticky float-right top-0 z-20 w-9 h-9 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep hover:bg-pbc flex items-center justify-center font-bold cursor-pointer">
+        ✕
+      </button>
+
+      <span class="px-2.5 py-1 rounded-full bg-pbc-soft text-pbc-dark font-mono text-[10px] font-bold uppercase tracking-wider">Coordinación Comandos</span>
+      <h3 id="taskModalHeading" class="font-brand text-3xl text-pbc-deep mt-2 mb-4">Nueva actividad</h3>
+
+      <form id="taskForm" class="space-y-3.5">
+        <input type="hidden" name="id" />
+
+        <div class="grid sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Día *</label>
+            <select id="taskDaySelect" name="day_id" required class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-semibold"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Comando *</label>
+            <select id="taskComandoSelect" name="comando" required class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-semibold">
+              <option value="formacion">Comando de Formación</option>
+              <option value="disciplinas">Comando de Disciplinas</option>
+              <option value="liturgia">Comando de Liturgia</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Franja *</label>
+            <select name="time_slot" required class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-semibold">
+              <option value="previo">Previo al campamento</option>
+              <option value="manana" selected>Mañana</option>
+              <option value="tarde">Tarde</option>
+              <option value="noche">Noche</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-4 gap-3">
+          <div class="sm:col-span-3">
+            <label class="block text-xs font-bold mb-1">Título de la actividad / tarea *</label>
+            <input name="title" required placeholder="Ej: Charla apertura: ¿Qué te duele de tu Patria?"
+              class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Hora aprox.</label>
+            <input name="start_time" placeholder="09:30"
+              class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1">Descripción / Consigna</label>
+          <textarea name="description" rows="2" placeholder="Objetivo, dinámica o detalle clave..."
+            class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm"></textarea>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Responsable</label>
+            <select id="taskAssigneeSelect" name="assignee_id" class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-semibold"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Estado</label>
+            <select name="status" class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-semibold">
+              <option value="pendiente">Pendiente</option>
+              <option value="en_curso">En curso</option>
+              <option value="bloqueado">Bloqueado / Revisar</option>
+              <option value="listo">Listo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Prioridad</label>
+            <select name="priority" class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-semibold">
+              <option value="alta">Alta</option>
+              <option value="media" selected>Media</option>
+              <option value="baja">Baja</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Ubicación / Espacio</label>
+            <input name="location" placeholder="Ej: Salón Principal · Hotel Savoia"
+              class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Dependencia con otro Comando</label>
+            <input name="depends_on" placeholder="Ej: Liturgia: signo preparado antes"
+              class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm" />
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">Materiales / Recursos</label>
+            <input name="materials" placeholder="Ej: Proyector, tarjetas impresas..."
+              class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Notas internas</label>
+            <input name="notes" placeholder="Aclaraciones o pendientes..."
+              class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1">Link a documento / guion de charla / pedido (URL)</label>
+          <div class="flex items-center gap-2">
+            <input name="doc_url" type="url" placeholder="https://docs.google.com/document/d/..."
+              class="flex-1 px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-mono" />
+            <a id="modalDocOpenBtn" href="#" target="_blank" rel="noopener noreferrer"
+              class="hidden px-3.5 py-2 rounded-full bg-pbc text-pbc-deep text-xs font-extrabold whitespace-nowrap hover:bg-pbc-light transition-colors">
+              Abrir ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-black/[0.07] flex items-center justify-between gap-2">
+          <div id="deleteTaskWrap" class="hidden items-center gap-2">
+            <button id="btnAskDeleteTask" type="button" class="px-3.5 py-2 rounded-full border border-red-200 text-red-600 text-xs font-bold hover:bg-red-50">
+              Eliminar
+            </button>
+            <button id="btnConfirmDeleteTask" type="button" class="hidden px-3.5 py-2 rounded-full bg-red-600 text-white text-xs font-bold">
+              Confirmar eliminación
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2 ml-auto">
+            <button id="cancelTaskBtn" type="button" class="px-4 py-2 rounded-full border border-black/15 text-xs font-bold text-pbc-muted">
+              Cancelar
+            </button>
+            <button type="submit" class="px-5 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon">
+              Guardar en Supabase
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL CENTRO DE RECORDATORIOS CADA 24 HS
+  ========================================================== -->
+  <div id="reminderModal" role="dialog" aria-modal="true" aria-label="Recordatorios cada 24 horas"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pbc-deep/55 backdrop-blur-sm">
+    <div class="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white border border-black/10 shadow-2xl p-6 sm:p-7 text-pbc-deep space-y-5">
+      <button id="closeReminderModal" type="button" aria-label="Cerrar recordatorios"
+        class="sticky float-right top-0 z-20 w-9 h-9 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep hover:bg-pbc flex items-center justify-center font-bold cursor-pointer">
+        ✕
+      </button>
+
+      <div>
+        <span class="px-2.5 py-1 rounded-full bg-pbc-soft text-pbc-dark font-mono text-[10px] font-bold uppercase tracking-wider">Notificación automática · Cada 24 hs</span>
+        <h3 class="font-brand text-3xl text-pbc-deep mt-2">Recordatorios de Tareas Pendientes</h3>
+        <p class="text-xs text-pbc-muted mt-0.5">
+          El sistema genera automáticamente el resumen diario de pendientes para cada integrante y rol cada 24 hs (09:00 hs Argentina) y dispara avisos en tu dispositivo.
+        </p>
+      </div>
+
+      <!-- Vincular mi rol + activar aviso en dispositivo -->
+      <div class="rounded-2xl bg-pbc-canvas border border-black/[0.06] p-4 space-y-3">
+        <div class="grid sm:grid-cols-2 gap-3 items-end">
+          <div>
+            <label class="block text-xs font-bold mb-1">Mi rol / integrante en el equipo</label>
+            <select id="myMemberSelect" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-sm font-semibold"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">Correo para alertas diarias</label>
+            <div class="flex gap-2">
+              <input id="myEmailInput" type="email" placeholder="nombre@ejemplo.com" class="flex-1 px-3 py-2 rounded-xl bg-white border border-black/10 text-sm" />
+              <button id="btnSaveMyProfile" type="button" class="px-3.5 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon whitespace-nowrap">
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-black/[0.06]">
+          <div class="text-xs">
+            <span class="font-bold">Estado de notificaciones del navegador:</span>
+            <span id="pushPermissionStatus" class="font-mono font-bold text-pbc-dark ml-1">Verificando...</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="btnRequestBrowserPush" type="button" class="px-3.5 py-1.5 rounded-full bg-pbc text-pbc-deep text-xs font-extrabold hover:bg-pbc-light">
+              🔔 Activar en este dispositivo
+            </button>
+            <button id="btnTestBrowserPush" type="button" class="px-3.5 py-1.5 rounded-full bg-white border border-black/15 text-xs font-bold text-pbc-deep hover:border-pbc-dark">
+              Probar aviso ahora
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mis pendientes ahora -->
+      <div id="myPendingDigestBox" class="space-y-2.5"></div>
+
+      <!-- Resumen diario por cada rol / integrante -->
+      <div class="space-y-2.5 pt-2 border-t border-black/[0.07]">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h4 class="font-brand text-2xl text-pbc-deep">Resumen diario por rol (09:00 hs ART)</h4>
+            <p class="text-[11px] text-pbc-muted">Vista de todas las alertas pendientes generadas hoy en Supabase por cada responsable.</p>
+          </div>
+          <button id="btnSyncDigestsNow" type="button" class="px-3.5 py-1.5 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark text-xs font-extrabold hover:bg-pbc hover:text-pbc-deep">
+            ↻ Actualizar resúmenes ahora
+          </button>
+        </div>
+        <div id="allDigestsList" class="grid sm:grid-cols-2 gap-2.5"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL INSTALACIÓN EN CELULAR + ACCESO DIRECTO HTML
+  ========================================================== -->
+  <div id="installModal" role="dialog" aria-modal="true" aria-label="Instalar aplicación en el celular"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pbc-deep/55 backdrop-blur-sm">
+    <div class="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-3xl bg-white border border-black/10 shadow-2xl p-6 sm:p-7 text-pbc-deep space-y-5">
+      <button id="closeInstallModal" type="button" aria-label="Cerrar instalación"
+        class="sticky float-right top-0 z-20 w-9 h-9 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep hover:bg-pbc flex items-center justify-center font-bold cursor-pointer">
+        ✕
+      </button>
+
+      <div class="flex items-center gap-4">
+        <img src="./assets/icon-192.png" alt="Ícono Comandos PBC 2027"
+          class="w-16 h-16 rounded-2xl shadow-md border border-black/10 shrink-0" />
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-pbc-soft text-pbc-dark font-mono text-[10px] font-bold uppercase tracking-wider">Acceso rápido móvil</span>
+          <h3 class="font-brand text-2xl sm:text-3xl text-pbc-deep mt-1">Instalar en el Celular</h3>
+          <p class="text-xs text-pbc-muted">Con el logo oficial de Protagonistas del Bien Común.</p>
+        </div>
+      </div>
+
+      <!-- Opción 1: PWA Nativa -->
+      <div class="rounded-2xl bg-pbc-canvas border border-black/[0.06] p-4 space-y-2.5">
+        <div class="text-xs font-extrabold text-pbc-deep uppercase tracking-wide">Opción 1 · App directa en pantalla de inicio</div>
+        <p class="text-xs text-pbc-muted leading-relaxed">
+          En <strong>Android / Chrome</strong> podés instalarla como app independiente con notificaciones cada 24 hs. En <strong>iPhone / Safari</strong> tocá <strong>Compartir ⬆</strong> y elegí <strong>"Agregar a pantalla de inicio"</strong> (ya toma este ícono oficial).
+        </p>
+        <button id="btnNativePwaInstall" type="button"
+          class="hidden w-full py-2.5 rounded-full bg-pbc text-pbc-deep text-xs font-extrabold hover:bg-pbc-light transition-colors">
+          📲 Instalar directo en este dispositivo
+        </button>
+      </div>
+
+      <!-- Opción 2: Descargar HTML con el ícono embebido -->
+      <div class="rounded-2xl bg-pbc-soft/60 border border-pbc-dark/25 p-4 space-y-3">
+        <div class="text-xs font-extrabold text-pbc-deep uppercase tracking-wide">Opción 2 · Descargar archivo HTML de acceso</div>
+        <p class="text-xs text-pbc-muted leading-relaxed">
+          Descargá el archivo <strong>Comandos-PBC-2027.html</strong> con el logo del campamento embebido como ícono para guardarlo o compartirlo por WhatsApp al equipo.
+        </p>
+        <button id="btnDownloadAppHtml" type="button"
+          class="w-full py-2.5 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon transition-colors">
+          ⬇ Descargar Comandos-PBC-2027.html (con ícono oficial)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIE -->
+  <footer class="mt-4 text-center text-[11px] font-mono text-pbc-deep/75 font-semibold">
+    PROTAGONISTAS DEL BIEN COMÚN 2027 · FORMACIÓN · DISCIPLINAS · LITURGIA
+  </footer>
+
+  <!-- Supabase JS v2 (versión fija) + Config -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+  <script src="./supabase-config.js"></script>
+  <script src="./data/seed-comandos.js"></script>
+  <script>
+    (function () {
+      const cfg = window.PBC_SUPABASE_CONFIG;
+      const sb = window.supabase.createClient(cfg.url, cfg.publishableKey);
+
+      const COMANDO_META = {
+        formacion: { label: 'Formación', full: 'Comando de Formación', badge: 'bg-indigo-50 text-indigo-700 border-indigo-200', dot: 'bg-indigo-500', squircle: 'bg-indigo-600 text-white' },
+        disciplinas: { label: 'Disciplinas', full: 'Comando de Disciplinas', badge: 'bg-pbc-soft text-pbc-dark border-pbc-dark/25', dot: 'bg-pbc-dark', squircle: 'bg-[#3AA37C] text-white' },
+        liturgia: { label: 'Liturgia', full: 'Comando de Liturgia', badge: 'bg-amber-50 text-amber-800 border-amber-200', dot: 'bg-amber-500', squircle: 'bg-amber-500 text-white' },
+        coordinacion: { label: 'Coordinación', full: 'Coordinación General', badge: 'bg-black/5 text-pbc-deep border-black/15', dot: 'bg-pbc-deep', squircle: 'bg-pbc-deep text-pbc' }
+      };
+
+      const STATUS_META = {
+        pendiente: { label: 'Pendiente', dot: 'bg-amber-400', chip: 'bg-amber-50 text-amber-800 border-amber-200' },
+        en_curso: { label: 'En curso', dot: 'bg-sky-500', chip: 'bg-sky-50 text-sky-800 border-sky-200' },
+        bloqueado: { label: 'Bloqueado', dot: 'bg-rose-500', chip: 'bg-rose-50 text-rose-700 border-rose-200' },
+        listo: { label: 'Listo', dot: 'bg-pbc-dark', chip: 'bg-pbc-soft text-pbc-dark border-pbc-dark/25' }
+      };
+
+      const TIME_SLOTS = [
+        { id: 'previo', label: 'Previo al campamento' },
+        { id: 'manana', label: 'Mañana' },
+        { id: 'tarde', label: 'Tarde' },
+        { id: 'noche', label: 'Noche' }
+      ];
+
+      let state = {
+        session: null,
+        days: [],
+        members: [],
+        tasks: [],
+        digests: [],
+        activeTab: 'matrix',
+        comandoFilter: 'ALL',
+        dayFilter: 'ALL',
+        assigneeFilter: 'ALL',
+        search: '',
+        scheduleDayId: 'dia-1',
+        realtimeChannel: null,
+        swReg: null,
+        alertTimer: null
+      };
+
+      const REMINDER_INTERVAL_MS = 24 * 60 * 60 * 1000;
+      if ('serviceWorker' in navigator && /^https?:$/i.test(window.location.protocol)) {
+        navigator.serviceWorker.register('./sw.js').then((reg) => { state.swReg = reg; }).catch(() => {});
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function getInitials(name) {
+        const clean = String(name || '').replace(/^Mil\.\s*/i, '').trim();
+        const parts = clean.split(/\s+/);
+        if (!parts[0]) return 'PB';
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+
+      function safeDocUrl(url) {
+        const raw = String(url || '').trim();
+        return /^https?:\/\//i.test(raw) ? raw : null;
+      }
+
+      function renderDocButton(url, sizeClass) {
+        const safe = safeDocUrl(url);
+        if (!safe) return '';
+        const cls = sizeClass || 'px-2.5 py-1 text-[10px]';
+        return `<a href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"
+          class="inline-flex items-center gap-1 rounded-full bg-pbc text-pbc-deep hover:bg-pbc-light font-extrabold whitespace-nowrap transition-colors ${cls}">
+          Ver documento ↗
+        </a>`;
+      }
+
+      function getDia5Url() {
+        const hostPort = window.location.port;
+        const p = window.location.pathname || '';
+        if (hostPort === '4174' && !p.includes('/planificacion-comandos')) {
+          return 'http://localhost:4173/';
+        }
+        return '../dia-5-nacion/index.html';
+      }
+      document.querySelectorAll('[data-nav-dia5]').forEach(a => { a.href = getDia5Url(); });
+
+      function showToast(msg) {
+        const el = document.getElementById('floatingToast');
+        document.getElementById('toastText').textContent = msg;
+        el.classList.remove('hidden');
+        el.classList.add('flex');
+        clearTimeout(el._t);
+        el._t = setTimeout(() => {
+          el.classList.add('hidden');
+          el.classList.remove('flex');
+        }, 3200);
+      }
+
+      function showAuthFeedback(msg, isError) {
+        const box = document.getElementById('authFeedback');
+        box.textContent = msg;
+        box.className = isError
+          ? 'rounded-2xl p-3 text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-700'
+          : 'rounded-2xl p-3 text-xs font-semibold bg-pbc-soft border border-pbc-dark/25 text-pbc-dark';
+        box.classList.remove('hidden');
+      }
+
+      // =====================================================
+      // AUTH + REGISTRO EN WORKSPACE
+      // =====================================================
+      document.getElementById('authTabLogin').onclick = () => {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('signupForm').classList.add('hidden');
+        document.getElementById('authTabLogin').className = 'py-2 rounded-full text-xs font-bold bg-pbc-deep text-white transition-all';
+        document.getElementById('authTabSignup').className = 'py-2 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep transition-all';
+        document.getElementById('authFeedback').classList.add('hidden');
+      };
+
+      document.getElementById('authTabSignup').onclick = () => {
+        document.getElementById('signupForm').classList.remove('hidden');
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('authTabSignup').className = 'py-2 rounded-full text-xs font-bold bg-pbc-deep text-white transition-all';
+        document.getElementById('authTabLogin').className = 'py-2 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep transition-all';
+        document.getElementById('authFeedback').classList.add('hidden');
+      };
+
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const { error } = await sb.auth.signInWithPassword({
+          email: String(fd.get('email')).trim(),
+          password: String(fd.get('password'))
+        });
+        if (error) showAuthFeedback('Error al iniciar sesión: ' + error.message, true);
+      });
+
+      document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const fullName = String(fd.get('fullName')).trim();
+        const comando = String(fd.get('comando'));
+        const email = String(fd.get('email')).trim();
+        const password = String(fd.get('password'));
+
+        const { data, error } = await sb.auth.signUp({
+          email,
+          password,
+          options: { data: { full_name: fullName, comando } }
+        });
+        if (error) {
+          showAuthFeedback('No se pudo crear la cuenta: ' + error.message, true);
+          return;
+        }
+        if (data.user && !data.session) {
+          showAuthFeedback('Cuenta creada. Revisá tu casilla de correo para confirmarla y luego iniciá sesión.', false);
+        }
+      });
+
+      document.getElementById('btnLogout').addEventListener('click', async () => {
+        if (state.realtimeChannel) {
+          sb.removeChannel(state.realtimeChannel);
+          state.realtimeChannel = null;
+        }
+        await sb.auth.signOut();
+      });
+
+      async function ensureAuthorizedUser(user) {
+        try {
+          const meta = user.user_metadata || {};
+          const payload = {
+            user_id: user.id,
+            email: user.email || '',
+            full_name: meta.full_name || user.email || 'Integrante',
+            comando: ['formacion', 'disciplinas', 'liturgia', 'coordinacion'].includes(meta.comando) ? meta.comando : 'coordinacion'
+          };
+          const { error } = await sb.from('camp_authorized_users').upsert(payload, { onConflict: 'user_id' });
+          if (error) console.error('Error registrando miembro autorizado:', error.message);
+        } catch (err) {
+          console.error('Error de red en ensureAuthorizedUser:', err);
+        }
+      }
+
+      async function fetchAllData() {
+        try {
+          const [dRes, mRes, tRes, rRes] = await Promise.all([
+            sb.from('camp_days').select('*').order('sort_order', { ascending: true }),
+            sb.from('camp_members').select('*').order('comando').order('role', { ascending: false }).order('name'),
+            sb.from('camp_tasks').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: true }),
+            sb.from('camp_reminder_digests').select('*').order('digest_date', { ascending: false }).order('member_name')
+          ]);
+
+          if (dRes.error) { showToast('Error cargando días: ' + dRes.error.message); document.getElementById('mainSubtitle').textContent = 'No se pudo cargar desde Supabase: ' + dRes.error.message; return; }
+          if (mRes.error) { showToast('Error cargando equipo: ' + mRes.error.message); return; }
+          if (tRes.error) { showToast('Error cargando tareas: ' + tRes.error.message); return; }
+
+          state.days = dRes.data || [];
+          state.members = mRes.data || [];
+          state.tasks = tRes.data || [];
+          state.digests = rRes && !rRes.error ? (rRes.data || []) : [];
+          populateSelects();
+          renderAll();
+          check24hNotification(false);
+        } catch (err) {
+          document.getElementById('mainSubtitle').textContent = 'Sin conexión con Supabase en este entorno (' + (err.message || 'error de red') + ').';
+          showToast('No se pudo conectar con Supabase');
+        }
+      }
+
+      function setupRealtime() {
+        if (state.realtimeChannel) sb.removeChannel(state.realtimeChannel);
+        state.realtimeChannel = sb
+          .channel('pbc-comandos-realtime')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'camp_tasks' }, () => fetchAllData())
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'camp_members' }, () => fetchAllData())
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'camp_days' }, () => fetchAllData())
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'camp_reminder_digests' }, () => fetchAllData())
+          .subscribe((status) => {
+            const badge = document.getElementById('realtimeBadge');
+            if (status === 'SUBSCRIBED') {
+              badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-pbc-dark animate-pulse"></span> En vivo';
+            }
+          });
+      }
+
+      // =====================================================
+      // FILTROS Y SELECTS
+      // =====================================================
+      function populateSelects() {
+        const dayOpts = state.days.map(d => `<option value="${escapeHtml(d.id)}">Día ${d.day_number} · ${escapeHtml(d.date_label)}</option>`).join('');
+        const fDay = document.getElementById('filterDaySelect');
+        const curDay = fDay.value;
+        fDay.innerHTML = '<option value="ALL">Todos los días (1–8)</option>' + dayOpts;
+        if ([...fDay.options].some(o => o.value === curDay)) fDay.value = curDay;
+
+        document.getElementById('taskDaySelect').innerHTML = dayOpts;
+
+        const memberOpts = state.members.map(m =>
+          `<option value="${escapeHtml(m.id)}">${escapeHtml(m.name)} (${escapeHtml(COMANDO_META[m.comando]?.label || m.comando)})</option>`
+        ).join('');
+        const fAss = document.getElementById('filterAssigneeSelect');
+        const curAss = fAss.value;
+        fAss.innerHTML = '<option value="ALL">Todos los responsables</option>' + memberOpts;
+        if ([...fAss.options].some(o => o.value === curAss)) fAss.value = curAss;
+
+        document.getElementById('taskAssigneeSelect').innerHTML = '<option value="">Sin asignar aún</option>' + memberOpts;
+        document.getElementById('teamCountBadge').textContent = state.members.length;
+      }
+
+      function getFilteredTasks() {
+        const q = state.search.trim().toLowerCase();
+        return state.tasks.filter(t => {
+          if (state.comandoFilter !== 'ALL' && t.comando !== state.comandoFilter) return false;
+          if (state.dayFilter !== 'ALL' && t.day_id !== state.dayFilter) return false;
+          if (state.assigneeFilter !== 'ALL' && t.assignee_id !== state.assigneeFilter) return false;
+          if (q) {
+            const hay = [t.title, t.description, t.assignee_name, t.location, t.materials, t.depends_on, t.notes].join(' ').toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+      }
+
+      function switchTab(tab) {
+        state.activeTab = tab;
+        ['matrix', 'kanban', 'schedule', 'nehemias', 'team'].forEach(t => {
+          document.getElementById('view-' + t).classList.toggle('hidden', t !== tab);
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          const active = btn.getAttribute('data-tab') === tab;
+          btn.className = active
+            ? 'tab-btn px-3 py-1.5 rounded-full text-xs font-bold bg-pbc-deep text-white shadow-sm whitespace-nowrap'
+            : 'tab-btn px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep whitespace-nowrap';
+        });
+        document.getElementById('globalControlsWrap').classList.toggle('hidden', tab !== 'matrix' && tab !== 'kanban');
+      }
+
+      function renderProgressHeader(filteredTasks) {
+        const total = filteredTasks.length;
+        const done = filteredTasks.filter(t => t.status === 'listo').length;
+        const inProg = filteredTasks.filter(t => t.status === 'en_curso').length;
+        const blocked = filteredTasks.filter(t => t.status === 'bloqueado').length;
+        const pending = filteredTasks.filter(t => t.status === 'pendiente').length;
+
+        document.getElementById('mainSubtitle').textContent =
+          `${state.days.length} días planificados · ${total} actividades visibles · ${state.members.length} integrantes en Comandos y Conducción.`;
+
+        const denom = Math.max(total, 1);
+        document.getElementById('progressTrack').innerHTML = [
+          { count: done, color: 'bg-pbc-dark', label: 'Listas' },
+          { count: inProg, color: 'bg-sky-500', label: 'En curso' },
+          { count: blocked, color: 'bg-rose-500', label: 'Bloqueadas' },
+          { count: pending, color: 'bg-amber-400', label: 'Pendientes' }
+        ].filter(s => s.count > 0).map(s => `
+          <div title="${s.label}: ${s.count}" class="${s.color} h-full rounded-full transition-all" style="width:${(s.count / denom) * 100}%"></div>
+        `).join('');
+
+        document.getElementById('progressSummary').textContent = `${done} / ${total} tareas listas`;
+
+        document.querySelectorAll('#comandoFilterPills [data-cmd]').forEach(btn => {
+          const active = btn.getAttribute('data-cmd') === state.comandoFilter;
+          btn.className = active
+            ? 'px-3 py-1.5 rounded-full text-xs font-bold bg-pbc-deep text-white'
+            : 'px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep';
+        });
+      }
+
+      // =====================================================
+      // VISTA 1: MATRIZ 3 × 8
+      // =====================================================
+      function renderMatrix(filteredTasks) {
+        const container = document.getElementById('view-matrix');
+        const daysToShow = state.days.filter(d => state.dayFilter === 'ALL' || d.id === state.dayFilter);
+        const comandosToShow = ['formacion', 'disciplinas', 'liturgia'].filter(c => state.comandoFilter === 'ALL' || state.comandoFilter === c);
+
+        container.innerHTML = daysToShow.map(day => {
+          const dayTasks = filteredTasks.filter(t => t.day_id === day.id);
+          const isDay5 = day.day_number === 5;
+          return `
+            <article class="bg-white rounded-3xl border ${isDay5 ? 'border-pbc-dark/40 ring-2 ring-pbc/20' : 'border-black/[0.07]'} p-5 shadow-sm space-y-4">
+              <!-- Cabecera del Día -->
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-black/[0.06]">
+                <div class="space-y-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-full bg-pbc text-pbc-deep font-mono text-[11px] font-extrabold uppercase">
+                      Día ${day.day_number} · ${escapeHtml(day.date_label)}
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-pbc-canvas font-mono text-[10px] font-bold text-pbc-muted uppercase">
+                      ${day.movement === 'mov-1' ? 'Mov. I · Diagnóstico' : 'Mov. II · Edificar'}
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold">
+                      🧱 ${escapeHtml(day.nehemias_symbol)}
+                    </span>
+                    ${isDay5 ? `
+                      <a href="${escapeHtml(getDia5Url())}"
+                        class="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-pbc-deep text-white text-[11px] font-bold hover:bg-pbc-carbon transition-colors">
+                        Ver Red ACDE &amp; Plan Día 5 ↗
+                      </a>
+                    ` : ''}
+                  </div>
+                  <h2 class="font-brand text-2xl sm:text-3xl text-pbc-deep">${escapeHtml(day.title)}</h2>
+                </div>
+
+                <div class="rounded-2xl bg-pbc-soft border border-pbc-dark/20 px-4 py-2 md:max-w-xs shrink-0">
+                  <div class="font-mono text-[9px] uppercase tracking-wider text-pbc-dark font-bold">Pregunta del día</div>
+                  <div class="text-xs font-extrabold text-pbc-deep">${escapeHtml(day.central_question)}</div>
+                </div>
+              </div>
+
+              <!-- 3 Columnas por Comando -->
+              <div class="grid grid-cols-1 ${comandosToShow.length === 3 ? 'lg:grid-cols-3' : comandosToShow.length === 2 ? 'lg:grid-cols-2' : ''} gap-3.5">
+                ${comandosToShow.map(cmd => {
+                  const meta = COMANDO_META[cmd];
+                  const axis = cmd === 'formacion' ? day.formation_axis : cmd === 'disciplinas' ? day.disciplines_axis : day.liturgy_axis;
+                  const cellTasks = dayTasks.filter(t => t.comando === cmd);
+
+                  return `
+                    <div class="rounded-2xl bg-pbc-canvas/85 border border-black/[0.05] p-3.5 flex flex-col justify-between gap-3">
+                      <div class="space-y-2.5">
+                        <div class="flex items-center justify-between gap-2">
+                          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-extrabold uppercase ${meta.badge}">
+                            <span class="w-1.5 h-1.5 rounded-full ${meta.dot}"></span>
+                            ${escapeHtml(meta.label)}
+                          </span>
+                          <button type="button" data-quick-add-day="${escapeHtml(day.id)}" data-quick-add-cmd="${cmd}"
+                            class="text-[11px] font-bold text-pbc-dark hover:underline">
+                            + Sumar
+                          </button>
+                        </div>
+
+                        <p class="text-xs text-pbc-muted leading-snug">${escapeHtml(axis)}</p>
+
+                        <div class="space-y-2">
+                          ${cellTasks.length === 0 ? `
+                            <div class="rounded-xl border border-dashed border-black/10 py-3 px-2 text-center text-[11px] text-pbc-muted">
+                              Sin tareas cargadas
+                            </div>
+                          ` : cellTasks.map(t => {
+                            const st = STATUS_META[t.status] || STATUS_META.pendiente;
+                            return `
+                              <div data-edit-task="${escapeHtml(t.id)}"
+                                class="offer-card rounded-xl p-2.5 cursor-pointer space-y-1.5">
+                                <div class="flex items-start justify-between gap-2">
+                                  <div class="text-xs font-extrabold text-pbc-deep leading-snug">${escapeHtml(t.title)}</div>
+                                  <span class="w-2 h-2 rounded-full ${st.dot} shrink-0 mt-1" title="${escapeHtml(st.label)}"></span>
+                                </div>
+                                <div class="flex items-center justify-between gap-2 text-[10px] text-pbc-muted">
+                                  <span class="truncate font-semibold">${escapeHtml(t.assignee_name || 'Sin asignar')}</span>
+                                  <span class="font-mono shrink-0">${escapeHtml(t.start_time || t.time_slot)}</span>
+                                </div>
+                                ${safeDocUrl(t.doc_url) ? `<div class="pt-1">${renderDocButton(t.doc_url, 'px-2.5 py-1 text-[10px]')}</div>` : ''}
+                              </div>
+                            `;
+                          }).join('')}
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        container.querySelectorAll('[data-quick-add-day]').forEach(btn => {
+          btn.onclick = () => openTaskModal(null, btn.getAttribute('data-quick-add-day'), btn.getAttribute('data-quick-add-cmd'));
+        });
+        container.querySelectorAll('[data-edit-task]').forEach(card => {
+          card.onclick = () => openTaskModal(card.getAttribute('data-edit-task'));
+        });
+      }
+
+      // =====================================================
+      // VISTA 2: KANBAN EN VIVO (DRAG & DROP)
+      // =====================================================
+      function renderKanban(filteredTasks) {
+        const grid = document.getElementById('kanbanGrid');
+        const cols = [
+          { id: 'pendiente', label: 'Pendiente', dot: 'bg-amber-400' },
+          { id: 'en_curso', label: 'En curso', dot: 'bg-sky-500' },
+          { id: 'bloqueado', label: 'Bloqueado / Revisar', dot: 'bg-rose-500' },
+          { id: 'listo', label: 'Listo', dot: 'bg-pbc-dark' }
+        ];
+
+        grid.innerHTML = cols.map(col => {
+          const items = filteredTasks.filter(t => t.status === col.id);
+          return `
+            <div class="kanban-lane rounded-2xl p-3 space-y-2.5 min-h-[300px]" data-drop-status="${col.id}">
+              <div class="flex items-center justify-between px-1 py-0.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full ${col.dot}"></span>
+                  <h2 class="text-xs font-extrabold text-pbc-deep">${escapeHtml(col.label)}</h2>
+                  <span class="px-1.5 py-0.5 rounded-full bg-white border border-black/[0.06] font-mono text-[10px] font-bold text-pbc-muted">${items.length}</span>
+                </div>
+                <button type="button" data-add-with-status="${col.id}" class="w-6 h-6 rounded-full hover:bg-white text-pbc-muted hover:text-pbc-deep flex items-center justify-center font-bold">+</button>
+              </div>
+              <div class="space-y-2.5">
+                ${items.map(t => {
+                  const cmd = COMANDO_META[t.comando] || COMANDO_META.formacion;
+                  const dayObj = state.days.find(d => d.id === t.day_id);
+                  return `
+                    <article draggable="true" data-drag-task="${escapeHtml(t.id)}"
+                      class="offer-card rounded-2xl p-3.5 cursor-pointer select-none">
+                      <div class="flex items-start gap-2.5">
+                        <div class="w-8 h-8 rounded-xl ${cmd.squircle} font-extrabold text-[11px] flex items-center justify-center shrink-0">
+                          ${escapeHtml(cmd.label.slice(0, 2).toUpperCase())}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                          <div class="text-xs font-extrabold text-pbc-deep leading-snug">${escapeHtml(t.title)}</div>
+                          <div class="text-[11px] text-pbc-muted mt-0.5 truncate">
+                            ${dayObj ? `Día ${dayObj.day_number}` : ''} ${t.start_time ? `· ${escapeHtml(t.start_time)}` : ''} ${t.location ? `· ${escapeHtml(t.location)}` : ''}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mt-2.5 pt-2 border-t border-black/[0.05] flex items-center justify-between gap-2">
+                        <span class="text-[11px] font-semibold text-pbc-muted truncate">${escapeHtml(t.assignee_name || 'Sin asignar')}</span>
+                        <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${cmd.badge}">${escapeHtml(cmd.label)}</span>
+                      </div>
+                      ${safeDocUrl(t.doc_url) ? `<div class="mt-2">${renderDocButton(t.doc_url, 'px-2.5 py-1 text-[10px]')}</div>` : ''}
+                    </article>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        let draggedId = null;
+        grid.querySelectorAll('[data-drag-task]').forEach(el => {
+          el.onclick = () => openTaskModal(el.getAttribute('data-drag-task'));
+          el.addEventListener('dragstart', (e) => {
+            draggedId = el.getAttribute('data-drag-task');
+            el.classList.add('is-dragging');
+            e.dataTransfer.setData('text/plain', draggedId);
+          });
+          el.addEventListener('dragend', () => {
+            el.classList.remove('is-dragging');
+            grid.querySelectorAll('.kanban-lane').forEach(l => l.classList.remove('drag-over'));
+          });
+        });
+
+        grid.querySelectorAll('.kanban-lane').forEach(lane => {
+          lane.addEventListener('dragover', (e) => { e.preventDefault(); lane.classList.add('drag-over'); });
+          lane.addEventListener('dragleave', () => lane.classList.remove('drag-over'));
+          lane.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            lane.classList.remove('drag-over');
+            const id = e.dataTransfer.getData('text/plain') || draggedId;
+            const nextStatus = lane.getAttribute('data-drop-status');
+            const task = state.tasks.find(x => x.id === id);
+            if (!task || task.status === nextStatus) return;
+
+            task.status = nextStatus;
+            renderAll();
+            const { error } = await sb.from('camp_tasks')
+              .update({ status: nextStatus, updated_by_email: state.session?.user?.email || null })
+              .eq('id', id);
+            if (error) {
+              showToast('Error al mover: ' + error.message);
+              fetchAllData();
+            } else {
+              showToast(`${task.title} → ${STATUS_META[nextStatus].label}`);
+            }
+          });
+        });
+
+        grid.querySelectorAll('[data-add-with-status]').forEach(btn => {
+          btn.onclick = () => openTaskModal(null, null, null, btn.getAttribute('data-add-with-status'));
+        });
+      }
+
+      // =====================================================
+      // VISTA 3: CRONOGRAMA DEL DÍA
+      // =====================================================
+      function renderSchedule() {
+        const pills = document.getElementById('scheduleDayPills');
+        if (!state.days.some(d => d.id === state.scheduleDayId) && state.days.length) {
+          state.scheduleDayId = state.days[0].id;
+        }
+        pills.innerHTML = state.days.map(d => {
+          const active = d.id === state.scheduleDayId;
+          return `
+            <button type="button" data-sched-day="${escapeHtml(d.id)}"
+              class="px-3 py-1.5 rounded-full text-xs font-bold transition-all ${active ? 'bg-pbc-deep text-white' : 'text-pbc-muted hover:text-pbc-deep'}">
+              Día ${d.day_number}
+            </button>
+          `;
+        }).join('');
+
+        pills.querySelectorAll('[data-sched-day]').forEach(b => {
+          b.onclick = () => { state.scheduleDayId = b.getAttribute('data-sched-day'); renderSchedule(); };
+        });
+
+        const day = state.days.find(d => d.id === state.scheduleDayId);
+        if (!day) return;
+        const dayTasks = state.tasks.filter(t => t.day_id === day.id);
+
+        const stage = document.getElementById('scheduleStage');
+        stage.innerHTML = `
+          <div class="hero-mint-card rounded-3xl p-5 sm:p-6 text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-widest text-white/80 font-bold">Día ${day.day_number} · ${escapeHtml(day.date_label)}</span>
+              <h3 class="font-brand text-3xl mt-0.5">${escapeHtml(day.title)}</h3>
+              <p class="text-xs sm:text-sm text-white/90 mt-1"><strong>Pregunta central:</strong> ${escapeHtml(day.central_question)}</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 shrink-0 self-start md:self-center">
+              ${day.day_number === 5 ? `
+                <a href="${escapeHtml(getDia5Url())}" class="px-4 py-2 rounded-full bg-white text-pbc-deep text-xs font-extrabold hover:bg-pbc-soft transition-colors">
+                  Ver Red ACDE &amp; Plan Día 5 ↗
+                </a>
+              ` : ''}
+              <button type="button" id="schedAddBtn" class="px-4 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold">
+                + Sumar bloque al Día ${day.day_number}
+              </button>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            ${TIME_SLOTS.map(slot => {
+              const items = dayTasks.filter(t => t.time_slot === slot.id);
+              return `
+                <div class="bg-white rounded-2xl border border-black/[0.07] p-4 space-y-3 shadow-sm">
+                  <div class="flex items-center justify-between border-b border-black/[0.05] pb-2">
+                    <span class="font-mono text-xs font-extrabold uppercase tracking-wider text-pbc-deep">${escapeHtml(slot.label)}</span>
+                    <span class="font-mono text-[11px] text-pbc-muted">${items.length} actividades</span>
+                  </div>
+                  ${items.length === 0 ? '<p class="text-xs text-pbc-muted italic">Sin actividades en esta franja.</p>' : items.map(t => {
+                    const cmd = COMANDO_META[t.comando];
+                    const st = STATUS_META[t.status] || STATUS_META.pendiente;
+                    return `
+                      <div data-sched-edit="${escapeHtml(t.id)}" class="offer-card rounded-xl p-3 cursor-pointer space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                          <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${cmd.badge}">${escapeHtml(cmd.label)}</span>
+                          <div class="flex items-center gap-2">
+                            ${t.start_time ? `<span class="font-mono text-[11px] font-bold text-pbc-deep">${escapeHtml(t.start_time)} hs</span>` : ''}
+                            <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${st.chip}">${escapeHtml(st.label)}</span>
+                          </div>
+                        </div>
+                        <div class="text-sm font-extrabold text-pbc-deep">${escapeHtml(t.title)}</div>
+                        ${t.description ? `<p class="text-xs text-pbc-muted leading-snug">${escapeHtml(t.description)}</p>` : ''}
+                        <div class="text-[11px] text-pbc-deep/85 space-y-0.5 pt-1 border-t border-black/[0.05]">
+                          <div><strong>Responsable:</strong> ${escapeHtml(t.assignee_name || 'Sin asignar')}</div>
+                          ${t.location ? `<div><strong>Lugar:</strong> ${escapeHtml(t.location)}</div>` : ''}
+                          ${t.materials ? `<div><strong>Materiales:</strong> ${escapeHtml(t.materials)}</div>` : ''}
+                          ${t.depends_on ? `<div class="text-amber-700"><strong>Depende de:</strong> ${escapeHtml(t.depends_on)}</div>` : ''}
+                        </div>
+                        ${safeDocUrl(t.doc_url) ? `<div class="pt-1">${renderDocButton(t.doc_url, 'px-3 py-1.5 text-[11px]')}</div>` : ''}
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+
+        document.getElementById('schedAddBtn').onclick = () => openTaskModal(null, day.id);
+        stage.querySelectorAll('[data-sched-edit]').forEach(el => {
+          el.onclick = () => openTaskModal(el.getAttribute('data-sched-edit'));
+        });
+      }
+
+      // =====================================================
+      // VISTA 4: NEHEMÍAS & LITURGIA
+      // =====================================================
+      function renderNehemiasView() {
+        const container = document.getElementById('view-nehemias');
+        container.innerHTML = `
+          <div class="hero-mint-card rounded-3xl p-6 sm:p-8 text-white flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+            <div class="space-y-2 max-w-2xl">
+              <span class="px-3 py-1 rounded-full bg-white/20 font-mono text-[10px] font-bold uppercase tracking-wider">Comando de Liturgia · Arco Espiritual</span>
+              <h2 class="font-brand text-3xl sm:text-4xl">La Muralla de Nehemías, Día por Día</h2>
+              <p class="text-xs sm:text-sm text-white/90 leading-relaxed">
+                Cada día del campamento traduce la imagen bíblica de Nehemías y <em>Magnifica Humanitas</em> en un símbolo visible, una cita orante y experiencias espirituales concretas.
+              </p>
+            </div>
+            <button type="button" id="btnAddLiturgyTask" class="px-4 py-2.5 rounded-full bg-pbc-deep text-white text-xs font-bold shrink-0 self-start lg:self-center">
+              + Sumar experiencia espiritual
+            </button>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            ${state.days.map(d => {
+              const litTasks = state.tasks.filter(t => t.day_id === d.id && t.comando === 'liturgia');
+              return `
+                <article class="bg-white rounded-2xl border border-black/[0.07] p-5 shadow-sm space-y-3">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-mono text-[10px] font-extrabold uppercase">
+                      Día ${d.day_number} · ${escapeHtml(d.date_label)}
+                    </span>
+                    <span class="text-xs font-bold text-pbc-dark">🧱 ${escapeHtml(d.nehemias_symbol)}</span>
+                  </div>
+                  <h3 class="font-brand text-2xl text-pbc-deep">${escapeHtml(d.liturgy_axis)}</h3>
+                  <p class="text-xs italic text-pbc-muted bg-pbc-canvas rounded-xl p-3 border border-black/[0.05]">
+                    ${escapeHtml(d.nehemias_verse)}
+                  </p>
+                  <div class="space-y-1.5 pt-1">
+                    ${litTasks.map(t => `
+                      <div data-lit-edit="${escapeHtml(t.id)}" class="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-pbc-canvas hover:bg-pbc-soft/60 cursor-pointer transition-colors text-xs">
+                        <span class="font-bold text-pbc-deep truncate">${escapeHtml(t.title)}</span>
+                        <div class="flex items-center gap-2 shrink-0">
+                          ${renderDocButton(t.doc_url, 'px-2.5 py-0.5 text-[10px]')}
+                          <span class="font-mono text-[10px] text-pbc-muted">${escapeHtml(t.assignee_name || 'Sin asignar')}</span>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </article>
+              `;
+            }).join('')}
+          </div>
+        `;
+
+        document.getElementById('btnAddLiturgyTask').onclick = () => openTaskModal(null, 'dia-1', 'liturgia');
+        container.querySelectorAll('[data-lit-edit]').forEach(el => {
+          el.onclick = () => openTaskModal(el.getAttribute('data-lit-edit'));
+        });
+      }
+
+      // =====================================================
+      // VISTA 5: EQUIPO & EXPORTACIÓN
+      // =====================================================
+      function renderTeamView() {
+        const container = document.getElementById('view-team');
+        const groups = ['formacion', 'liturgia', 'disciplinas'];
+        const roleRank = { 'Jefe de Campamento': 1, 'Maestro': 2, 'Sacerdote': 3, 'Caterina': 4, 'Jefe': 5, 'Integrante': 6 };
+        const coordList = state.members
+          .filter(m => m.comando === 'coordinacion')
+          .slice()
+          .sort((a, b) => (roleRank[a.role] || 99) - (roleRank[b.role] || 99) || a.name.localeCompare(b.name));
+
+        container.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="font-brand text-3xl text-pbc-deep">Equipo y Roles del Campamento</h2>
+              <p class="text-xs sm:text-sm text-pbc-muted">Conducción general, sacerdotes, caterinas y nómina de los 3 Comandos.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="btnExportCsv" type="button" class="px-4 py-2 rounded-full bg-white border border-black/15 text-xs font-bold text-pbc-deep hover:border-pbc-dark">Exportar CSV</button>
+              <button id="btnExportJson" type="button" class="px-4 py-2 rounded-full bg-white border border-black/15 text-xs font-bold text-pbc-deep hover:border-pbc-dark">Exportar JSON</button>
+            </div>
+          </div>
+
+          <form id="addMemberForm" class="bg-white rounded-2xl border border-black/[0.07] p-4 grid sm:grid-cols-4 gap-3 items-end shadow-sm">
+            <div>
+              <label class="block text-xs font-bold mb-1">Nombre</label>
+              <input name="name" required placeholder="Ej: Mil. Sofía Pérez" class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">Comando / Área</label>
+              <select name="comando" class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-semibold">
+                <option value="coordinacion">Conducción / Roles</option>
+                <option value="formacion">Formación</option>
+                <option value="liturgia">Liturgia</option>
+                <option value="disciplinas">Disciplinas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">Rol</label>
+              <select name="role" class="w-full px-3 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm font-semibold">
+                <option value="Integrante">Integrante</option>
+                <option value="Jefe">Jefe de Comando</option>
+                <option value="Jefe de Campamento">Jefe de Campamento</option>
+                <option value="Maestro">Maestro</option>
+                <option value="Sacerdote">Sacerdote</option>
+                <option value="Caterina">Caterina</option>
+              </select>
+            </div>
+            <button type="submit" class="px-4 py-2.5 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon">
+              + Sumar al equipo
+            </button>
+          </form>
+
+          <!-- Conducción General y Roles del Campamento -->
+          <section class="bg-white rounded-3xl border border-pbc-dark/25 p-5 space-y-3 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded-full border text-xs font-extrabold ${COMANDO_META.coordinacion.badge}">Conducción &amp; Roles Generales</span>
+                <span class="text-xs text-pbc-muted">Jefatura de Campamento, Maestro, Sacerdotes y Caterinas</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-pbc-muted">${coordList.length}</span>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+              ${coordList.map(m => {
+                const assignedCount = state.tasks.filter(t => t.assignee_id === m.id || t.assignee_name === m.name).length;
+                const roleLabel = m.role === 'Caterina' ? 'Caterinas' : m.role === 'Sacerdote' ? 'Sacerdotes' : m.role;
+                return `
+                  <div class="flex items-center justify-between gap-2 p-3 rounded-2xl bg-pbc-canvas border border-black/[0.05]">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <div class="w-9 h-9 rounded-xl ${COMANDO_META.coordinacion.squircle} text-[11px] font-extrabold flex items-center justify-center shrink-0">
+                        ${escapeHtml(getInitials(m.name))}
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-[10px] font-mono font-extrabold uppercase tracking-wider text-pbc-dark">${escapeHtml(roleLabel)}</div>
+                        <div class="text-xs font-extrabold text-pbc-deep truncate">${escapeHtml(m.name)}</div>
+                        <div class="text-[10px] font-mono text-pbc-muted mt-0.5 truncate">${assignedCount} tareas · ${escapeHtml(m.email || 'sin correo')}</div>
+                      </div>
+                    </div>
+                    <button type="button" data-toggle-notify="${escapeHtml(m.id)}" title="${m.notify_daily === false ? 'Recordatorio 24h pausado (clic para activar)' : 'Recordatorio 24h activo (clic para pausar)'}"
+                      class="px-2 py-1 rounded-full text-[10px] font-bold shrink-0 border ${m.notify_daily === false ? 'bg-white border-black/10 text-pbc-muted' : 'bg-pbc-soft border-pbc-dark/25 text-pbc-dark'}">
+                      ${m.notify_daily === false ? '🔕' : '🔔 24h'}
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </section>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            ${groups.map(cmd => {
+              const meta = COMANDO_META[cmd];
+              const list = state.members.filter(m => m.comando === cmd);
+              return `
+                <div class="bg-white rounded-3xl border border-black/[0.07] p-5 space-y-3 shadow-sm">
+                  <div class="flex items-center justify-between">
+                    <span class="px-3 py-1 rounded-full border text-xs font-extrabold ${meta.badge}">${escapeHtml(meta.full)}</span>
+                    <span class="font-mono text-xs font-bold text-pbc-muted">${list.length}</span>
+                  </div>
+                  <div class="space-y-2">
+                    ${list.map(m => {
+                      const assignedCount = state.tasks.filter(t => t.assignee_id === m.id || t.assignee_name === m.name).length;
+                      return `
+                        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-pbc-canvas">
+                          <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-8 h-8 rounded-lg ${meta.squircle} text-[11px] font-extrabold flex items-center justify-center shrink-0">
+                              ${escapeHtml(getInitials(m.name))}
+                            </div>
+                            <div class="min-w-0">
+                              <div class="text-xs font-extrabold text-pbc-deep truncate">${escapeHtml(m.name)}</div>
+                              <div class="text-[10px] font-mono ${m.role === 'Jefe' ? 'text-pbc-dark font-bold' : 'text-pbc-muted'} truncate">${escapeHtml(m.role)} · ${escapeHtml(m.email || 'sin correo')}</div>
+                            </div>
+                          </div>
+                          <div class="flex items-center gap-1.5 shrink-0">
+                            <button type="button" data-toggle-notify="${escapeHtml(m.id)}" title="${m.notify_daily === false ? 'Activar alerta 24h' : 'Alerta 24h activa'}"
+                              class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${m.notify_daily === false ? 'bg-white border-black/10 text-pbc-muted' : 'bg-pbc-soft border-pbc-dark/25 text-pbc-dark'}">
+                              ${m.notify_daily === false ? '🔕' : '🔔'}
+                            </button>
+                            <span class="px-2 py-0.5 rounded-full bg-white border border-black/[0.06] font-mono text-[10px] font-bold text-pbc-deep shrink-0">
+                              ${assignedCount}
+                            </span>
+                          </div>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+
+        container.querySelectorAll('[data-toggle-notify]').forEach(btn => {
+          btn.onclick = async () => {
+            const id = btn.getAttribute('data-toggle-notify');
+            const m = state.members.find(x => x.id === id);
+            if (!m) return;
+            const nextVal = m.notify_daily === false;
+            const { error } = await sb.from('camp_members').update({ notify_daily: nextVal }).eq('id', id);
+            if (error) showToast('Error actualizando alerta: ' + error.message);
+            else {
+              showToast(nextVal ? `Alertas cada 24 hs activadas para ${m.name}` : `Alertas pausadas para ${m.name}`);
+              fetchAllData();
+            }
+          };
+        });
+
+        document.getElementById('addMemberForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const { error } = await sb.from('camp_members').insert({
+            name: String(fd.get('name')).trim(),
+            comando: String(fd.get('comando')),
+            role: String(fd.get('role'))
+          });
+          if (error) showToast('Error sumando integrante: ' + error.message);
+          else {
+            e.target.reset();
+            showToast('Integrante sumado al equipo');
+            fetchAllData();
+          }
+        });
+
+        document.getElementById('btnExportJson').onclick = () => {
+          downloadFile('planificacion-comandos-pbc2027.json', JSON.stringify({ days: state.days, members: state.members, tasks: state.tasks }, null, 2), 'application/json');
+          showToast('Planificación exportada en JSON');
+        };
+        document.getElementById('btnExportCsv').onclick = () => {
+          const headers = ['Dia', 'Comando', 'Franja', 'Hora', 'Actividad', 'Responsable', 'Estado', 'Prioridad', 'Lugar', 'Dependencia', 'Materiales', 'Documento URL'];
+          const rows = state.tasks.map(t => [
+            t.day_id, t.comando, t.time_slot, t.start_time, t.title, t.assignee_name, t.status, t.priority, t.location, t.depends_on, t.materials, t.doc_url
+          ].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(','));
+          downloadFile('tareas-comandos-pbc2027.csv', '\uFEFF' + [headers.join(','), ...rows].join('\n'), 'text/csv;charset=utf-8;');
+          showToast('Tareas exportadas en CSV');
+        };
+      }
+
+      function downloadFile(filename, content, type) {
+        const blob = new Blob([content], { type });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      // =====================================================
+      // MODAL CREAR / EDITAR TAREA
+      // =====================================================
+      function openTaskModal(taskId, defaultDay, defaultCmd, defaultStatus) {
+        const form = document.getElementById('taskForm');
+        form.reset();
+        document.getElementById('btnConfirmDeleteTask').classList.add('hidden');
+        const delWrap = document.getElementById('deleteTaskWrap');
+        const modalDocBtn = document.getElementById('modalDocOpenBtn');
+        modalDocBtn.classList.add('hidden');
+
+        if (taskId) {
+          const t = state.tasks.find(x => x.id === taskId);
+          if (!t) return;
+          document.getElementById('taskModalHeading').textContent = 'Editar actividad';
+          form.elements.id.value = t.id;
+          form.elements.day_id.value = t.day_id;
+          form.elements.comando.value = t.comando;
+          form.elements.time_slot.value = t.time_slot;
+          form.elements.start_time.value = t.start_time || '';
+          form.elements.title.value = t.title;
+          form.elements.description.value = t.description || '';
+          form.elements.assignee_id.value = t.assignee_id || '';
+          form.elements.status.value = t.status;
+          form.elements.priority.value = t.priority;
+          form.elements.location.value = t.location || '';
+          form.elements.depends_on.value = t.depends_on || '';
+          form.elements.materials.value = t.materials || '';
+          form.elements.notes.value = t.notes || '';
+          form.elements.doc_url.value = t.doc_url || '';
+          const safe = safeDocUrl(t.doc_url);
+          if (safe) {
+            modalDocBtn.href = safe;
+            modalDocBtn.classList.remove('hidden');
+          }
+          delWrap.classList.remove('hidden');
+          delWrap.classList.add('flex');
+        } else {
+          document.getElementById('taskModalHeading').textContent = 'Nueva actividad';
+          form.elements.id.value = '';
+          form.elements.doc_url.value = '';
+          if (defaultDay) form.elements.day_id.value = defaultDay;
+          if (defaultCmd) form.elements.comando.value = defaultCmd;
+          if (defaultStatus) form.elements.status.value = defaultStatus;
+          delWrap.classList.add('hidden');
+          delWrap.classList.remove('flex');
+        }
+
+        const m = document.getElementById('taskModal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+      }
+
+      function closeTaskModal() {
+        const m = document.getElementById('taskModal');
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
+
+      document.getElementById('closeTaskModal').onclick = closeTaskModal;
+      document.getElementById('cancelTaskBtn').onclick = closeTaskModal;
+      document.getElementById('taskModal').addEventListener('click', (e) => {
+        if (e.target.id === 'taskModal') closeTaskModal();
+      });
+
+      document.getElementById('btnAskDeleteTask').onclick = () => {
+        document.getElementById('btnConfirmDeleteTask').classList.remove('hidden');
+      };
+      document.getElementById('btnConfirmDeleteTask').onclick = async () => {
+        const id = document.getElementById('taskForm').elements.id.value;
+        if (!id) return;
+        const { error } = await sb.from('camp_tasks').delete().eq('id', id);
+        if (error) showToast('Error eliminando: ' + error.message);
+        else {
+          closeTaskModal();
+          showToast('Actividad eliminada');
+          fetchAllData();
+        }
+      };
+
+      document.getElementById('taskForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const id = String(fd.get('id') || '').trim();
+        const assigneeId = String(fd.get('assignee_id') || '').trim() || null;
+        const memberObj = assigneeId ? state.members.find(m => m.id === assigneeId) : null;
+
+        const payload = {
+          day_id: String(fd.get('day_id')),
+          comando: String(fd.get('comando')),
+          time_slot: String(fd.get('time_slot')),
+          start_time: String(fd.get('start_time') || '').trim() || null,
+          title: String(fd.get('title')).trim(),
+          description: String(fd.get('description') || '').trim() || null,
+          assignee_id: assigneeId,
+          assignee_name: memberObj ? memberObj.name : null,
+          status: String(fd.get('status')),
+          priority: String(fd.get('priority')),
+          location: String(fd.get('location') || '').trim() || null,
+          depends_on: String(fd.get('depends_on') || '').trim() || null,
+          materials: String(fd.get('materials') || '').trim() || null,
+          doc_url: safeDocUrl(fd.get('doc_url')),
+          notes: String(fd.get('notes') || '').trim() || null,
+          updated_by_email: state.session?.user?.email || null
+        };
+
+        const res = id
+          ? await sb.from('camp_tasks').update(payload).eq('id', id)
+          : await sb.from('camp_tasks').insert(payload);
+
+        if (res.error) {
+          showToast('Error al guardar: ' + res.error.message);
+        } else {
+          closeTaskModal();
+          showToast(id ? 'Actividad actualizada' : 'Actividad creada en Supabase');
+          fetchAllData();
+        }
+      });
+
+      // =====================================================
+      // RECORDATORIOS CADA 24 HS POR ROL
+      // =====================================================
+      function normText(s) {
+        return String(s || '')
+          .toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .replace(/^mil\.\s*/i, '')
+          .trim();
+      }
+
+      function firstNameOf(memberName) {
+        const clean = String(memberName || '').replace(/^Mil\.\s*/i, '').trim();
+        return clean.split(/\s+/)[0] || 'Integrante';
+      }
+
+      function findCurrentMember() {
+        const user = state.session?.user;
+        if (!user || !state.members.length) return null;
+        const savedId = localStorage.getItem('pbc_my_member_' + user.id);
+        if (savedId) {
+          const bySaved = state.members.find(m => m.id === savedId);
+          if (bySaved) return bySaved;
+        }
+        const email = (user.email || '').trim().toLowerCase();
+        if (email) {
+          const byEmail = state.members.find(m => (m.email || '').trim().toLowerCase() === email);
+          if (byEmail) return byEmail;
+        }
+        const metaName = normText(user.user_metadata?.full_name || '');
+        if (metaName) {
+          const byName = state.members.find(m => normText(m.name) === metaName || normText(m.name).includes(metaName));
+          if (byName) return byName;
+        }
+        return state.members[0] || null;
+      }
+
+      function getPendingTasksForMember(member) {
+        if (!member) return [];
+        return state.tasks.filter(t =>
+          (t.assignee_id === member.id || (!t.assignee_id && t.assignee_name === member.name)) &&
+          t.status !== 'listo'
+        );
+      }
+
+      function buildHeadlineForMember(member, pendingCount) {
+        const first = firstNameOf(member?.name);
+        return `${first}, tenés ${pendingCount} ${pendingCount === 1 ? 'tarea pendiente' : 'tareas pendientes'}`;
+      }
+
+      async function sendNativeNotification(member, pending) {
+        if (!('Notification' in window) || Notification.permission !== 'granted' || !member) return false;
+        const title = buildHeadlineForMember(member, pending.length);
+        const lines = pending.slice(0, 4).map(t => {
+          const dayObj = state.days.find(d => d.id === t.day_id);
+          return `• ${dayObj ? 'Día ' + dayObj.day_number : ''} ${t.title}${t.start_time ? ' (' + t.start_time + ')' : ''}`.trim();
+        });
+        if (pending.length > 4) lines.push(`• ...y ${pending.length - 4} más en el tablero`);
+        const options = {
+          body: lines.join('\n'),
+          icon: './assets/logo-oficial.png',
+          badge: './assets/logo-oficial.png',
+          tag: 'pbc-24h-' + member.id,
+          renotify: true
+        };
+        try {
+          if (state.swReg && typeof state.swReg.showNotification === 'function') {
+            await state.swReg.showNotification(title, options);
+          } else {
+            new Notification(title, options);
+          }
+          return true;
+        } catch (_err) {
+          return false;
+        }
+      }
+
+      function renderAlertBanner(member, pending, showBanner) {
+        const countBadge = document.getElementById('alertCountBadge');
+        const pingDot = document.getElementById('alertPingDot');
+        const banner = document.getElementById('dailyAlertBanner');
+        const btnEnable = document.getElementById('btnBannerEnablePush');
+
+        if (countBadge) countBadge.textContent = String(pending.length);
+        if (pingDot) pingDot.classList.toggle('hidden', pending.length === 0);
+
+        if (!member || pending.length === 0 || !showBanner) {
+          if (banner) banner.classList.add('hidden');
+          return;
+        }
+
+        document.getElementById('dailyAlertRoleTag').textContent = `${member.name} · ${member.role}`;
+        document.getElementById('dailyAlertTitle').textContent = buildHeadlineForMember(member, pending.length);
+        document.getElementById('dailyAlertList').innerHTML = pending.slice(0, 5).map(t => {
+          const dayObj = state.days.find(d => d.id === t.day_id);
+          const safe = safeDocUrl(t.doc_url);
+          return `<li class="flex flex-wrap items-center gap-1.5">
+            <span class="text-pbc-dark font-bold">•</span>
+            <button type="button" data-banner-edit="${escapeHtml(t.id)}" class="font-bold hover:underline text-left">
+              ${dayObj ? `Día ${dayObj.day_number} · ` : ''}${escapeHtml(t.title)}
+            </button>
+            <span class="font-mono text-[10px] text-pbc-muted">(${escapeHtml(t.start_time || t.time_slot)})</span>
+            ${safe ? `<a href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer" class="font-mono text-[10px] font-bold text-pbc-dark underline">Doc ↗</a>` : ''}
+          </li>`;
+        }).join('') + (pending.length > 5 ? `<li class="text-[11px] font-semibold text-pbc-muted">...y ${pending.length - 5} tareas más.</li>` : '');
+
+        if (btnEnable) {
+          const needPerm = ('Notification' in window) && Notification.permission === 'default';
+          btnEnable.classList.toggle('hidden', !needPerm);
+        }
+
+        banner.classList.remove('hidden');
+        banner.querySelectorAll('[data-banner-edit]').forEach(el => {
+          el.onclick = () => openTaskModal(el.getAttribute('data-banner-edit'));
+        });
+      }
+
+      async function check24hNotification(forceTest) {
+        const member = findCurrentMember();
+        const pending = getPendingTasksForMember(member);
+        if (!member) {
+          renderAlertBanner(null, [], false);
+          return;
+        }
+        const lsKey = 'pbc_last_notified_' + member.id;
+        const lastTs = Number(localStorage.getItem(lsKey) || 0);
+        const due = forceTest || (member.notify_daily !== false && (!lastTs || (Date.now() - lastTs) >= REMINDER_INTERVAL_MS));
+
+        if (pending.length > 0 && due) {
+          const sentPush = await sendNativeNotification(member, pending);
+          if (forceTest) {
+            showToast(sentPush ? 'Notificación enviada al dispositivo' : 'Recordatorio mostrado (habilitá permiso en el navegador para avisos del sistema)');
+          }
+          if (sentPush && !forceTest) {
+            localStorage.setItem(lsKey, String(Date.now()));
+          }
+        }
+        const snoozeKey = 'pbc_snooze_banner_' + member.id;
+        const snoozedAt = Number(localStorage.getItem(snoozeKey) || 0);
+        const showBanner = pending.length > 0 && (forceTest || !snoozedAt || (Date.now() - snoozedAt) >= REMINDER_INTERVAL_MS);
+        renderAlertBanner(member, pending, showBanner);
+      }
+
+      function renderReminderModalBody() {
+        const member = findCurrentMember();
+        const sel = document.getElementById('myMemberSelect');
+        const emailInp = document.getElementById('myEmailInput');
+        if (sel) {
+          sel.innerHTML = state.members.map(m =>
+            `<option value="${escapeHtml(m.id)}">${escapeHtml(m.name)} (${escapeHtml(m.role)})</option>`
+          ).join('');
+          if (member) sel.value = member.id;
+        }
+        if (emailInp) emailInp.value = member?.email || state.session?.user?.email || '';
+
+        const permEl = document.getElementById('pushPermissionStatus');
+        if (permEl) {
+          if (!('Notification' in window)) permEl.textContent = 'No soportadas en este navegador';
+          else if (Notification.permission === 'granted') permEl.textContent = 'Activas cada 24 hs ✓';
+          else if (Notification.permission === 'denied') permEl.textContent = 'Bloqueadas en ajustes del navegador';
+          else permEl.textContent = 'Pendiente de permiso';
+        }
+
+        const myBox = document.getElementById('myPendingDigestBox');
+        const pending = getPendingTasksForMember(member);
+        if (myBox) {
+          myBox.innerHTML = member ? `
+            <div class="rounded-2xl bg-pbc-soft/60 border border-pbc-dark/20 p-4 space-y-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <h4 class="font-brand text-xl text-pbc-deep">${escapeHtml(buildHeadlineForMember(member, pending.length))}</h4>
+                <span class="px-2.5 py-0.5 rounded-full bg-white text-[10px] font-mono font-bold text-pbc-dark">${escapeHtml(member.role)}</span>
+              </div>
+              ${pending.length === 0 ? '<p class="text-xs text-pbc-muted">¡Al día! No tenés tareas pendientes asignadas.</p>' : `
+                <div class="space-y-1.5">
+                  ${pending.map(t => {
+                    const dayObj = state.days.find(d => d.id === t.day_id);
+                    const st = STATUS_META[t.status] || STATUS_META.pendiente;
+                    return `<div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white border border-black/[0.06] text-xs">
+                      <button type="button" data-rem-edit="${escapeHtml(t.id)}" class="font-bold text-pbc-deep hover:underline text-left truncate max-w-md">
+                        ${dayObj ? `Día ${dayObj.day_number} · ` : ''}${escapeHtml(t.title)}
+                      </button>
+                      <div class="flex items-center gap-2 shrink-0">
+                        ${renderDocButton(t.doc_url, 'px-2 py-0.5 text-[10px]')}
+                        <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold ${st.chip}">${escapeHtml(st.label)}</span>
+                        <button type="button" data-rem-done="${escapeHtml(t.id)}" class="px-2 py-0.5 rounded-full bg-pbc text-pbc-deep font-extrabold text-[10px] hover:bg-pbc-light">
+                          ✓ Listo
+                        </button>
+                      </div>
+                    </div>`;
+                  }).join('')}
+                </div>
+              `}
+            </div>
+          ` : '';
+          myBox.querySelectorAll('[data-rem-edit]').forEach(b => {
+            b.onclick = () => { closeReminderModal(); openTaskModal(b.getAttribute('data-rem-edit')); };
+          });
+          myBox.querySelectorAll('[data-rem-done]').forEach(b => {
+            b.onclick = async () => {
+              const tid = b.getAttribute('data-rem-done');
+              const { error } = await sb.from('camp_tasks').update({ status: 'listo', updated_by_email: state.session?.user?.email || null }).eq('id', tid);
+              if (error) showToast('Error actualizando: ' + error.message);
+              else {
+                showToast('Tarea marcada como Lista ✓');
+                await fetchAllData();
+                renderReminderModalBody();
+              }
+            };
+          });
+        }
+
+        const allList = document.getElementById('allDigestsList');
+        if (allList) {
+          const cards = state.members
+            .map(m => ({ member: m, pending: getPendingTasksForMember(m) }))
+            .filter(x => x.pending.length > 0);
+          allList.innerHTML = cards.length === 0
+            ? '<p class="text-xs text-pbc-muted sm:col-span-2">Sin tareas pendientes asignadas en el equipo.</p>'
+            : cards.map(({ member: m, pending: list }) => `
+              <div class="rounded-2xl bg-pbc-canvas border border-black/[0.06] p-3.5 space-y-1.5">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs font-extrabold text-pbc-deep">${escapeHtml(buildHeadlineForMember(m, list.length))}</div>
+                  <span class="font-mono text-[10px] text-pbc-dark font-bold">${escapeHtml(m.role)}</span>
+                </div>
+                <ul class="space-y-1 text-[11px] text-pbc-muted">
+                  ${list.slice(0, 3).map(t => {
+                    const dayObj = state.days.find(d => d.id === t.day_id);
+                    return `<li class="truncate">• ${dayObj ? 'D' + dayObj.day_number + ': ' : ''}${escapeHtml(t.title)}</li>`;
+                  }).join('')}
+                  ${list.length > 3 ? `<li class="font-mono text-[10px]">+${list.length - 3} más</li>` : ''}
+                </ul>
+              </div>
+            `).join('');
+        }
+      }
+
+      function openReminderModal() {
+        renderReminderModalBody();
+        const m = document.getElementById('reminderModal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+      }
+
+      function closeReminderModal() {
+        const m = document.getElementById('reminderModal');
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
+
+      async function requestBrowserNotifications() {
+        if (!('Notification' in window)) {
+          showToast('Este navegador no soporta notificaciones nativas');
+          return;
+        }
+        const perm = await Notification.requestPermission();
+        renderReminderModalBody();
+        if (perm === 'granted') {
+          showToast('Alertas cada 24 hs activadas en este dispositivo');
+          await check24hNotification(true);
+        } else {
+          showToast('Permiso de notificaciones no otorgado (' + perm + ')');
+        }
+      }
+
+      function renderAll() {
+        const filtered = getFilteredTasks();
+        renderProgressHeader(filtered);
+        renderMatrix(filtered);
+        renderKanban(filtered);
+        renderSchedule();
+        renderNehemiasView();
+        renderTeamView();
+      }
+
+      // Listeners globales
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+      });
+      document.querySelectorAll('#comandoFilterPills [data-cmd]').forEach(btn => {
+        btn.addEventListener('click', () => { state.comandoFilter = btn.getAttribute('data-cmd'); renderAll(); });
+      });
+      document.getElementById('filterDaySelect').addEventListener('change', (e) => { state.dayFilter = e.target.value; renderAll(); });
+      document.getElementById('filterAssigneeSelect').addEventListener('change', (e) => { state.assigneeFilter = e.target.value; renderAll(); });
+      document.getElementById('searchInput').addEventListener('input', (e) => { state.search = e.target.value; renderAll(); });
+      document.getElementById('btnNewTaskTop').addEventListener('click', () => openTaskModal());
+      document.getElementById('btnAlertsTop').addEventListener('click', openReminderModal);
+      document.getElementById('btnBannerOpenAlerts').addEventListener('click', openReminderModal);
+      document.getElementById('btnBannerEnablePush').addEventListener('click', requestBrowserNotifications);
+      document.getElementById('btnBannerSnooze24h').addEventListener('click', () => {
+        const member = findCurrentMember();
+        if (member) {
+          localStorage.setItem('pbc_snooze_banner_' + member.id, String(Date.now()));
+          localStorage.setItem('pbc_last_notified_' + member.id, String(Date.now()));
+        }
+        document.getElementById('dailyAlertBanner').classList.add('hidden');
+        showToast('Recordatorio pospuesto por 24 horas');
+      });
+      document.getElementById('closeReminderModal').addEventListener('click', closeReminderModal);
+      document.getElementById('reminderModal').addEventListener('click', (e) => {
+        if (e.target.id === 'reminderModal') closeReminderModal();
+      });
+      document.getElementById('btnRequestBrowserPush').addEventListener('click', requestBrowserNotifications);
+      document.getElementById('btnTestBrowserPush').addEventListener('click', () => check24hNotification(true));
+      document.getElementById('myMemberSelect').addEventListener('change', () => {
+        const user = state.session?.user;
+        const val = document.getElementById('myMemberSelect').value;
+        if (user && val) localStorage.setItem('pbc_my_member_' + user.id, val);
+        renderReminderModalBody();
+        check24hNotification(false);
+      });
+      document.getElementById('btnSaveMyProfile').addEventListener('click', async () => {
+        const user = state.session?.user;
+        const memberId = document.getElementById('myMemberSelect').value;
+        const email = document.getElementById('myEmailInput').value.trim() || null;
+        if (!memberId) return;
+        if (user) localStorage.setItem('pbc_my_member_' + user.id, memberId);
+        const { error } = await sb.from('camp_members').update({ email, notify_daily: true }).eq('id', memberId);
+        if (error) showToast('Error guardando correo: ' + error.message);
+        else {
+          showToast('Rol y correo guardados para alertas 24h');
+          await fetchAllData();
+          renderReminderModalBody();
+        }
+      });
+      document.getElementById('btnSyncDigestsNow').addEventListener('click', async () => {
+        const { data, error } = await sb.rpc('generate_daily_camp_reminders');
+        if (error) showToast('Error actualizando resúmenes: ' + error.message);
+        else {
+          showToast(`Resúmenes diarios actualizados (${data ?? 0} roles con pendientes)`);
+          await fetchAllData();
+          renderReminderModalBody();
+        }
+      });
+
+      // =====================================================
+      // INSTALACIÓN EN CELULAR + DESCARGA HTML CON LOGO
+      // =====================================================
+      let deferredInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const btnNative = document.getElementById('btnNativePwaInstall');
+        if (btnNative) btnNative.classList.remove('hidden');
+      });
+
+      function openInstallModal() {
+        const m = document.getElementById('installModal');
+        const btnNative = document.getElementById('btnNativePwaInstall');
+        if (btnNative) btnNative.classList.toggle('hidden', !deferredInstallPrompt);
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+      }
+
+      function closeInstallModal() {
+        const m = document.getElementById('installModal');
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
+
+      async function getIconDataUri() {
+        try {
+          const resp = await fetch('./assets/icon-180.png');
+          const blob = await resp.blob();
+          return await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(String(reader.result || ''));
+            reader.readAsDataURL(blob);
+          });
+        } catch (_err) {
+          return '';
+        }
+      }
+
+      document.getElementById('btnInstallTop').addEventListener('click', openInstallModal);
+      document.getElementById('closeInstallModal').addEventListener('click', closeInstallModal);
+      document.getElementById('installModal').addEventListener('click', (e) => {
+        if (e.target.id === 'installModal') closeInstallModal();
+      });
+
+      document.getElementById('btnNativePwaInstall').addEventListener('click', async () => {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice;
+        if (choice && choice.outcome === 'accepted') {
+          showToast('Instalación iniciada con el logo de PBC 2027');
+          closeInstallModal();
+        }
+        deferredInstallPrompt = null;
+      });
+
+      document.getElementById('btnDownloadAppHtml').addEventListener('click', async () => {
+        const iconDataUri = await getIconDataUri();
+        const targetUrl = window.location.href.split('#')[0];
+        const iconTag = iconDataUri
+          ? `<link rel="icon" type="image/png" href="${iconDataUri}" />\n  <link rel="apple-touch-icon" sizes="180x180" href="${iconDataUri}" />`
+          : '';
+        const imgTag = iconDataUri
+          ? `<img src="${iconDataUri}" alt="Logo PBC 2027" style="width:96px;height:96px;border-radius:24px;box-shadow:0 12px 28px rgba(0,0,0,0.28);" />`
+          : '';
+        const safeHref = /^https?:\/\//i.test(targetUrl) ? targetUrl : '';
+        const shortcutHtml = [
+          '<!DOCTYPE html>',
+          '<html lang="es">',
+          '<head>',
+          '  <meta charset="UTF-8" />',
+          '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+          '  <meta name="theme-color" content="#64D5AB" />',
+          '  <meta name="apple-mobile-web-app-capable" content="yes" />',
+          '  <meta name="apple-mobile-web-app-title" content="Comandos PBC" />',
+          '  <title>Comandos PBC 2027 · Acceso Rápido</title>',
+          '  ' + iconTag,
+          '</head>',
+          '<body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#64D5AB,#B5F0D8);color:#0A0E0D;padding:24px;">',
+          '  <main style="background:#fff;border-radius:28px;padding:32px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 50px rgba(10,14,13,0.14);">',
+          '    ' + imgTag,
+          '    <h1 style="margin:18px 0 6px;font-size:22px;">Comandos PBC 2027</h1>',
+          '    <p style="margin:0 0 20px;font-size:13px;color:#5a6b65;">Planificación día por día · Formación, Disciplinas y Liturgia</p>',
+          '    <a id="openBoardBtn" href="' + escapeHtml(safeHref || 'index.html') + '" style="display:inline-block;width:100%;box-sizing:border-box;padding:13px 20px;border-radius:999px;background:#0A0E0D;color:#fff;font-weight:700;font-size:14px;text-decoration:none;">Abrir tablero en vivo ↗</a>',
+          '    <p style="margin:16px 0 0;font-size:11px;color:#64746E;">Tip en celular: guardalo en pantalla de inicio desde el menú de tu navegador.</p>',
+          '  </main>',
+          '  <' + 'script>if(' + Boolean(safeHref) + '){setTimeout(function(){window.location.replace(' + JSON.stringify(safeHref) + ');},350);}<' + '/script>',
+          '</body>',
+          '</html>'
+        ].join('\n');
+        downloadFile('Comandos-PBC-2027.html', shortcutHtml, 'text/html;charset=utf-8;');
+        showToast('Descargado Comandos-PBC-2027.html con el logo del campamento');
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          const inp = document.getElementById('searchInput');
+          if (inp) inp.focus();
+        } else if (e.key === 'Escape') {
+          closeTaskModal();
+          closeReminderModal();
+          closeInstallModal();
+        }
+      });
+
+      // Inicialización de sesión (difiere llamadas REST/Realtime fuera del lock de onAuthStateChange)
+      let activeSessionToken = null;
+      let sessionLoadTimer = null;
+
+      async function loadAuthenticatedDashboard(session) {
+        if (!session || !session.user) return;
+        const token = session.access_token || session.user.id;
+        if (activeSessionToken === token && state.days.length > 0) return;
+        activeSessionToken = token;
+        await ensureAuthorizedUser(session.user);
+        await fetchAllData();
+        setupRealtime();
+        if (!state.alertTimer) {
+          state.alertTimer = setInterval(() => check24hNotification(false), 30 * 60 * 1000);
+        }
+      }
+
+      function handleSession(session) {
+        state.session = session;
+        if (sessionLoadTimer) {
+          clearTimeout(sessionLoadTimer);
+          sessionLoadTimer = null;
+        }
+        if (session && session.user) {
+          document.getElementById('authGate').classList.add('hidden');
+          document.getElementById('appContainer').classList.remove('hidden');
+          sessionLoadTimer = setTimeout(() => {
+            loadAuthenticatedDashboard(session).catch((err) => {
+              console.error('Error iniciando tablero:', err);
+              document.getElementById('mainSubtitle').textContent =
+                'Error al cargar desde Supabase (' + (err?.message || 'reintentá recargar') + ').';
+            });
+          }, 0);
+        } else {
+          activeSessionToken = null;
+          document.getElementById('appContainer').classList.add('hidden');
+          document.getElementById('authGate').classList.remove('hidden');
+        }
+      }
+
+      sb.auth.onAuthStateChange((_event, session) => handleSession(session));
+    })();
+  </script>
+</body>
+</html>

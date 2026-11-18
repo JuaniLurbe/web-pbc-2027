@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Día 5 · Nación · Tablero de Empresarios Cristianos | PBC 2027</title>
+
+  <!-- Tipografías Oficiales PBC 2027: Coolvetica + Raleway + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/coolvetica" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pbc: {
+              DEFAULT: '#64D5AB',
+              light: '#89E2C1',
+              soft: '#E6F8F1',
+              dark: '#3AA37C',
+              deep: '#0A0E0D',
+              carbon: '#121917',
+              card: '#17211E',
+              paper: '#F2F7F5',
+              canvas: '#F4F8F6',
+              lane: '#EAF2EE',
+              muted: '#64746E'
+            }
+          },
+          fontFamily: {
+            brand: ['Coolvetica', 'Impact', 'Arial Black', 'sans-serif'],
+            coolvetica: ['Coolvetica', 'Impact', 'Arial Black', 'sans-serif'],
+            sans: ['Raleway', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --pbc-primary: #64D5AB;
+      --pbc-light: #89E2C1;
+      --pbc-dark: #3AA37C;
+      --pbc-deep: #0A0E0D;
+      --pbc-paper: #F2F7F5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      color: #0A0E0D;
+      min-height: 100vh;
+      margin: 0;
+      /* Backdrop luminoso estilo Offerpost adaptado a Verde Agua PBC 2027 */
+      background:
+        radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 42%),
+        radial-gradient(circle at 88% 85%, rgba(58, 163, 124, 0.45) 0%, transparent 45%),
+        linear-gradient(135deg, #42B88E 0%, #64D5AB 48%, #9DEBD0 100%);
+      background-attachment: fixed;
+    }
+
+    .font-brand {
+      font-family: 'Coolvetica', 'Impact', 'Arial Black', sans-serif;
+      letter-spacing: 0.01em;
+      line-height: 0.98;
+    }
+
+    /* Marco flotante de aplicación */
+    .app-shell {
+      background: rgba(244, 248, 246, 0.94);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      box-shadow:
+        0 30px 80px -18px rgba(10, 32, 24, 0.34),
+        0 4px 20px -4px rgba(10, 32, 24, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    /* Carril de columna Kanban */
+    .kanban-lane {
+      background: rgba(232, 240, 236, 0.72);
+      border: 1px solid rgba(10, 14, 13, 0.05);
+    }
+    .kanban-lane.drag-over {
+      background: rgba(100, 213, 171, 0.2);
+      border-color: rgba(58, 163, 124, 0.55);
+      box-shadow: inset 0 0 0 1.5px rgba(58, 163, 124, 0.35);
+    }
+
+    /* Tarjeta Kanban ultra-limpia */
+    .offer-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(10, 14, 13, 0.07);
+      box-shadow: 0 2px 8px -2px rgba(10, 14, 13, 0.05), 0 1px 2px rgba(10, 14, 13, 0.03);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .offer-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(58, 163, 124, 0.45);
+      box-shadow: 0 12px 24px -10px rgba(10, 32, 24, 0.14), 0 2px 6px rgba(10, 14, 13, 0.04);
+    }
+    .offer-card.is-dragging {
+      opacity: 0.92;
+      transform: rotate(2deg) scale(1.02);
+      box-shadow: 0 22px 40px -12px rgba(10, 32, 24, 0.28);
+      cursor: grabbing;
+    }
+
+    /* Tarjeta Hero de Alianza / Confirmados (Verde Agua vibrante) */
+    .hero-mint-card {
+      background: linear-gradient(145deg, #2D9670 0%, #48BA91 55%, #64D5AB 100%);
+      box-shadow: 0 16px 32px -12px rgba(45, 150, 112, 0.52);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+    .hero-mint-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 38px -12px rgba(45, 150, 112, 0.62);
+    }
+
+    /* Toast flotante oscuro estilo Offerpost */
+    .floating-toast {
+      background: rgba(15, 22, 20, 0.86);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Scrollbar discreta */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(10, 14, 13, 0.18);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="p-3 sm:p-6 md:p-8 lg:p-10 flex flex-col items-center justify-start">
+
+  <!-- VENTANA FLOTANTE PRINCIPAL (ESTILO OFFERPOST × PBC 2027) -->
+  <div class="app-shell w-full max-w-[1360px] rounded-[26px] sm:rounded-[30px] overflow-hidden relative">
+
+    <!-- 1. TOP BAR EN UNA SOLA LÍNEA -->
+    <header class="px-4 sm:px-7 py-3.5 border-b border-black/[0.06] bg-white/75 backdrop-blur-md flex flex-wrap lg:flex-nowrap items-center justify-between gap-3">
+      <!-- Marca + Logo Oficial -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <img src="./assets/logo-oficial.png" alt="Logo Oficial Protagonistas del Bien Común" class="h-10 w-auto object-contain shrink-0 drop-shadow-[0_1px_1px_rgba(10,14,13,0.16)]" />
+        <div class="leading-none hidden sm:block">
+          <div class="font-brand text-sm text-pbc-deep tracking-tight">Nación · Red ACDE</div>
+          <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-pbc-muted mt-0.5">
+            Día 5 · 2027
+          </div>
+        </div>
+      </div>
+
+      <!-- Segmented Navigation Tabs -->
+      <nav aria-label="Vistas del tablero" class="flex items-center gap-1 bg-black/[0.04] p-1 rounded-full overflow-x-auto max-w-full">
+        <button type="button" data-tab="board" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap bg-pbc-deep text-white shadow-sm">
+          Tablero
+        </button>
+        <button type="button" data-tab="directory" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+          Directorio
+        </button>
+        <button type="button" data-tab="areas" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+          Áreas <span id="tabAreasCount" class="font-mono opacity-80">4/11</span>
+        </button>
+        <button type="button" data-tab="acde" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+          Foco ACDE
+        </button>
+        <button type="button" data-tab="levels" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+          3 Niveles
+        </button>
+        <button type="button" data-tab="plan" class="tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep">
+          Plan de Formación
+        </button>
+      </nav>
+
+      <!-- Buscador ⌘K + Acciones -->
+      <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+        <div class="relative flex-1 sm:w-44 md:w-48">
+          <svg class="w-3.5 h-3.5 text-pbc-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input id="searchInput" type="text" placeholder="Buscar referente..."
+            class="w-full pl-8 pr-12 py-1.5 rounded-full bg-white border border-black/10 text-xs font-medium text-pbc-deep placeholder-pbc-muted focus:outline-none focus:border-pbc-dark focus:ring-2 focus:ring-pbc/30 transition-all" />
+          <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md bg-black/[0.05] text-[10px] font-mono text-pbc-muted absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">⌘K</kbd>
+        </div>
+
+        <button id="btnExportCsv" type="button" title="Exportar directorio CSV"
+          class="w-8 h-8 rounded-full bg-white border border-black/10 text-pbc-deep hover:border-pbc-dark flex items-center justify-center transition-all shrink-0">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        </button>
+
+        <button id="btnExportJson" type="button" title="Exportar JSON"
+          class="hidden sm:inline-flex px-2.5 h-8 rounded-full bg-white border border-black/10 text-[11px] font-mono font-bold text-pbc-deep hover:border-pbc-dark items-center justify-center transition-all shrink-0">
+          JSON
+        </button>
+
+        <a id="navComandosLink" href="../planificacion-comandos/index.html" title="Ir a Conducción del Campamento (Comandos 3×8)"
+          class="px-3 h-8 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark text-xs font-extrabold hover:bg-pbc hover:text-pbc-deep inline-flex items-center whitespace-nowrap transition-colors shrink-0">
+          Comandos 3×8 ↗
+        </a>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="p-4 sm:p-7 space-y-5">
+
+      <!-- =======================================================
+           VISTA 1: TABLERO KANBAN (ESTILO OFFERPOST)
+      ======================================================== -->
+      <section id="view-board" class="space-y-5">
+
+        <!-- Hero Header + Filtros en píldoras + CTA -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h1 class="font-brand text-3xl sm:text-4xl md:text-[42px] text-pbc-deep tracking-tight">
+              Tu red del Día 5, en un tablero
+            </h1>
+            <p id="narrativeSubtitle" class="text-xs sm:text-sm text-pbc-muted font-medium mt-1">
+              6 contactos compilados · 5 vinculados a ACDE listos para articular.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Filtros rápidos en píldoras -->
+            <div id="quickAreaFilters" class="inline-flex flex-wrap items-center gap-1 bg-white/90 border border-black/[0.07] p-1 rounded-full shadow-sm">
+              <!-- Generado dinámicamente -->
+            </div>
+
+            <button id="btnAcdeToggle" type="button"
+              class="px-3.5 py-2 rounded-full border border-black/10 bg-white text-xs font-bold text-pbc-deep hover:border-pbc-dark transition-all">
+              Solo ACDE
+            </button>
+
+            <button type="button" data-open-add
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon active:scale-95 transition-all shadow-sm">
+              <span>+ Sumar contacto</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Embudo Horizontal Minimalista -->
+        <div class="bg-white rounded-2xl border border-black/[0.06] px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 shadow-sm">
+          <span class="text-xs font-semibold text-pbc-muted whitespace-nowrap">Del relevamiento a la mesa del Día 5</span>
+          <div id="funnelTrack" class="flex-1 h-2 rounded-full bg-black/[0.05] overflow-hidden flex gap-0.5 p-0.5">
+            <!-- Segmentos dinámicos -->
+          </div>
+          <div id="funnelSummary" class="text-xs font-mono font-bold text-pbc-deep whitespace-nowrap">
+            6 registros → 5 red ACDE
+          </div>
+        </div>
+
+        <!-- 4 Columnas Kanban -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-start" id="kanbanGrid">
+          <!-- Columnas generadas por JS -->
+        </div>
+      </section>
+
+      <!-- =======================================================
+           VISTA 2: DIRECTORIO COMPACTO (TABLA RÁPIDA)
+      ======================================================== -->
+      <section id="view-directory" class="hidden space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="font-brand text-3xl text-pbc-deep">Directorio Completo</h2>
+            <p class="text-xs sm:text-sm text-pbc-muted">Acceso directo a cada LinkedIn, reseña, área profesional y copia rápida.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btnResetLocal" type="button" class="px-3.5 py-2 rounded-full bg-white border border-black/10 text-xs font-bold text-pbc-muted hover:text-pbc-deep transition-all">
+              Restaurar base
+            </button>
+            <button type="button" data-open-add class="px-4 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon transition-all">
+              + Sumar contacto
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-black/[0.07] overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-black/[0.06] bg-pbc-canvas text-[11px] font-mono uppercase tracking-wider text-pbc-muted">
+                  <th class="py-3 px-4">Nombre / Entidad</th>
+                  <th class="py-3 px-4">Rol y Organización</th>
+                  <th class="py-3 px-4">Vínculo ACDE</th>
+                  <th class="py-3 px-4">Áreas Día 5</th>
+                  <th class="py-3 px-4">Estado</th>
+                  <th class="py-3 px-4 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="directoryTableBody" class="divide-y divide-black/[0.05] text-sm">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           VISTA 3: MAPA DE COBERTURA (11 ÁREAS DEL DÍA 5)
+      ======================================================== -->
+      <section id="view-areas" class="hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <h2 class="font-brand text-3xl text-pbc-deep">Cobertura de las 11 Áreas del Día 5</h2>
+            <p class="text-xs sm:text-sm text-pbc-muted">Hacé clic en cualquier mesa profesional para filtrar el tablero y ver qué sectores todavía necesitan referentes empresarios.</p>
+          </div>
+          <span id="areasCoveragePill" class="px-3.5 py-1.5 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark font-mono text-xs font-bold whitespace-nowrap">
+            4 de 11 cubiertas
+          </span>
+        </div>
+
+        <div id="areasGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5"></div>
+      </section>
+
+      <!-- =======================================================
+           VISTA 4: FOCO INSTITUCIONAL ACDE ARGENTINA
+      ======================================================== -->
+      <section id="view-acde" class="hidden space-y-5">
+        <div class="grid lg:grid-cols-12 gap-5 items-stretch">
+          <div class="lg:col-span-7 bg-white rounded-3xl border border-black/[0.07] p-6 sm:p-8 flex flex-col justify-between gap-5 shadow-sm">
+            <div class="space-y-3">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pbc-soft text-pbc-dark font-mono text-[11px] font-bold uppercase tracking-wider">
+                Aliado Estratégico · Doctrina Social en la Empresa
+              </span>
+              <h2 class="font-brand text-3xl sm:text-4xl text-pbc-deep">
+                ACDE Argentina: empresarios con mirada cristiana
+              </h2>
+              <p class="text-sm text-pbc-muted leading-relaxed">
+                Fundada en la década de 1950 con fuerte impulso del Siervo de Dios <strong class="text-pbc-deep">Enrique Shaw</strong> e integrada a la red internacional <strong class="text-pbc-deep">UNIAPAC</strong>, ACDE acompaña a dirigentes, ejecutivos y emprendedores para vivir de modo coherente la fe y la empresa desde la primacía de la persona, el trabajo digno y el Bien Común.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-3 py-1.5 rounded-full bg-pbc-canvas border border-black/10 text-xs font-semibold text-pbc-deep">Encuentro Anual de Dirigentes</span>
+              <span class="px-3 py-1.5 rounded-full bg-pbc-canvas border border-black/10 text-xs font-semibold text-pbc-deep">ACDE Joven</span>
+              <span class="px-3 py-1.5 rounded-full bg-pbc-canvas border border-black/10 text-xs font-semibold text-pbc-deep">Portal Empresa</span>
+              <span class="px-3 py-1.5 rounded-full bg-pbc-canvas border border-black/10 text-xs font-semibold text-pbc-deep">Mentorías DSI</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 hero-mint-card rounded-3xl p-6 sm:p-8 text-white flex flex-col justify-between gap-5">
+            <div class="space-y-3">
+              <div class="font-mono text-[11px] uppercase tracking-widest text-white/80 font-bold">
+                Ficha Institucional Directa
+              </div>
+              <h3 class="font-brand text-3xl">Contacto & Autoridades</h3>
+              <ul class="space-y-2 text-sm text-white/95">
+                <li><strong>Presidente (2026–2029):</strong> Víctor Manuel Valle</li>
+                <li><strong>Directora Ejecutiva:</strong> Ana M. Pico Aguirre</li>
+                <li><strong>Asesor Doctrinal:</strong> P. Daniel Díaz</li>
+                <li><strong>Sede:</strong> Paraguay 580, 2.° piso, CABA</li>
+                <li><strong>Email:</strong> acde@acde.org.ar</li>
+                <li><strong>Tel:</strong> (+54 11) 5254-0030</li>
+              </ul>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <a href="https://acde.org.ar" target="_blank" rel="noopener noreferrer"
+                class="px-4 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold hover:opacity-90 transition-opacity">
+                Sitio web oficial ↗
+              </a>
+              <a href="https://www.linkedin.com/company/asociaci-n-cristiana-de-dirigentes-de-empresa/home/" target="_blank" rel="noopener noreferrer"
+                class="px-4 py-2 rounded-full bg-white text-pbc-deep text-xs font-bold hover:bg-pbc-soft transition-colors">
+                LinkedIn ACDE ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           VISTA 5: LOS 3 NIVELES DE PARTICIPACIÓN POLÍTICA
+      ======================================================== -->
+      <section id="view-levels" class="hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <h2 class="font-brand text-3xl text-pbc-deep">Los 3 Niveles de Participación Política</h2>
+            <p class="text-xs sm:text-sm text-pbc-muted">Segundo movimiento del campamento: construir la Ciudad de Dios en la ciudad de los hombres.</p>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-pbc-deep text-pbc font-mono text-[11px] font-bold uppercase tracking-wider">
+            Protagonistas del Bien Común 2027
+          </span>
+        </div>
+
+        <div id="levelsGrid" class="grid md:grid-cols-3 gap-4"></div>
+
+        <!-- Itinerario de 5 Pasos -->
+        <div class="bg-white rounded-2xl border border-black/[0.06] p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+          <span class="font-mono text-[11px] uppercase tracking-widest text-pbc-muted font-bold">Itinerario Formativo</span>
+          <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+            <span class="px-3 py-1 rounded-full bg-pbc-canvas text-pbc-muted">1. Ver la realidad</span>
+            <span class="text-pbc-dark">→</span>
+            <span class="px-3 py-1 rounded-full bg-pbc-canvas text-pbc-muted">2. Discernirla</span>
+            <span class="text-pbc-dark">→</span>
+            <span class="px-3 py-1 rounded-full bg-pbc-canvas text-pbc-muted">3. Asumir responsabilidad</span>
+            <span class="text-pbc-dark">→</span>
+            <span class="px-3 py-1 rounded-full bg-pbc text-pbc-deep font-extrabold">4. Participar (Día 5)</span>
+            <span class="text-pbc-dark">→</span>
+            <span class="px-3 py-1 rounded-full bg-pbc-canvas text-pbc-muted">5. Construir</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           VISTA 6: PLAN DE FORMACIÓN & IMAGEN DE NEHEMÍAS
+      ======================================================== -->
+      <section id="view-plan" class="hidden space-y-6">
+        <!-- Encabezado + CTA Modo Presentación -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded-full bg-pbc-soft text-pbc-dark font-mono text-[10px] font-bold uppercase tracking-wider">
+                Planificación General · Magnifica Humanitas
+              </span>
+            </div>
+            <h2 class="font-brand text-3xl sm:text-4xl text-pbc-deep">
+              Plan de Formación · Día por Día
+            </h2>
+            <p class="text-xs sm:text-sm text-pbc-muted mt-0.5 max-w-2xl">
+              Itinerario completo del campamento: desde la herida de la ciudad hasta la reconstrucción del propio tramo de muralla.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <div id="planMovementFilter" class="inline-flex items-center gap-1 bg-white border border-black/[0.07] p-1 rounded-full shadow-sm">
+              <button type="button" data-mov="ALL" class="px-3 py-1.5 rounded-full text-xs font-bold bg-pbc-deep text-white transition-all">Todos</button>
+              <button type="button" data-mov="mov-1" class="px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep transition-all">Mov. I · Diagnóstico</button>
+              <button type="button" data-mov="mov-2" class="px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep transition-all">Mov. II · Edificar</button>
+            </div>
+
+            <button id="btnOpenPresentation" type="button"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon active:scale-95 transition-all shadow-sm">
+              <span>▶ Modo Presentación</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- BLOQUE A: DIAGRAMA CONCEPTUAL NEHEMÍAS VS. BABEL + TRAMOS DE MURALLA -->
+        <div id="nehemiasDiagramWrap" class="bg-white rounded-3xl border border-black/[0.07] p-5 sm:p-7 space-y-5 shadow-sm">
+          <!-- Renderizado dinámico desde plan-formacion.js -->
+        </div>
+
+        <!-- BLOQUE B: RECORRIDO DÍA POR DÍA (STEPPER + TARJETA DUAL) -->
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 class="font-brand text-2xl sm:text-3xl text-pbc-deep">Recorrido Día por Día</h3>
+              <p class="text-xs text-pbc-muted">Elegí un día para ver su síntesis, pregunta central, hitos y desarrollo doctrinal desplegable.</p>
+            </div>
+            <span class="font-mono text-[11px] font-bold text-pbc-dark bg-pbc-soft px-3 py-1 rounded-full">
+              2 Movimientos · Días 1 al 8
+            </span>
+          </div>
+
+          <!-- Selector de Días en píldoras -->
+          <div id="planDayPills" class="flex flex-wrap gap-1.5 bg-white/80 border border-black/[0.06] p-1.5 rounded-2xl">
+          </div>
+
+          <!-- Tarjeta Activa del Día -->
+          <div id="planDayStage"></div>
+
+          <!-- Mapa compacto de los 7 bloques de días -->
+          <div id="planDaysOverview" class="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-2.5 pt-1"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- TOAST FLOTANTE OSCURO (ESTILO OFFERPOST) -->
+    <div id="floatingToast" class="floating-toast fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-3 pl-3 pr-2 py-2 rounded-full text-white text-xs max-w-[92vw]">
+      <span class="w-6 h-6 rounded-full bg-pbc text-pbc-deep flex items-center justify-center font-bold shrink-0">✓</span>
+      <span id="toastText" class="font-medium truncate">Actualizado</span>
+      <button id="toastActionBtn" type="button" class="hidden px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold text-[11px] shrink-0">
+        Ver ficha
+      </button>
+    </div>
+  </div>
+
+  <!-- PIE DISCRETO -->
+  <footer class="mt-4 text-center text-[11px] font-mono text-pbc-deep/75 font-semibold">
+    PROTAGONISTAS DEL BIEN COMÚN 2027 · FASTA MENDOZA · DÍA 5 (NACIÓN)
+  </footer>
+
+  <!-- MODAL FICHA COMPLETA -->
+  <div id="detailModal" role="dialog" aria-modal="true" aria-label="Ficha de contacto" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pbc-deep/55 backdrop-blur-sm">
+    <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white border border-black/10 shadow-2xl p-6 sm:p-8 text-pbc-deep">
+      <button id="closeDetailModal" type="button" aria-label="Cerrar ficha"
+        class="sticky float-right top-0 z-20 w-9 h-9 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep hover:bg-pbc hover:border-pbc-dark flex items-center justify-center font-bold cursor-pointer transition-colors">
+        ✕
+      </button>
+      <div id="detailModalContent" class="space-y-5"></div>
+    </div>
+  </div>
+
+  <!-- MODAL SUMAR CONTACTO -->
+  <div id="addModal" role="dialog" aria-modal="true" aria-label="Sumar nuevo contacto" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pbc-deep/55 backdrop-blur-sm">
+    <div class="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white border border-black/10 shadow-2xl p-6 sm:p-7 text-pbc-deep">
+      <button id="closeAddModal" type="button" aria-label="Cerrar formulario"
+        class="sticky float-right top-0 z-20 w-9 h-9 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep hover:bg-pbc flex items-center justify-center font-bold cursor-pointer">
+        ✕
+      </button>
+
+      <span class="px-2.5 py-1 rounded-full bg-pbc-soft text-pbc-dark font-mono text-[10px] font-bold uppercase tracking-wider">Ampliar Red Día 5</span>
+      <h3 class="font-brand text-3xl text-pbc-deep mt-2 mb-4">Sumar nuevo contacto</h3>
+
+      <form id="addContactForm" class="space-y-3.5">
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-pbc-deep mb-1">Nombre completo / Entidad *</label>
+            <input name="nombre" required placeholder="Ej: Juan Pérez" class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-pbc-deep mb-1">Categoría *</label>
+            <select name="tipo" class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm focus:outline-none focus:border-pbc-dark">
+              <option value="Alta Dirección / Empresa">Alta Dirección / Empresa</option>
+              <option value="Seguros & Finanzas">Seguros & Finanzas</option>
+              <option value="Comunicación & Medios">Comunicación & Medios</option>
+              <option value="Tecnología & Innovación">Tecnología & Innovación</option>
+              <option value="Sustentabilidad & Energía">Sustentabilidad & Energía</option>
+              <option value="Derecho & Institucional">Derecho & Institucional</option>
+              <option value="Educación & Salud">Educación & Salud</option>
+              <option value="Organización">Organización</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-pbc-deep mb-1">Rol actual *</label>
+            <input name="rolActual" required placeholder="Ej: Director / Fundador" class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-pbc-deep mb-1">Empresa / Organización *</label>
+            <input name="organizacion" required placeholder="Ej: ACDE · Empresa X" class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Link de LinkedIn *</label>
+          <input name="linkedin" type="url" required placeholder="https://www.linkedin.com/in/..." class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Breve reseña del perfil *</label>
+          <textarea name="resena" rows="3" required placeholder="Trayectoria, empresa, mirada cristiana o impacto..." class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm focus:outline-none focus:border-pbc-dark"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1">Vínculo cristiano / ACDE</label>
+          <input name="vinculoCristiano" placeholder="Ej: Socio ACDE Joven / Mentor..." class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm focus:outline-none focus:border-pbc-dark" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-pbc-deep mb-1.5">Áreas del Día 5 vinculadas</label>
+          <div id="addFormAreas" class="grid sm:grid-cols-2 gap-1.5 max-h-32 overflow-y-auto p-2.5 rounded-xl bg-pbc-canvas border border-black/10 text-xs"></div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3 items-center">
+          <div>
+            <label class="block text-xs font-bold text-pbc-deep mb-1">Columna inicial</label>
+            <select id="addEstadoSelect" name="estado" class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/10 text-sm focus:outline-none focus:border-pbc-dark">
+              <option value="Por relevar">Por relevar</option>
+              <option value="Identificado" selected>Identificado</option>
+              <option value="Prioritario">Prioritario</option>
+              <option value="Contactado">Contactado</option>
+              <option value="Confirmado">Confirmado</option>
+            </select>
+          </div>
+          <label class="flex items-center gap-2 pt-5 text-xs font-bold text-pbc-deep cursor-pointer">
+            <input name="validadoAcde" type="checkbox" class="accent-[#3AA37C] w-4 h-4" />
+            Vinculado a ACDE Argentina
+          </label>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="cancelAddBtn" class="px-4 py-2 rounded-full border border-black/15 text-xs font-bold text-pbc-muted hover:text-pbc-deep">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon">
+            Guardar en el tablero
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL MODO PRESENTACIÓN (SLIDES DECK) -->
+  <div id="presentationModal" role="dialog" aria-modal="true" aria-label="Presentación Plan de Formación 2027"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 md:p-10 bg-pbc-deep/75 backdrop-blur-md">
+    <div class="app-shell w-full max-w-5xl rounded-[28px] overflow-hidden flex flex-col max-h-[92vh]">
+      <!-- Top Bar del Deck -->
+      <div class="px-5 sm:px-7 py-3.5 border-b border-black/[0.06] bg-white/85 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="px-2.5 py-1 rounded-full bg-pbc text-pbc-deep font-mono text-[10px] font-extrabold uppercase tracking-wider shrink-0">
+            Deck 2027
+          </span>
+          <span id="slideCounter" class="font-mono text-xs font-bold text-pbc-muted">01 / 10</span>
+          <span id="slideBreadcrumb" class="text-xs font-bold text-pbc-deep truncate hidden sm:inline"></span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="hidden md:inline text-[11px] font-mono text-pbc-muted">Usá ← → para navegar</span>
+          <button id="closePresentationModal" type="button" aria-label="Cerrar presentación"
+            class="w-8 h-8 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep hover:bg-pbc flex items-center justify-center font-bold cursor-pointer">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de progreso -->
+      <div class="h-1 bg-black/[0.05] w-full">
+        <div id="slideProgressBar" class="h-full bg-pbc-dark transition-all duration-300" style="width: 10%"></div>
+      </div>
+
+      <!-- Slide Stage -->
+      <div id="slideStage" class="p-6 sm:p-10 overflow-y-auto flex-1 bg-pbc-canvas/70"></div>
+
+      <!-- Footer Controles -->
+      <div class="px-5 sm:px-7 py-3.5 border-t border-black/[0.06] bg-white/85 flex items-center justify-between gap-3">
+        <button id="prevSlideBtn" type="button"
+          class="px-4 py-2 rounded-full bg-white border border-black/15 text-xs font-bold text-pbc-deep hover:border-pbc-dark disabled:opacity-40 transition-all">
+          ← Anterior
+        </button>
+
+        <div id="slideDots" class="hidden sm:flex items-center gap-1.5"></div>
+
+        <button id="nextSlideBtn" type="button"
+          class="px-4 py-2 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon disabled:opacity-40 transition-all">
+          Siguiente →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Datos locales embebidos -->
+  <script src="./data/contactos.js"></script>
+  <script src="./data/plan-formacion.js"></script>
+  <script>
+    (function () {
+      const STORAGE_KEY = 'pbc2027_dia5_contactos_v3';
+      const baseData = window.PBC_DIA5_DATA || { nivelesParticipacion: [], areasDia5: [], contactos: [] };
+
+      const COLUMNS = [
+        { id: 'Por relevar', label: 'Por relevar', dot: 'bg-amber-400', statuses: ['Por relevar'], targetStatus: 'Por relevar' },
+        { id: 'Identificado', label: 'Identificados', dot: 'bg-sky-500', statuses: ['Identificado'], targetStatus: 'Identificado' },
+        { id: 'Prioritario', label: 'Prioritarios', dot: 'bg-pbc-dark', statuses: ['Prioritario'], targetStatus: 'Prioritario' },
+        { id: 'Confirmado', label: 'En gestión / Aliados', dot: 'bg-pbc', statuses: ['Contactado', 'Confirmado'], targetStatus: 'Confirmado' }
+      ];
+
+      const QUICK_AREA_FILTERS = [
+        { label: 'Todas', value: 'ALL' },
+        { label: 'Tecnología', value: 'Tecnología' },
+        { label: 'Economía y RR. HH.', value: 'Ciencias Económicas y Recursos Humanos' },
+        { label: 'Comunicación', value: 'Comunicación, Periodismo y Marketing' }
+      ];
+
+      const SQUIRCLE_PALETTES = [
+        'bg-[#0A0E0D] text-[#64D5AB]',
+        'bg-[#3AA37C] text-white',
+        'bg-[#2563EB] text-white',
+        'bg-[#F59E0B] text-white',
+        'bg-[#7C3AED] text-white',
+        'bg-[#0D9488] text-white'
+      ];
+
+      let state = {
+        contactos: loadContactos(),
+        activeTab: 'board',
+        search: '',
+        area: 'ALL',
+        acdeOnly: false,
+        lastMovedMessage: null
+      };
+
+      function loadContactos() {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (_) {}
+        return JSON.parse(JSON.stringify(baseData.contactos));
+      }
+
+      function saveContactos() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state.contactos));
+        } catch (_) {}
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function getInitials(name) {
+        const parts = String(name || '').trim().split(/\s+/);
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+
+      function squircleClassFor(id) {
+        let sum = 0;
+        for (let i = 0; i < id.length; i++) sum += id.charCodeAt(i);
+        return SQUIRCLE_PALETTES[sum % SQUIRCLE_PALETTES.length];
+      }
+
+      function shortAreaTag(area) {
+        if (!area) return 'General';
+        if (area.includes('Comunicación')) return 'Comunicación';
+        if (area.includes('Económicas')) return 'Economía & RRHH';
+        if (area.includes('Políticas')) return 'Políticas & RRII';
+        if (area.includes('Educación')) return 'Educación';
+        return area;
+      }
+
+      function showFloatingToast(message, actionContactId) {
+        const el = document.getElementById('floatingToast');
+        const txt = document.getElementById('toastText');
+        const btn = document.getElementById('toastActionBtn');
+        txt.textContent = message;
+        if (actionContactId) {
+          btn.classList.remove('hidden');
+          btn.onclick = () => {
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+            openDetailModal(actionContactId);
+          };
+        } else {
+          btn.classList.add('hidden');
+        }
+        el.classList.remove('hidden');
+        el.classList.add('flex');
+        clearTimeout(el._t);
+        el._t = setTimeout(() => {
+          el.classList.add('hidden');
+          el.classList.remove('flex');
+        }, 3800);
+      }
+
+      function getFilteredContactos() {
+        const q = state.search.trim().toLowerCase();
+        return state.contactos.filter(c => {
+          if (state.acdeOnly && !c.validadoAcde) return false;
+          if (state.area !== 'ALL' && !(c.areasDia5 || []).includes(state.area)) return false;
+          if (q) {
+            const hay = [
+              c.nombre, c.subtitulo, c.rolActual, c.organizacion,
+              c.resena, c.vinculoCristiano, c.formacion,
+              ...(c.tags || []), ...(c.areasDia5 || [])
+            ].join(' ').toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+      }
+
+      function switchTab(tab) {
+        state.activeTab = tab;
+        ['board', 'directory', 'areas', 'acde', 'levels', 'plan'].forEach(t => {
+          document.getElementById('view-' + t).classList.toggle('hidden', t !== tab);
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          const active = btn.getAttribute('data-tab') === tab;
+          btn.className = active
+            ? 'tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap bg-pbc-deep text-white shadow-sm'
+            : 'tab-btn px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap text-pbc-muted hover:text-pbc-deep';
+        });
+      }
+
+      function renderQuickFilters() {
+        const container = document.getElementById('quickAreaFilters');
+        const list = [...QUICK_AREA_FILTERS];
+        if (state.area !== 'ALL' && !list.some(x => x.value === state.area)) {
+          list.push({ label: shortAreaTag(state.area), value: state.area });
+        }
+
+        container.innerHTML = list.map(f => {
+          const active = state.area === f.value;
+          return `
+            <button type="button" data-qarea="${escapeHtml(f.value)}"
+              class="px-3 py-1.5 rounded-full text-xs font-bold transition-all ${active ? 'bg-pbc-deep text-white' : 'text-pbc-muted hover:text-pbc-deep'}">
+              ${escapeHtml(f.label)}
+            </button>
+          `;
+        }).join('');
+
+        container.querySelectorAll('button[data-qarea]').forEach(btn => {
+          btn.onclick = () => {
+            state.area = btn.getAttribute('data-qarea');
+            renderAll();
+          };
+        });
+
+        const acdeBtn = document.getElementById('btnAcdeToggle');
+        acdeBtn.className = state.acdeOnly
+          ? 'px-3.5 py-2 rounded-full border border-pbc-dark bg-pbc text-pbc-deep text-xs font-extrabold transition-all'
+          : 'px-3.5 py-2 rounded-full border border-black/10 bg-white text-xs font-bold text-pbc-deep hover:border-pbc-dark transition-all';
+      }
+
+      function renderFunnelAndNarrative(filtered) {
+        const total = state.contactos.length;
+        const acdeCount = state.contactos.filter(c => c.validadoAcde).length;
+        const coveredAreas = new Set();
+        state.contactos.forEach(c => (c.areasDia5 || []).forEach(a => coveredAreas.add(a)));
+        document.getElementById('tabAreasCount').textContent = `${coveredAreas.size}/${baseData.areasDia5.length}`;
+
+        const sub = document.getElementById('narrativeSubtitle');
+        if (state.lastMovedMessage) {
+          sub.textContent = `${total} referentes en juego. ${state.lastMovedMessage}`;
+        } else {
+          sub.textContent = `${filtered.length} de ${total} registros visibles · ${acdeCount} vinculados a ACDE listos para articular.`;
+        }
+
+        // Segmentos del embudo
+        const counts = {
+          porRelevar: state.contactos.filter(c => c.estado === 'Por relevar').length,
+          identificado: state.contactos.filter(c => c.estado === 'Identificado').length,
+          prioritario: state.contactos.filter(c => c.estado === 'Prioritario' && c.tipo !== 'Organización').length,
+          aliados: state.contactos.filter(c => c.tipo === 'Organización' || c.estado === 'Contactado' || c.estado === 'Confirmado').length
+        };
+
+        const track = document.getElementById('funnelTrack');
+        const denom = Math.max(total, 1);
+        track.innerHTML = [
+          { count: counts.porRelevar, color: 'bg-amber-400', title: 'Por relevar' },
+          { count: counts.identificado, color: 'bg-sky-500', title: 'Identificados' },
+          { count: counts.prioritario, color: 'bg-pbc-dark', title: 'Prioritarios' },
+          { count: counts.aliados, color: 'bg-pbc', title: 'En gestión / Aliados' }
+        ].filter(s => s.count > 0).map(s => `
+          <div title="${s.title}: ${s.count}" class="${s.color} h-full rounded-full transition-all duration-300" style="width: ${(s.count / denom) * 100}%"></div>
+        `).join('');
+
+        document.getElementById('funnelSummary').textContent = `${total} registros → ${acdeCount} red ACDE`;
+      }
+
+      function renderKanban(filtered) {
+        const grid = document.getElementById('kanbanGrid');
+        const orgHero = filtered.find(c => c.tipo === 'Organización');
+        const people = filtered.filter(c => c.tipo !== 'Organización');
+
+        const coveredAreas = new Set();
+        state.contactos.forEach(c => (c.areasDia5 || []).forEach(a => coveredAreas.add(a)));
+        const missingCount = Math.max(baseData.areasDia5.length - coveredAreas.size, 0);
+
+        grid.innerHTML = COLUMNS.map(col => {
+          const items = people.filter(c => col.statuses.includes(c.estado));
+          const colCount = items.length + (col.id === 'Confirmado' && orgHero ? 1 : 0);
+
+          const cardsHtml = items.map(c => {
+            const firstArea = (c.areasDia5 && c.areasDia5[0]) ? shortAreaTag(c.areasDia5[0]) : c.tipo;
+            const statusDot = c.validadoAcde ? 'ACDE validado' : 'Por validar red';
+            return `
+              <article draggable="true" data-card-id="${escapeHtml(c.id)}"
+                class="offer-card rounded-2xl p-3.5 cursor-pointer select-none group">
+                <div class="flex items-start gap-3">
+                  <div class="w-9 h-9 rounded-xl ${squircleClassFor(c.id)} font-extrabold text-xs tracking-tight flex items-center justify-center shrink-0 shadow-sm">
+                    ${escapeHtml(getInitials(c.nombre))}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center justify-between gap-1.5">
+                      <h3 class="text-sm font-extrabold text-pbc-deep truncate group-hover:text-pbc-dark transition-colors">
+                        ${escapeHtml(c.nombre)}
+                      </h3>
+                      ${c.validadoAcde ? '<span class="w-2 h-2 rounded-full bg-pbc-dark shrink-0" title="Vinculado a ACDE"></span>' : ''}
+                    </div>
+                    <p class="text-xs text-pbc-muted truncate mt-0.5">
+                      ${escapeHtml(c.rolActual)}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="mt-3 pt-2.5 border-t border-black/[0.05] flex items-center justify-between gap-2">
+                  <span class="text-[11px] font-medium text-pbc-muted truncate flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full ${c.validadoAcde ? 'bg-pbc-dark' : 'bg-amber-400'}"></span>
+                    ${escapeHtml(statusDot)}
+                  </span>
+                  <span class="px-2 py-0.5 rounded-md bg-pbc-canvas border border-black/[0.06] text-[10px] font-bold text-pbc-deep whitespace-nowrap">
+                    ${escapeHtml(firstArea)}
+                  </span>
+                </div>
+              </article>
+            `;
+          }).join('');
+
+          const heroColExtra = col.id === 'Confirmado' ? `
+            ${orgHero ? `
+              <article data-card-id="${escapeHtml(orgHero.id)}" class="hero-mint-card rounded-2xl p-4 text-white cursor-pointer">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-lg bg-white text-pbc-dark font-brand text-sm flex items-center justify-center shrink-0">AC</div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-extrabold truncate">${escapeHtml(orgHero.nombre)}</div>
+                      <div class="text-[11px] text-white/80 truncate">Red de Empresarios Cristianos</div>
+                    </div>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-mono font-bold">MADRE</span>
+                </div>
+                <div class="mt-3">
+                  <div class="font-brand text-3xl tracking-tight">${state.contactos.filter(x => x.validadoAcde).length} en red ACDE</div>
+                  <div class="text-[11px] text-white/85 mt-0.5">Doctrina Social · UNIAPAC · ACDE Joven</div>
+                </div>
+                <div class="mt-3 flex items-center justify-between gap-2">
+                  <div class="flex gap-1 flex-1">
+                    <span class="h-1 flex-1 rounded-full bg-white"></span>
+                    <span class="h-1 flex-1 rounded-full bg-white"></span>
+                    <span class="h-1 flex-1 rounded-full bg-white/80"></span>
+                    <span class="h-1 flex-1 rounded-full bg-white/35"></span>
+                  </div>
+                  <span class="text-[10px] font-mono font-bold text-white/90">Ver ficha ↗</span>
+                </div>
+              </article>
+            ` : ''}
+
+            ${items.length === 0 ? `
+              <div class="rounded-2xl border border-dashed border-black/15 py-5 px-3 text-center text-[11px] font-semibold text-pbc-muted">
+                Arrastrá acá tu próximo referente confirmado
+              </div>
+            ` : ''}
+
+            <div class="offer-card rounded-2xl p-3.5 space-y-2.5">
+              <div class="flex items-center gap-1.5 text-[11px] font-bold text-pbc-dark">
+                <span class="w-1.5 h-1.5 rounded-full bg-pbc-dark"></span>
+                <span>${missingCount === 0 ? 'Cobertura de Mesas Día 5' : 'Antes de cerrar las mesas'}</span>
+              </div>
+              <p class="text-xs text-pbc-deep leading-snug font-medium">
+                ${missingCount === 0
+                  ? '¡<strong>11/11 áreas</strong> cubiertas con referentes! Validá links directos de LinkedIn o sumá contactos en Mendoza.'
+                  : `Faltan referentes en <strong>${missingCount} áreas</strong> del Día 5.`}
+              </p>
+              <div class="flex items-center gap-2 pt-0.5">
+                <button type="button" id="nudgeAreasBtn" class="px-3 py-1.5 rounded-full bg-pbc-deep text-white text-[11px] font-bold hover:bg-pbc-carbon transition-colors">
+                  ${missingCount === 0 ? 'Ver mapa 11/11' : 'Ver pendientes'}
+                </button>
+                <button type="button" data-open-add class="px-3 py-1.5 rounded-full bg-pbc-canvas text-pbc-muted hover:text-pbc-deep text-[11px] font-bold transition-colors">
+                  Sumar
+                </button>
+              </div>
+            </div>
+          ` : '';
+
+          return `
+            <div class="kanban-lane rounded-2xl p-3 space-y-2.5 min-h-[260px] transition-colors" data-col-status="${escapeHtml(col.targetStatus)}">
+              <div class="flex items-center justify-between px-1 py-0.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full ${col.dot}"></span>
+                  <h2 class="text-xs font-extrabold text-pbc-deep tracking-tight">${escapeHtml(col.label)}</h2>
+                  <span class="px-1.5 py-0.5 rounded-full bg-white/90 border border-black/[0.06] font-mono text-[10px] font-bold text-pbc-muted">${colCount}</span>
+                </div>
+                <button type="button" data-add-status="${escapeHtml(col.targetStatus)}" title="Sumar en ${escapeHtml(col.label)}"
+                  class="w-6 h-6 rounded-full hover:bg-white text-pbc-muted hover:text-pbc-deep flex items-center justify-center text-sm font-bold transition-colors">
+                  +
+                </button>
+              </div>
+              <div class="space-y-2.5">
+                ${cardsHtml}
+                ${heroColExtra}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        bindKanbanInteractions();
+      }
+
+      function bindKanbanInteractions() {
+        let draggedId = null;
+
+        document.querySelectorAll('[data-card-id]').forEach(card => {
+          card.addEventListener('click', () => {
+            openDetailModal(card.getAttribute('data-card-id'));
+          });
+
+          if (card.getAttribute('draggable') === 'true') {
+            card.addEventListener('dragstart', (e) => {
+              draggedId = card.getAttribute('data-card-id');
+              card.classList.add('is-dragging');
+              e.dataTransfer.effectAllowed = 'move';
+              e.dataTransfer.setData('text/plain', draggedId);
+            });
+            card.addEventListener('dragend', () => {
+              card.classList.remove('is-dragging');
+              document.querySelectorAll('.kanban-lane').forEach(l => l.classList.remove('drag-over'));
+            });
+          }
+        });
+
+        document.querySelectorAll('.kanban-lane').forEach(lane => {
+          lane.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            lane.classList.add('drag-over');
+          });
+          lane.addEventListener('dragleave', () => {
+            lane.classList.remove('drag-over');
+          });
+          lane.addEventListener('drop', (e) => {
+            e.preventDefault();
+            lane.classList.remove('drag-over');
+            const id = e.dataTransfer.getData('text/plain') || draggedId;
+            const targetStatus = lane.getAttribute('data-col-status');
+            if (!id || !targetStatus) return;
+
+            const contact = state.contactos.find(c => c.id === id);
+            if (!contact || contact.estado === targetStatus) return;
+
+            contact.estado = targetStatus;
+            state.lastMovedMessage = `${contact.nombre} pasó a «${targetStatus}».`;
+            saveContactos();
+            renderAll();
+            showFloatingToast(`${contact.nombre} · Movido a ${targetStatus}`, contact.id);
+          });
+        });
+
+        document.querySelectorAll('[data-add-status]').forEach(btn => {
+          btn.onclick = () => openAddModal(btn.getAttribute('data-add-status'));
+        });
+        document.querySelectorAll('[data-open-add]').forEach(btn => {
+          btn.onclick = () => openAddModal('Identificado');
+        });
+        const nudgeBtn = document.getElementById('nudgeAreasBtn');
+        if (nudgeBtn) nudgeBtn.onclick = () => switchTab('areas');
+      }
+
+      function renderDirectoryTable(filtered) {
+        const tbody = document.getElementById('directoryTableBody');
+        tbody.innerHTML = filtered.map(c => `
+          <tr class="hover:bg-pbc-canvas/70 transition-colors">
+            <td class="py-3 px-4 whitespace-nowrap">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg ${squircleClassFor(c.id)} font-extrabold text-[11px] tracking-tight flex items-center justify-center shrink-0">
+                  ${escapeHtml(getInitials(c.nombre))}
+                </div>
+                <div>
+                  <div class="font-bold text-pbc-deep">${escapeHtml(c.nombre)}</div>
+                  <div class="text-[11px] text-pbc-muted">${escapeHtml(c.organizacion)}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-xs text-pbc-deep max-w-xs">${escapeHtml(c.rolActual)}</td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              ${c.validadoAcde
+                ? '<span class="inline-flex px-2.5 py-0.5 rounded-full bg-pbc-soft border border-pbc-dark/25 text-pbc-dark font-mono text-[10px] font-bold uppercase whitespace-nowrap">Sí · ACDE</span>'
+                : '<span class="text-xs text-pbc-muted whitespace-nowrap">Por validar</span>'}
+            </td>
+            <td class="py-3 px-4 text-xs text-pbc-muted">${(c.areasDia5 || []).map(a => shortAreaTag(a)).join(' · ')}</td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="inline-flex px-2.5 py-0.5 rounded-full bg-pbc-canvas border border-black/10 font-mono text-[10px] font-bold text-pbc-deep whitespace-nowrap">
+                ${escapeHtml(c.estado)}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
+              ${c.linkedin
+                ? `<a href="${escapeHtml(c.linkedin)}" target="_blank" rel="noopener noreferrer" class="inline-block px-3 py-1 rounded-full bg-pbc-deep text-white font-bold text-[11px] hover:bg-pbc-carbon">LinkedIn ↗</a>
+                   <button type="button" data-copy-url="${escapeHtml(c.linkedin)}" class="inline-block px-2.5 py-1 rounded-full bg-pbc-canvas border border-black/10 text-pbc-deep font-bold text-[11px] hover:border-pbc-dark">Copiar</button>`
+                : `<a href="${escapeHtml(c.linkedinSearch || 'https://www.linkedin.com')}" target="_blank" rel="noopener noreferrer" class="inline-block px-3 py-1 rounded-full bg-pbc-canvas border border-black/15 text-pbc-deep font-bold text-[11px] hover:border-pbc-dark">Buscar ↗</a>`}
+              <button type="button" data-open-ficha="${escapeHtml(c.id)}"
+                class="inline-block px-2.5 py-1 rounded-full bg-pbc-soft text-pbc-dark font-bold text-[11px] hover:bg-pbc hover:text-pbc-deep">Ficha</button>
+            </td>
+          </tr>
+        `).join('');
+
+        tbody.querySelectorAll('[data-copy-url]').forEach(btn => {
+          btn.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(btn.getAttribute('data-copy-url'));
+              showFloatingToast('Enlace de LinkedIn copiado');
+            } catch (_) {
+              showFloatingToast('Copiado no disponible en este navegador');
+            }
+          };
+        });
+        tbody.querySelectorAll('[data-open-ficha]').forEach(btn => {
+          btn.onclick = () => openDetailModal(btn.getAttribute('data-open-ficha'));
+        });
+      }
+
+      function renderAreasView() {
+        const coveredSet = new Set();
+        state.contactos.forEach(c => (c.areasDia5 || []).forEach(a => coveredSet.add(a)));
+        document.getElementById('areasCoveragePill').textContent = `${coveredSet.size} de ${baseData.areasDia5.length} cubiertas`;
+
+        const grid = document.getElementById('areasGrid');
+        grid.innerHTML = baseData.areasDia5.map(area => {
+          const matched = state.contactos.filter(c => (c.areasDia5 || []).includes(area));
+          const covered = matched.length > 0;
+          return `
+            <button type="button" data-area-jump="${escapeHtml(area)}"
+              class="offer-card rounded-2xl p-4 text-left flex flex-col justify-between gap-3 ${covered ? '' : 'opacity-85'}">
+              <div class="flex items-center justify-between gap-2 w-full">
+                <span class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase ${covered ? 'text-pbc-dark' : 'text-amber-600'}">
+                  <span class="w-2 h-2 rounded-full ${covered ? 'bg-pbc-dark' : 'bg-amber-400'}"></span>
+                  ${covered ? 'Con referentes' : 'Pendiente buscar'}
+                </span>
+                <span class="px-2 py-0.5 rounded-full bg-pbc-canvas font-mono text-[11px] font-bold text-pbc-deep">${matched.length}</span>
+              </div>
+              <div>
+                <div class="text-sm font-extrabold text-pbc-deep leading-snug">${escapeHtml(area)}</div>
+                <div class="text-xs text-pbc-muted mt-1 truncate">
+                  ${covered ? matched.map(m => m.nombre).join(', ') : 'Sin contactos asignados todavía'}
+                </div>
+              </div>
+            </button>
+          `;
+        }).join('');
+
+        grid.querySelectorAll('[data-area-jump]').forEach(btn => {
+          btn.onclick = () => {
+            state.area = btn.getAttribute('data-area-jump');
+            switchTab('board');
+            renderAll();
+          };
+        });
+      }
+
+      function renderLevelsView() {
+        const grid = document.getElementById('levelsGrid');
+        grid.innerHTML = baseData.nivelesParticipacion.map((n, idx) => {
+          const active = n.activo;
+          return `
+            <article class="${active ? 'hero-mint-card text-white' : 'bg-white border border-black/[0.07] text-pbc-deep shadow-sm'} rounded-3xl p-6 flex flex-col justify-between gap-4">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase ${active ? 'bg-white/20 text-white' : 'bg-pbc-canvas text-pbc-muted'}">
+                    Nivel 0${idx + 1} · ${escapeHtml(n.dias)}
+                  </span>
+                  ${active ? '<span class="font-mono text-[10px] uppercase font-bold text-white">● En curso</span>' : ''}
+                </div>
+                <h3 class="font-brand text-3xl sm:text-4xl">${escapeHtml(n.titulo)}</h3>
+                <div class="text-xs font-extrabold uppercase tracking-wider ${active ? 'text-white/90' : 'text-pbc-dark'}">
+                  ${escapeHtml(n.subtitulo)}
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed ${active ? 'text-white/90' : 'text-pbc-muted'}">
+                ${escapeHtml(n.descripcion)}
+              </p>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function populateAddAreas() {
+        const box = document.getElementById('addFormAreas');
+        box.innerHTML = baseData.areasDia5.map(area => `
+          <label class="flex items-center gap-2 cursor-pointer text-pbc-deep">
+            <input type="checkbox" name="areas" value="${escapeHtml(area)}" class="accent-[#3AA37C]" />
+            <span>${escapeHtml(area)}</span>
+          </label>
+        `).join('');
+      }
+
+      function openDetailModal(id) {
+        const c = state.contactos.find(x => x.id === id);
+        if (!c) return;
+        const modal = document.getElementById('detailModal');
+        const content = document.getElementById('detailModalContent');
+
+        content.innerHTML = `
+          <div class="flex flex-wrap items-center gap-2 pr-10">
+            <span class="px-2.5 py-1 rounded-full bg-pbc-canvas border border-black/10 font-mono text-[10px] font-bold uppercase text-pbc-muted">${escapeHtml(c.tipo)}</span>
+            ${c.validadoAcde ? '<span class="px-2.5 py-1 rounded-full bg-pbc text-pbc-deep font-mono text-[10px] font-extrabold uppercase">Red ACDE Argentina</span>' : ''}
+          </div>
+
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl ${squircleClassFor(c.id)} font-brand text-xl flex items-center justify-center shrink-0">
+              ${escapeHtml(getInitials(c.nombre))}
+            </div>
+            <div>
+              <h3 class="font-brand text-3xl text-pbc-deep leading-none">${escapeHtml(c.nombre)}</h3>
+              <p class="text-xs sm:text-sm font-bold text-pbc-dark mt-1">${escapeHtml(c.subtitulo || c.rolActual)}</p>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-2.5 text-xs bg-pbc-canvas border border-black/[0.06] rounded-2xl p-4">
+            <div><span class="text-pbc-muted font-mono uppercase">Organización:</span> <strong class="text-pbc-deep">${escapeHtml(c.organizacion)}</strong></div>
+            <div><span class="text-pbc-muted font-mono uppercase">Ubicación:</span> <strong class="text-pbc-deep">${escapeHtml(c.sede || 'Argentina')}</strong></div>
+            ${c.formacion ? `<div class="sm:col-span-2"><span class="text-pbc-muted font-mono uppercase">Formación:</span> <span class="text-pbc-deep font-medium">${escapeHtml(c.formacion)}</span></div>` : ''}
+            ${c.correo ? `<div><span class="text-pbc-muted font-mono uppercase">Email:</span> <strong class="text-pbc-dark">${escapeHtml(c.correo)}</strong></div>` : ''}
+            ${c.telefono ? `<div><span class="text-pbc-muted font-mono uppercase">Tel:</span> <strong class="text-pbc-deep">${escapeHtml(c.telefono)}</strong></div>` : ''}
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-muted font-bold">Reseña Profesional</div>
+            <p class="text-sm text-pbc-deep/90 leading-relaxed">${escapeHtml(c.resena)}</p>
+          </div>
+
+          ${(c.trayectoria && c.trayectoria.length) ? `
+            <div class="space-y-1.5">
+              <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-muted font-bold">Hitos de Trayectoria</div>
+              <ul class="space-y-1 text-sm text-pbc-deep/85 list-disc pl-5">
+                ${c.trayectoria.map(t => `<li>${escapeHtml(t)}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          <div class="rounded-2xl bg-pbc-soft border border-pbc-dark/20 p-4 space-y-1">
+            <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-dark font-bold">Vínculo Cristiano / ACDE</div>
+            <p class="text-sm text-pbc-deep">${escapeHtml(c.vinculoCristiano || 'Por relevar')}</p>
+          </div>
+
+          ${c.aporteDia5 ? `
+            <div class="rounded-2xl bg-pbc-canvas border border-black/[0.06] p-4 space-y-1">
+              <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-muted font-bold">Aporte Sugerido al Día 5</div>
+              <p class="text-sm text-pbc-deep/90">${escapeHtml(c.aporteDia5)}</p>
+            </div>
+          ` : ''}
+
+          <div class="grid sm:grid-cols-2 gap-3 pt-3 border-t border-black/[0.07]">
+            <div>
+              <label class="block font-mono text-[10px] uppercase tracking-wider text-pbc-muted mb-1">Columna / Estado</label>
+              <select id="modalStatusSelect" class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/15 text-sm font-semibold text-pbc-deep">
+                ${['Por relevar', 'Identificado', 'Prioritario', 'Contactado', 'Confirmado'].map(st =>
+                  `<option value="${st}" ${c.estado === st ? 'selected' : ''}>${st}</option>`
+                ).join('')}
+              </select>
+            </div>
+            <div class="flex items-end gap-2">
+              <a href="${escapeHtml(c.linkedin || c.linkedinSearch || 'https://www.linkedin.com')}" target="_blank" rel="noopener noreferrer"
+                class="flex-1 text-center px-4 py-2.5 rounded-full bg-pbc-deep text-white text-xs font-bold hover:bg-pbc-carbon transition-colors">
+                ${c.linkedin ? 'Abrir LinkedIn ↗' : 'Buscar en LinkedIn ↗'}
+              </a>
+              ${c.linkedin
+                ? `<button id="modalCopyBtn" type="button" class="px-3.5 py-2.5 rounded-full bg-pbc-canvas border border-black/15 text-xs font-bold text-pbc-deep hover:border-pbc-dark">Copiar</button>`
+                : (c.sitioWeb ? `<a href="${escapeHtml(c.sitioWeb)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-full bg-pbc-canvas border border-black/15 text-xs font-bold text-pbc-deep hover:border-pbc-dark">Web ↗</a>` : '')}
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-mono text-[10px] uppercase tracking-wider text-pbc-muted mb-1">URL directa de LinkedIn ${c.linkedin ? '(verificada)' : '(pegar perfil cuando se valide)'}</label>
+            <input id="modalLinkedinInput" type="url" value="${escapeHtml(c.linkedin || '')}" placeholder="https://www.linkedin.com/in/..."
+              class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/15 text-xs font-mono text-pbc-deep focus:outline-none focus:border-pbc-dark" />
+          </div>
+
+          <div>
+            <label class="block font-mono text-[10px] uppercase tracking-wider text-pbc-muted mb-1">Notas internas del equipo</label>
+            <textarea id="modalNotesInput" rows="2" placeholder="Anotá avances, quién lo contacta, disponibilidad..."
+              class="w-full px-3.5 py-2 rounded-xl bg-pbc-canvas border border-black/15 text-sm text-pbc-deep focus:outline-none focus:border-pbc-dark">${escapeHtml(c.notas || '')}</textarea>
+          </div>
+
+          <div class="flex justify-end">
+            <button id="saveDetailChanges" type="button" class="px-5 py-2.5 rounded-full bg-pbc text-pbc-deep text-xs font-extrabold hover:bg-pbc-light transition-colors">
+              Guardar cambios
+            </button>
+          </div>
+        `;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        const copyBtn = document.getElementById('modalCopyBtn');
+        if (copyBtn) {
+          copyBtn.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(c.linkedin);
+              showFloatingToast('Enlace de LinkedIn copiado');
+            } catch (_) {}
+          };
+        }
+
+        document.getElementById('saveDetailChanges').onclick = () => {
+          const nextStatus = document.getElementById('modalStatusSelect').value;
+          const changed = nextStatus !== c.estado;
+          const nextLinkedin = document.getElementById('modalLinkedinInput').value.trim();
+          c.estado = nextStatus;
+          c.linkedin = nextLinkedin || null;
+          c.notas = document.getElementById('modalNotesInput').value.trim();
+          if (changed) state.lastMovedMessage = `${c.nombre} pasó a «${nextStatus}».`;
+          saveContactos();
+          renderAll();
+          closeDetailModal();
+          showFloatingToast(changed ? `${c.nombre} · Movido a ${nextStatus}` : 'Ficha actualizada', c.id);
+        };
+      }
+
+      function closeDetailModal() {
+        const modal = document.getElementById('detailModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      function openAddModal(defaultStatus) {
+        const sel = document.getElementById('addEstadoSelect');
+        if (defaultStatus && sel) sel.value = defaultStatus;
+        const modal = document.getElementById('addModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function closeAddModal() {
+        const modal = document.getElementById('addModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      function renderAll() {
+        const filtered = getFilteredContactos();
+        renderQuickFilters();
+        renderFunnelAndNarrative(filtered);
+        renderKanban(filtered);
+        renderDirectoryTable(filtered);
+        renderAreasView();
+        renderLevelsView();
+        renderPlanView();
+      }
+
+      // =====================================================
+      // PLAN DE FORMACIÓN + DIAGRAMA NEHEMÍAS + SLIDES DECK
+      // =====================================================
+      const planData = window.PBC_PLAN_FORMACION || null;
+      const planState = {
+        movement: 'ALL',
+        selectedDayId: 'dia-1',
+        selectedTramoId: 'tramo-empresa',
+        slideIndex: 0
+      };
+
+      function renderNehemiasDiagram() {
+        if (!planData) return;
+        const wrap = document.getElementById('nehemiasDiagramWrap');
+        const n = planData.nehemias;
+        const activeTramo = n.tramosDiagrama.find(t => t.id === planState.selectedTramoId) || n.tramosDiagrama[0];
+
+        wrap.innerHTML = `
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-widest text-pbc-dark font-bold">Imagen Central del Campamento</span>
+              <h3 class="font-brand text-2xl sm:text-3xl text-pbc-deep mt-0.5">
+                Torre de Babel vs. La Muralla de Nehemías
+              </h3>
+            </div>
+            <span class="text-xs font-mono font-bold text-pbc-muted bg-pbc-canvas px-3 py-1.5 rounded-full border border-black/[0.06]">
+              Magnifica Humanitas · n. 1, 13, 16, 241
+            </span>
+          </div>
+
+          <!-- Comparativa visual SVG + Esquema -->
+          <div class="grid lg:grid-cols-12 gap-4 items-stretch">
+            <!-- Babel -->
+            <div class="lg:col-span-4 rounded-2xl bg-pbc-canvas border border-black/[0.07] p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-wider text-pbc-muted font-bold">Modelo a evitar</span>
+                  <h4 class="font-brand text-2xl text-pbc-deep mt-0.5">${escapeHtml(n.babel.titulo)}</h4>
+                  <p class="text-xs font-semibold text-pbc-muted">${escapeHtml(n.babel.subtitulo)}</p>
+                </div>
+                <svg viewBox="0 0 64 64" class="w-12 h-12 shrink-0 text-pbc-muted" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M18 56h28M22 56V42h20v14M25 42V30h14v12M28 30V18l9-4v16" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M14 22l8 4M50 18l-8 5M32 6v6" stroke-dasharray="3 3" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                ${n.babel.rasgos.map(r => `<span class="px-2.5 py-1 rounded-full bg-white border border-black/[0.07] text-[11px] font-semibold text-pbc-muted">${escapeHtml(r)}</span>`).join('')}
+              </div>
+            </div>
+
+            <!-- Nehemías (Hero Verde Agua) -->
+            <div class="lg:col-span-8 hero-mint-card rounded-2xl p-5 sm:p-6 text-white flex flex-col justify-between gap-4">
+              <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                <div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-white/20 text-[10px] font-mono uppercase tracking-wider font-bold">Modelo del Protagonista</span>
+                  <h4 class="font-brand text-2xl sm:text-3xl mt-1">${escapeHtml(n.ciudad.titulo)}</h4>
+                  <p class="text-xs text-white/90 font-semibold">${escapeHtml(n.ciudad.subtitulo)}</p>
+                </div>
+                <svg viewBox="0 0 96 64" class="w-20 h-14 shrink-0 text-white" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <rect x="6" y="34" width="20" height="22" rx="2"/>
+                  <rect x="28" y="30" width="20" height="26" rx="2"/>
+                  <rect x="50" y="30" width="20" height="26" rx="2"/>
+                  <rect x="72" y="34" width="18" height="22" rx="2"/>
+                  <path d="M6 34h84M16 34v22M38 30v26M60 30v26M81 34v22" stroke-opacity="0.45"/>
+                  <circle cx="38" cy="18" r="4"/>
+                  <circle cx="58" cy="18" r="4"/>
+                  <path d="M32 28c2-4 10-4 12 0M52 28c2-4 10-4 12 0" stroke-linecap="round"/>
+                </svg>
+              </div>
+
+              <p class="text-xs sm:text-sm text-white/95 italic leading-relaxed">
+                ${escapeHtml(n.citaPrincipal)} <span class="not-italic font-mono text-[11px] text-white/80">— ${escapeHtml(n.citaRef)}</span>
+              </p>
+
+              <div class="grid sm:grid-cols-3 gap-2">
+                ${n.tresClaves.map(k => `
+                  <div class="rounded-xl bg-white/15 backdrop-blur-sm p-3 border border-white/20">
+                    <div class="text-xs font-extrabold">${escapeHtml(k.titulo)}</div>
+                    <div class="text-[11px] text-white/85 mt-1 leading-snug">${escapeHtml(k.texto)}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Diagrama Interactivo: Tu Tramo de Muralla (4 bloques conectando niveles y profesiones) -->
+          <div class="rounded-2xl bg-pbc-canvas border border-black/[0.06] p-4 sm:p-5 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="text-xs font-extrabold text-pbc-deep">
+                Esquema Interactivo · ¿Qué tramo de muralla reconstruye cada nivel?
+              </div>
+              <span class="text-[11px] font-mono text-pbc-muted">Hacé clic en cada bloque de la muralla</span>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+              ${n.tramosDiagrama.map((t, idx) => {
+                const selected = t.id === planState.selectedTramoId;
+                return `
+                  <button type="button" data-tramo="${escapeHtml(t.id)}"
+                    class="text-left rounded-xl p-3 border transition-all ${selected ? 'bg-pbc-deep text-white border-pbc-deep shadow-md' : 'bg-white text-pbc-deep border-black/[0.08] hover:border-pbc-dark'}">
+                    <div class="flex items-center justify-between gap-1 text-[10px] font-mono uppercase ${selected ? 'text-pbc' : 'text-pbc-muted'}">
+                      <span>Tramo 0${idx + 1}</span>
+                      <span>${escapeHtml(t.icon)}</span>
+                    </div>
+                    <div class="text-xs font-extrabold mt-1 leading-snug">${escapeHtml(t.titulo)}</div>
+                    <div class="text-[10px] mt-0.5 ${selected ? 'text-white/75' : 'text-pbc-muted'}">${escapeHtml(t.nivel)}</div>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="rounded-xl bg-white border border-black/[0.06] p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-0.5">
+                <div class="text-[11px] font-mono font-bold text-pbc-dark uppercase">${escapeHtml(activeTramo.nivel)} · ${escapeHtml(activeTramo.quienes)}</div>
+                <p class="text-xs sm:text-sm text-pbc-deep font-medium">${escapeHtml(activeTramo.texto)}</p>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-pbc-soft text-pbc-dark font-mono text-[10px] font-bold whitespace-nowrap self-start sm:self-center">
+                Ladrillo tras ladrillo
+              </span>
+            </div>
+          </div>
+
+          <!-- Desplegable Dual: 4 Pilares + Objetivos + Decisiones Clave + Desarrollo completo -->
+          <details class="group rounded-2xl border border-black/[0.07] bg-pbc-canvas/60">
+            <summary class="px-4 py-3 cursor-pointer list-none flex items-center justify-between gap-2 text-xs font-extrabold text-pbc-deep select-none">
+              <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-pbc-dark"></span>
+                Ver desarrollo doctrinal completo (4 Pilares, Objetivos y Decisiones Clave)
+              </span>
+              <span class="font-mono text-[11px] text-pbc-dark group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div class="px-4 pb-5 pt-2 space-y-5 border-t border-black/[0.06] text-xs sm:text-sm text-pbc-deep/90">
+              <div class="space-y-2 leading-relaxed">
+                ${planData.marcoIntroCompleto.map(p => `<p>${escapeHtml(p)}</p>`).join('')}
+                <p class="italic text-pbc-dark font-medium">${escapeHtml(n.citaNehemias)}</p>
+                <p>${escapeHtml(n.textoCompleto)}</p>
+              </div>
+
+              <div>
+                <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-muted font-bold mb-2">Los 4 Pilares de la Ciudad (Magnifica Humanitas)</div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                  ${n.cuatroPilares.map(p => `
+                    <div class="bg-white rounded-xl border border-black/[0.06] p-3">
+                      <div class="text-xs font-extrabold text-pbc-deep">${escapeHtml(p.titulo)}</div>
+                      <p class="text-[11px] text-pbc-muted mt-1 leading-snug">${escapeHtml(p.detalle)}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-white rounded-xl border border-black/[0.06] p-4 space-y-2">
+                  <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-dark font-bold">Objetivos del Campamento</div>
+                  ${planData.objetivos.map(o => `
+                    <div><strong>${escapeHtml(o.num)}. ${escapeHtml(o.titulo)}:</strong> <span class="text-xs text-pbc-muted">${escapeHtml(o.completo)}</span></div>
+                  `).join('')}
+                </div>
+                <div class="bg-white rounded-xl border border-black/[0.06] p-4 space-y-2">
+                  <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-dark font-bold">Decisiones Clave de Diseño</div>
+                  ${planData.decisionesClave.map(d => `
+                    <div><strong>${escapeHtml(d.titulo)}:</strong> <span class="text-xs text-pbc-muted">${escapeHtml(d.completo)}</span></div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </details>
+        `;
+
+        wrap.querySelectorAll('[data-tramo]').forEach(btn => {
+          btn.onclick = () => {
+            planState.selectedTramoId = btn.getAttribute('data-tramo');
+            renderNehemiasDiagram();
+          };
+        });
+      }
+
+      function renderPlanDays() {
+        if (!planData) return;
+        const visibleDays = planData.dias.filter(d => planState.movement === 'ALL' || d.movimiento === planState.movement);
+        if (!visibleDays.some(d => d.id === planState.selectedDayId) && visibleDays.length > 0) {
+          planState.selectedDayId = visibleDays[0].id;
+        }
+        const activeDay = visibleDays.find(d => d.id === planState.selectedDayId) || visibleDays[0];
+
+        // Pills de movimiento
+        document.querySelectorAll('#planMovementFilter [data-mov]').forEach(btn => {
+          const active = btn.getAttribute('data-mov') === planState.movement;
+          btn.className = active
+            ? 'px-3 py-1.5 rounded-full text-xs font-bold bg-pbc-deep text-white transition-all'
+            : 'px-3 py-1.5 rounded-full text-xs font-bold text-pbc-muted hover:text-pbc-deep transition-all';
+        });
+
+        // Stepper de días
+        const pillsBox = document.getElementById('planDayPills');
+        pillsBox.innerHTML = visibleDays.map(d => {
+          const active = d.id === activeDay.id;
+          return `
+            <button type="button" data-plan-day="${escapeHtml(d.id)}"
+              class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${active ? 'bg-pbc-deep text-white shadow-sm' : d.destacado ? 'bg-pbc-soft text-pbc-dark hover:bg-pbc/30' : 'text-pbc-muted hover:text-pbc-deep'}">
+              <span>${escapeHtml(d.etiqueta)}</span>
+              ${d.destacado ? '<span class="text-[10px]">★</span>' : ''}
+            </button>
+          `;
+        }).join('');
+
+        // Tarjeta Stage del Día Activo (Dual: resumen visible + desplegable completo)
+        const movInfo = planData.movimientos.find(m => m.id === activeDay.movimiento);
+        const stage = document.getElementById('planDayStage');
+        stage.innerHTML = `
+          <article class="bg-white rounded-3xl border ${activeDay.destacado ? 'border-pbc-dark/40 ring-2 ring-pbc/25' : 'border-black/[0.07]'} p-6 sm:p-7 shadow-sm space-y-5">
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div class="space-y-1.5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full bg-pbc text-pbc-deep font-mono text-[10px] font-extrabold uppercase">${escapeHtml(activeDay.etiqueta)}</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-pbc-canvas font-mono text-[10px] font-bold text-pbc-muted uppercase">${escapeHtml(movInfo ? movInfo.numero : '')} · ${escapeHtml(activeDay.nivelTag)}</span>
+                </div>
+                <h4 class="font-brand text-3xl sm:text-4xl text-pbc-deep">${escapeHtml(activeDay.titulo)}</h4>
+              </div>
+
+              <div class="rounded-2xl bg-pbc-soft border border-pbc-dark/20 px-4 py-2.5 md:max-w-xs shrink-0">
+                <div class="font-mono text-[10px] uppercase tracking-wider text-pbc-dark font-bold">Pregunta central</div>
+                <div class="text-sm font-extrabold text-pbc-deep mt-0.5">${escapeHtml(activeDay.pregunta)}</div>
+              </div>
+            </div>
+
+            <p class="text-sm sm:text-base text-pbc-deep/85 leading-relaxed">
+              ${escapeHtml(activeDay.resumen)}
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="rounded-2xl bg-pbc-canvas p-4 space-y-2">
+                <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-muted font-bold">Ejes del día</div>
+                <div class="flex flex-wrap gap-1.5">
+                  ${activeDay.ejes.map(e => `<span class="px-2.5 py-1 rounded-full bg-white border border-black/[0.07] text-xs font-semibold text-pbc-deep">${escapeHtml(e)}</span>`).join('')}
+                </div>
+              </div>
+
+              <div class="rounded-2xl bg-pbc-canvas p-4 space-y-2">
+                <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-muted font-bold">Hitos de experiencia</div>
+                <div class="flex flex-wrap gap-1.5">
+                  ${activeDay.hitos.map(h => `
+                    <span class="px-2.5 py-1 rounded-full text-xs font-bold ${activeDay.hitosPendiente ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-pbc-deep text-white'}">
+                      ${escapeHtml(h)}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <details class="group rounded-2xl border border-black/[0.07] bg-pbc-canvas/50">
+              <summary class="px-4 py-2.5 cursor-pointer list-none flex items-center justify-between text-xs font-bold text-pbc-dark select-none">
+                <span>+ Ver desarrollo doctrinal completo de ${escapeHtml(activeDay.etiqueta)}</span>
+                <span class="font-mono text-[10px] group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-4 pb-4 pt-2 border-t border-black/[0.06] space-y-2 text-sm text-pbc-deep/85 leading-relaxed">
+                ${activeDay.completo.map(p => `<p>${escapeHtml(p)}</p>`).join('')}
+              </div>
+            </details>
+          </article>
+        `;
+
+        // Vista rápida de los 7 bloques
+        const overview = document.getElementById('planDaysOverview');
+        overview.innerHTML = visibleDays.map(d => {
+          const active = d.id === activeDay.id;
+          return `
+            <button type="button" data-plan-day="${escapeHtml(d.id)}"
+              class="text-left rounded-2xl p-3 border transition-all ${active ? 'bg-pbc-deep text-white border-pbc-deep' : 'bg-white text-pbc-deep border-black/[0.07] hover:border-pbc-dark'}">
+              <div class="flex items-center justify-between gap-1 text-[10px] font-mono uppercase ${active ? 'text-pbc' : 'text-pbc-muted'}">
+                <span>${escapeHtml(d.etiqueta)}</span>
+                ${d.destacado ? '<span>★</span>' : ''}
+              </div>
+              <div class="text-xs font-extrabold mt-1 line-clamp-2 leading-snug">${escapeHtml(d.titulo)}</div>
+            </button>
+          `;
+        }).join('');
+
+        document.querySelectorAll('[data-plan-day]').forEach(btn => {
+          btn.onclick = () => {
+            planState.selectedDayId = btn.getAttribute('data-plan-day');
+            renderPlanDays();
+          };
+        });
+      }
+
+      function renderPlanView() {
+        if (!planData) return;
+        renderNehemiasDiagram();
+        renderPlanDays();
+      }
+
+      function buildSlides() {
+        if (!planData) return [];
+        const n = planData.nehemias;
+        const slides = [
+          {
+            breadcrumb: "Portada · Plan de Formación",
+            render: () => `
+              <div class="space-y-6 py-4">
+                <span class="px-3 py-1 rounded-full bg-pbc text-pbc-deep font-mono text-xs font-extrabold uppercase tracking-wider">Campamento Nacional 2027 · Mendoza</span>
+                <h2 class="font-brand text-4xl sm:text-6xl text-pbc-deep leading-none">
+                  Protagonistas del <span class="text-pbc-dark">Bien Común</span>
+                </h2>
+                <p class="text-base sm:text-lg text-pbc-deep/85 max-w-3xl leading-relaxed">${escapeHtml(planData.marcoIntroResumen)}</p>
+                <div class="rounded-2xl bg-white border border-black/[0.07] p-5 shadow-sm">
+                  <div class="font-mono text-[10px] uppercase tracking-widest text-pbc-dark font-bold mb-1">Definición de Bien Común · Magnifica Humanitas n. 60</div>
+                  <p class="text-sm sm:text-base italic text-pbc-deep">«El conjunto de condiciones de la vida social que hacen posible, tanto a las asociaciones como a cada uno de sus miembros, el logro más pleno y más fácil de la propia perfección».</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            breadcrumb: "Imagen Central · Babel vs. Nehemías",
+            render: () => `
+              <div class="space-y-5">
+                <h2 class="font-brand text-3xl sm:text-4xl text-pbc-deep">Dos caminos: Torre de Babel o Muralla de Nehemías</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div class="bg-white rounded-2xl border border-black/[0.07] p-5 space-y-2.5">
+                    <div class="font-mono text-[10px] uppercase text-pbc-muted font-bold">Desviación tecnocrática</div>
+                    <div class="font-brand text-2xl text-pbc-deep">${escapeHtml(n.babel.titulo)}</div>
+                    <ul class="space-y-1.5 text-sm text-pbc-muted list-disc pl-4">${n.babel.rasgos.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+                  </div>
+                  <div class="hero-mint-card rounded-2xl p-5 text-white space-y-2.5">
+                    <div class="font-mono text-[10px] uppercase text-white/80 font-bold">Vocación del miliciano</div>
+                    <div class="font-brand text-2xl">${escapeHtml(n.ciudad.titulo)}</div>
+                    <ul class="space-y-1.5 text-sm text-white/95 list-disc pl-4">${n.ciudad.rasgos.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+                  </div>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-3">
+                  ${n.tresClaves.map(k => `
+                    <div class="bg-white rounded-xl border border-black/[0.06] p-3.5">
+                      <div class="text-xs font-extrabold text-pbc-deep">${escapeHtml(k.titulo)}</div>
+                      <p class="text-xs text-pbc-muted mt-1">${escapeHtml(k.texto)}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `
+          },
+          {
+            breadcrumb: "Objetivos y Decisiones Clave",
+            render: () => `
+              <div class="space-y-5">
+                <h2 class="font-brand text-3xl sm:text-4xl text-pbc-deep">Horizonte y Decisiones Clave</h2>
+                <div class="grid md:grid-cols-3 gap-3">
+                  ${planData.objetivos.map(o => `
+                    <div class="bg-white rounded-2xl border border-black/[0.07] p-4 space-y-1.5">
+                      <span class="font-mono text-xs font-extrabold text-pbc-dark">OBJETIVO ${escapeHtml(o.num)}</span>
+                      <div class="font-brand text-xl text-pbc-deep">${escapeHtml(o.titulo)}</div>
+                      <p class="text-xs text-pbc-muted leading-relaxed">${escapeHtml(o.resumen)}</p>
+                    </div>
+                  `).join('')}
+                </div>
+                <div class="grid sm:grid-cols-2 gap-3">
+                  ${planData.decisionesClave.map(d => `
+                    <div class="bg-pbc-soft border border-pbc-dark/20 rounded-2xl p-4">
+                      <div class="text-xs font-extrabold text-pbc-deep">${escapeHtml(d.titulo)}</div>
+                      <p class="text-xs text-pbc-deep/80 mt-1">${escapeHtml(d.resumen)}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `
+          }
+        ];
+
+        planData.dias.forEach(d => {
+          const mov = planData.movimientos.find(m => m.id === d.movimiento);
+          slides.push({
+            breadcrumb: `${d.etiqueta} · ${d.nivelTag}`,
+            render: () => `
+              <div class="space-y-5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-full bg-pbc text-pbc-deep font-mono text-xs font-extrabold uppercase">${escapeHtml(d.etiqueta)}</span>
+                  <span class="px-3 py-1 rounded-full bg-white border border-black/10 font-mono text-xs font-bold text-pbc-muted uppercase">${escapeHtml(mov ? mov.numero + ' · ' + mov.titulo : '')}</span>
+                </div>
+                <h2 class="font-brand text-3xl sm:text-5xl text-pbc-deep">${escapeHtml(d.titulo)}</h2>
+                <div class="rounded-2xl bg-pbc-deep text-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <span class="font-mono text-[10px] uppercase tracking-widest text-pbc">Pregunta disparadora</span>
+                  <span class="text-base sm:text-lg font-extrabold">${escapeHtml(d.pregunta)}</span>
+                </div>
+                <p class="text-sm sm:text-base text-pbc-deep/85 leading-relaxed">${escapeHtml(d.resumen)}</p>
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div class="bg-white rounded-2xl border border-black/[0.07] p-4 space-y-2">
+                    <div class="font-mono text-[10px] uppercase text-pbc-muted font-bold">Ejes principales</div>
+                    <div class="flex flex-wrap gap-1.5">
+                      ${d.ejes.map(e => `<span class="px-2.5 py-1 rounded-full bg-pbc-canvas text-xs font-semibold text-pbc-deep">${escapeHtml(e)}</span>`).join('')}
+                    </div>
+                  </div>
+                  <div class="bg-white rounded-2xl border border-black/[0.07] p-4 space-y-2">
+                    <div class="font-mono text-[10px] uppercase text-pbc-muted font-bold">Hitos de experiencia</div>
+                    <div class="flex flex-wrap gap-1.5">
+                      ${d.hitos.map(h => `<span class="px-2.5 py-1 rounded-full text-xs font-bold ${d.hitosPendiente ? 'bg-amber-100 text-amber-800' : 'bg-pbc-soft text-pbc-dark'}">${escapeHtml(h)}</span>`).join('')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `
+          });
+        });
+        return slides;
+      }
+
+      const slidesList = buildSlides();
+
+      function renderSlideModal() {
+        if (!slidesList.length) return;
+        const idx = Math.max(0, Math.min(planState.slideIndex, slidesList.length - 1));
+        planState.slideIndex = idx;
+        const slide = slidesList[idx];
+
+        document.getElementById('slideCounter').textContent = `${String(idx + 1).padStart(2, '0')} / ${String(slidesList.length).padStart(2, '0')}`;
+        document.getElementById('slideBreadcrumb').textContent = slide.breadcrumb;
+        document.getElementById('slideProgressBar').style.width = `${((idx + 1) / slidesList.length) * 100}%`;
+        document.getElementById('slideStage').innerHTML = slide.render();
+
+        document.getElementById('prevSlideBtn').disabled = idx === 0;
+        document.getElementById('nextSlideBtn').disabled = idx === slidesList.length - 1;
+
+        const dots = document.getElementById('slideDots');
+        dots.innerHTML = slidesList.map((_, i) => `
+          <button type="button" data-slide-dot="${i}" aria-label="Ir a diapositiva ${i + 1}"
+            class="h-2 rounded-full transition-all ${i === idx ? 'w-6 bg-pbc-deep' : 'w-2 bg-black/15 hover:bg-black/35'}"></button>
+        `).join('');
+        dots.querySelectorAll('[data-slide-dot]').forEach(btn => {
+          btn.onclick = () => {
+            planState.slideIndex = Number(btn.getAttribute('data-slide-dot'));
+            renderSlideModal();
+          };
+        });
+      }
+
+      function openPresentationModal(startIdx) {
+        planState.slideIndex = typeof startIdx === 'number' ? startIdx : 0;
+        renderSlideModal();
+        const m = document.getElementById('presentationModal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+      }
+
+      function closePresentationModal() {
+        const m = document.getElementById('presentationModal');
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      }
+
+      document.querySelectorAll('#planMovementFilter [data-mov]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          planState.movement = btn.getAttribute('data-mov');
+          renderPlanDays();
+        });
+      });
+
+      document.getElementById('btnOpenPresentation').addEventListener('click', () => openPresentationModal(0));
+      document.getElementById('closePresentationModal').addEventListener('click', closePresentationModal);
+      document.getElementById('presentationModal').addEventListener('click', (e) => {
+        if (e.target.id === 'presentationModal') closePresentationModal();
+      });
+      document.getElementById('prevSlideBtn').addEventListener('click', () => {
+        if (planState.slideIndex > 0) { planState.slideIndex--; renderSlideModal(); }
+      });
+      document.getElementById('nextSlideBtn').addEventListener('click', () => {
+        if (planState.slideIndex < slidesList.length - 1) { planState.slideIndex++; renderSlideModal(); }
+      });
+
+      // Listeners globales
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+      });
+
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        state.search = e.target.value;
+        renderAll();
+      });
+
+      document.getElementById('btnAcdeToggle').addEventListener('click', () => {
+        state.acdeOnly = !state.acdeOnly;
+        renderAll();
+      });
+
+      document.getElementById('closeDetailModal').addEventListener('click', closeDetailModal);
+      document.getElementById('detailModal').addEventListener('click', (e) => {
+        if (e.target.id === 'detailModal') closeDetailModal();
+      });
+
+      document.getElementById('closeAddModal').addEventListener('click', closeAddModal);
+      document.getElementById('cancelAddBtn').addEventListener('click', closeAddModal);
+      document.getElementById('addModal').addEventListener('click', (e) => {
+        if (e.target.id === 'addModal') closeAddModal();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        const presOpen = !document.getElementById('presentationModal').classList.contains('hidden');
+        if (presOpen) {
+          if (e.key === 'ArrowRight') {
+            if (planState.slideIndex < slidesList.length - 1) { planState.slideIndex++; renderSlideModal(); }
+            return;
+          }
+          if (e.key === 'ArrowLeft') {
+            if (planState.slideIndex > 0) { planState.slideIndex--; renderSlideModal(); }
+            return;
+          }
+          if (e.key === 'Escape') {
+            closePresentationModal();
+            return;
+          }
+        }
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          document.getElementById('searchInput').focus();
+        } else if (e.key === 'Escape') {
+          closeDetailModal();
+          closeAddModal();
+        }
+      });
+
+      document.getElementById('addContactForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const nuevo = {
+          id: 'contacto-' + Date.now(),
+          tipo: fd.get('tipo'),
+          nombre: String(fd.get('nombre')).trim(),
+          subtitulo: `${String(fd.get('rolActual')).trim()} · ${String(fd.get('organizacion')).trim()}`,
+          rolActual: String(fd.get('rolActual')).trim(),
+          organizacion: String(fd.get('organizacion')).trim(),
+          linkedin: String(fd.get('linkedin')).trim(),
+          sitioWeb: null,
+          correo: null,
+          telefono: null,
+          sede: 'Argentina',
+          vinculoCristiano: String(fd.get('vinculoCristiano') || '').trim() || 'Por relevar',
+          resena: String(fd.get('resena')).trim(),
+          trayectoria: [],
+          formacion: '',
+          areasDia5: fd.getAll('areas'),
+          aporteDia5: '',
+          estado: fd.get('estado'),
+          validadoAcde: fd.get('validadoAcde') === 'on',
+          tags: []
+        };
+        state.contactos.unshift(nuevo);
+        state.lastMovedMessage = `Se sumó ${nuevo.nombre} al tablero.`;
+        saveContactos();
+        renderAll();
+        e.target.reset();
+        closeAddModal();
+        showFloatingToast(`${nuevo.nombre} · Agregado a ${nuevo.estado}`, nuevo.id);
+      });
+
+      function downloadFile(filename, content, type) {
+        const blob = new Blob([content], { type });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      document.getElementById('btnExportJson').onclick = () => {
+        downloadFile('contactos-dia5-nacion.json', JSON.stringify({ ...baseData, contactos: state.contactos }, null, 2), 'application/json');
+        showFloatingToast('Base exportada en JSON');
+      };
+
+      document.getElementById('btnExportCsv').onclick = () => {
+        const headers = ['Nombre', 'Categoria', 'Rol Actual', 'Organizacion', 'Vinculo ACDE', 'Estado', 'Areas Dia 5', 'LinkedIn / Busqueda', 'Resena'];
+        const rows = state.contactos.map(c => [
+          c.nombre, c.tipo, c.rolActual, c.organizacion,
+          c.validadoAcde ? 'Si' : 'Por validar',
+          c.estado, (c.areasDia5 || []).join(' | '), c.linkedin || c.linkedinSearch || '', c.resena
+        ].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(','));
+        downloadFile('contactos-dia5-nacion.csv', '\uFEFF' + [headers.join(','), ...rows].join('\n'), 'text/csv;charset=utf-8;');
+        showFloatingToast('Directorio exportado en CSV');
+      };
+
+      document.getElementById('btnResetLocal').onclick = () => {
+        localStorage.removeItem(STORAGE_KEY);
+        state.contactos = JSON.parse(JSON.stringify(baseData.contactos));
+        state.lastMovedMessage = null;
+        renderAll();
+        showFloatingToast('Tablero restaurado a la base original');
+      };
+
+      const navCmd = document.getElementById('navComandosLink');
+      if (navCmd && window.location.port === '4173' && !window.location.pathname.includes('/dia-5-nacion')) {
+        navCmd.href = 'http://localhost:4174/';
+      }
+
+      populateAddAreas();
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

@@ -1,4 +1,16 @@
 {
+  "redirects": [
+    {
+      "source": "/planificacion-comandos",
+      "destination": "/planificacion-comandos/",
+      "permanent": false
+    },
+    {
+      "source": "/dia-5-nacion",
+      "destination": "/dia-5-nacion/",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
